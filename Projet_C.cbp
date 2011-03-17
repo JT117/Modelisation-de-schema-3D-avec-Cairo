@@ -36,6 +36,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Cube.h" />
+		<Unit filename="Point.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

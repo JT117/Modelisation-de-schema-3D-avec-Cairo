@@ -41,43 +41,12 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
     cairo_t *cr = NULL;
     cr = gdk_cairo_create (widget->window);
     printf("Expose event \n");
-
     cairo_move_to (cr, 0, 0);
 
-    /*cairo_rectangle_t rect1;   // Structure contenant les infos sur un rectangle
-    rect1.x = 200;
-    rect1.y = 200;
-    rect1.width = 250;
-    rect1.height = 250;
-
-    cairo_rectangle_t rect2;    // Structure contenant les infos sur un rectangle
-    rect2.x = 250;
-    rect2.y = 250;
-    rect2.width = 250;
-    rect2.height = 250;
-
-    cairo_rectangle (cr, rect1.x, rect1.y, rect1.width, rect1.height); // On dessine le rectangle sur la surface
-    cairo_rectangle (cr, rect2.x, rect2.y, rect2.width, rect2.height); // On dessine le rectangle sur la surface
-
-    cairo_line_to( cr, rect1.x, rect1.y );                             // On dessine à partir des coordonnées du cr jusqu'au point donné
-
-    cairo_move_to( cr, rect2.x + rect2.width, rect2.y + rect2.height ); // On deplace le curseur de cr
-    cairo_line_to( cr, rect1.x + rect1.width, rect1.y + rect2.height ); // On dessine à partir des coordonnées du cr jusqu'au point donné
-
-    cairo_move_to( cr, rect2.x + rect2.width, rect2.y );
-    cairo_line_to( cr, rect1.x + rect1.width, rect1.y );
-
-    cairo_move_to( cr, rect2.x, rect2.y + rect2.height );
-    cairo_line_to( cr, rect1.x, rect1.y + rect2.height );
-
-    cairo_set_source_rgb (cr, 0, 255, 0);   // On definie la couleur du trait
-
-    cairo_stroke(cr); // On ne dessine que les contours*/
-
     Cube cube1;
-    initialiser_Cube( &cube1, 200, 200, 250, 250, 250, 250, 250, 250, cr );
+    initialiser_Cube( &cube1, 200, 200, 250 );
     printf("cube initialiser \n");
-    dessiner_Cube( &cube1 );
+    dessiner_Cube( &cube1, cr );
     printf("cube dessiner \n");
 
     return TRUE;

@@ -1,15 +1,21 @@
 #include <stdlib.h>
+#include "Point.h"
 #include <gtk/gtk.h>
 
 typedef struct Cube Cube;
 struct Cube
 {
-    cairo_rectangle_t rect1;
-    cairo_rectangle_t rect2;
+    double x;
+    double y;
+    double cote;
 
-    cairo_t* cr;
+    double rotation_X;
+   // double rotation_Y;
+    double rotation_Z;
 };
 
-void initialiser_Cube( Cube* cube, double x1, double y1, double width1, double height1, double x2, double y2, double width2, double height2, cairo_t* cr1 );
+void initialiser_Cube( Cube* cube, double x1, double y1, double cote1 );
 
-void dessiner_Cube(Cube* cube);
+void dessiner_Cube( Cube* cube, cairo_t* cr );
+
+void rotation_Y( Point* point, double reference_X, double angle );
