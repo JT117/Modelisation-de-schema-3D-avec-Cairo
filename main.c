@@ -44,7 +44,7 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
     cairo_move_to (cr, 0, 0);
 
     Cube cube1;
-    initialiser_Cube( &cube1, 200, 200, 250 );
+    initialiser_Cube( &cube1, 200, 200, 0, 250 );
     printf("cube initialiser \n");
     dessiner_Cube( &cube1, cr );
     printf("cube dessiner \n");

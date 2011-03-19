@@ -5,17 +5,21 @@
 typedef struct Cube Cube;
 struct Cube
 {
-    double x;
-    double y;
-    double cote;
+    // 0-----1
+    // |     |
+    // |     |
+    // 3-----2
 
-    double rotation_X;
-   // double rotation_Y;
-    double rotation_Z;
+    Point tPoint[8];
+
 };
 
-void initialiser_Cube( Cube* cube, double x1, double y1, double cote1 );
+void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote );
 
-void dessiner_Cube( Cube* cube, cairo_t* cr );
+void dessiner_Cube( Cube* cCube, cairo_t* cr );
 
-void rotation_Y( Point* point, double reference_X, double angle );
+void rotation_X( Point* point, double dDecallage_Y, double dDecallage_Z, double angle );
+
+void rotation_Y( Point* point, double dDecallage_X, double dDecallage_Z, double angle );
+
+void rotation_Z( Point* point, double dDecallage_X, double dDecallage_Y, double angle );
