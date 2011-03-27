@@ -35,154 +35,156 @@ void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCot
     cCube->tPoint[7].y = dY + dCote;
     cCube->tPoint[7].z = dZ + dCote;
 
+    cCube->estSelectionne = FALSE;
+
 }
 
 void dessiner_Cube(Cube* cCube, cairo_t* cr )
 {
-    int i = 0;
+   if( !cCube->estSelectionne )
+   {
+        cairo_set_source_rgb ( cr, 0, 0, 0);   // On definie la couleur du trait
 
-    cairo_set_source_rgb ( cr, 0, 0, 0);   // On definie la couleur du trait
+        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
+        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
+        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
+        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
+        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 1 dessinée
 
-    cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-    cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-    cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-    cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y ); // Face 1 dessinée
+        cairo_fill( cr );
+        cairo_set_source_rgb ( cr, 255, 0, 0);
 
-    cairo_fill( cr );
-    cairo_set_source_rgb ( cr, 255, 0, 0);
+        cairo_move_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
+        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
+        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
+        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
+        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );// Face 2 dessinée
 
-    cairo_move_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-    cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-    cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-    cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y ); // Face 2 dessinée
+        cairo_fill( cr );
+        cairo_set_source_rgb ( cr, 0, 255, 0);
 
-    cairo_fill( cr );
-    cairo_set_source_rgb ( cr, 0, 255, 0);
+        cairo_move_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
+        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
+        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
+        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
+        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y ); // Face 3 dessinée
 
-    cairo_move_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-    cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-    cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-    cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-    cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y ); // Face 3 dessinée
+        cairo_fill( cr );
+        cairo_set_source_rgb ( cr, 0, 0, 255);
 
-    cairo_fill( cr );
-    cairo_set_source_rgb ( cr, 0, 0, 255);
+        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
+        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
+        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
+        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
+        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 4 dessinée
 
-    cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-    cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-    cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-    cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-    cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y ); // Face 4 dessinée
+        cairo_fill( cr );
+        cairo_set_source_rgb ( cr, 255, 255, 0);
 
-    cairo_fill( cr );
-    cairo_set_source_rgb ( cr, 255, 255, 0);
+        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
+        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
+        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
+        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
+        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 5 dessinée
 
-    cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-    cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-    cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-    cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-    cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y ); // Face 5 dessinée
+        cairo_fill( cr );
+        cairo_set_source_rgb ( cr, 255, 0, 255);
 
-    cairo_fill( cr );
-    cairo_set_source_rgb ( cr, 255, 0, 255);
+        cairo_move_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
+        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
+        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
+        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
+        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y ); // Face 6 dessinée
 
-    cairo_move_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-    cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-    cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-    cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-    cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y ); // Face 3 de6sinée
+        cairo_fill( cr );
+    }
+    else if( cCube->estSelectionne )
+    {
+        printf("coucou \n");
+        cairo_set_source_rgb ( cr, 255, 0, 0);
 
-    cairo_fill( cr );
-    cairo_set_source_rgb ( cr, 255, 255, 255);
+        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
+        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
+        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
+        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
+        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 1 dessinée
 
+        cairo_move_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
+        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
+        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
+        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
+        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );// Face 2 dessinée
 
-    //cairo_stroke( cr ); // On ne dessine que les contours
-    /*double x1 = cube->x;
-    double y1 = cube->y;
-    double cote = cube->cote;
-    double decallage_X = 50;
-    double decallage_Y = 50;
-    double x2 = cube->x + decallage_X;
-    double y2 = cube->y + decallage_Y;
+        cairo_move_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
+        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
+        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
+        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
+        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y ); // Face 3 dessinée
 
-    cairo_rectangle ( cr, x1, y1, cote, cote); // On dessine le rectangle sur la surface
-    cairo_rectangle ( cr, x2, y2, cote, cote); // On dessine le rectangle sur la surface
+        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
+        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
+        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
+        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
+        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 4 dessinée
 
-    cairo_line_to( cr, x1, y1 );               // On dessine à partir des coordonnées du cr jusqu'au point donné
+        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
+        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
+        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
+        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
+        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 5 dessinée
 
-    cairo_move_to( cr, x2 + cote, y2 + cote ); // On deplace le curseur de cr
-    cairo_line_to( cr, x1 + cote, y1 + cote ); // On dessine à partir des coordonnées du cr jusqu'au point donné
+        cairo_move_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
+        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
+        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
+        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
+        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y ); // Face 6 dessinée
 
-    cairo_move_to( cr, x2 + cote, y2 );
-    cairo_line_to( cr, x1 + cote, y1 );
+        cairo_set_source_rgb ( cr, 0, 255, 0);
+        cairo_fill_preserve( cr );
 
-    cairo_move_to( cr, x2, y2 + cote );
-    cairo_line_to( cr, x1, y1 + cote );
+        cairo_set_source_rgb ( cr, 255, 0, 0);
+        cairo_stroke( cr );
 
-    cairo_set_source_rgb ( cr, 0, 255, 0);   // On definie la couleur du trait
+        cairo_move_to( cr, 10, 10 );
+        cairo_line_to( cr, 10, 10 );
+        cairo_stroke (cr);
 
-    cairo_stroke( cr ); // On ne dessine que les contours
-
-    Point a, b, c, d;
-
-    a.x = cube->x;
-    a.y = cube->y;
-    a.z = 0;
-
-    b.x = cube->x + cube->cote;
-    b.y = cube->y;
-    b.z = 0;
-
-    d.x = cube->x;
-    d.y = cube->y + cube->cote;
-    d.z = 0;
-
-    c.x = cube->x + cube->cote;
-    c.y = cube->y + cube->cote;
-    c.z = 0;
-
-    double dDecallage_X = a.x + cube->cote / 2;
-    double dDecallage_Y = a.y + cube->cote / 2;
-    double dDecallage_Z = a.z + cube->cote / 2;
-
-    printf( "Avant A: %f, B: %f, C: %f, D: %f \n", a.x, b.x, c.x, d.x );
-
-    rotation_Y( &a, dDecallage_X, dDecallage_Z, 2*M_PI);
-    rotation_Y( &d, dDecallage_X, dDecallage_Z, 2*M_PI);
-
-    rotation_X( &c, dDecallage_Y, dDecallage_Z, 2*M_PI);
-    rotation_X( &d, dDecallage_Y, dDecallage_Z, 2*M_PI);
-
-    rotation_Z( &a, dDecallage_X, dDecallage_Y, M_PI/2);
-    rotation_Z( &b, dDecallage_X, dDecallage_Y, M_PI/2);
-    rotation_Z( &c, dDecallage_X, dDecallage_Y, M_PI/2);
-    rotation_Z( &d, dDecallage_X, dDecallage_Y, M_PI/2);
-
-    printf( "Apres A: %f, B: %f, C: %f, D: %f \n", a.x, b.x, c.x, d.x );
-
-    cairo_move_to( cr, a.x, a.y );
-
-    cairo_line_to( cr, b.x, b.y );
-    cairo_line_to( cr, c.x, c.y );
-    cairo_line_to( cr, d.x, d.y );
-    cairo_line_to( cr, a.x, a.y );
-
-    cairo_set_source_rgb ( cr, 0, 0, 0);   // On definie la couleur du trait
-
-    cairo_stroke( cr ); // On ne dessine que les contours*/
+    }
 }
 
-void rotation_Y( Point* pPoint, double dDecallage_X, double dDecallage_Z, double dAngle )
+void rotation_Cube( Cube* cCube, double dAngle, int iAxe )
 {
-    pPoint->x -= dDecallage_X;
-    pPoint->z -= dDecallage_Z;
+    double dDecallage_X = cCube->tPoint[0].x + ( cCube->tPoint[1].x - cCube->tPoint[0].x ) / 2;
+    double dDecallage_Y = cCube->tPoint[0].y + ( cCube->tPoint[1].y - cCube->tPoint[0].y ) / 2;
+    double dDecallage_Z = cCube->tPoint[0].z + ( cCube->tPoint[1].z - cCube->tPoint[0].z ) / 2;
 
-    pPoint->x = cos( dAngle ) * pPoint->x - sin( dAngle ) * pPoint->z;
-    pPoint->z = sin( dAngle ) * pPoint->x + cos( dAngle ) * pPoint->z;
+    if( iAxe == 1 ) // X
+    {
+        int i = 0;
 
-    pPoint->x += dDecallage_X;
-    pPoint->z += dDecallage_Z;
+        for( i = 0; i < 8; i++ )
+        {
+            rotation_X( &cCube->tPoint[i], dDecallage_Y, dDecallage_Z, dAngle );
+        }
+    }
+    else if( iAxe == 2 ) // Y
+    {
+        int i = 0;
 
+        for( i = 0; i < 8; i++ )
+        {
+            rotation_Y( &cCube->tPoint[i], dDecallage_X, dDecallage_Z, dAngle );
+        }
+    }
+    else if( iAxe == 3 ) // Z
+    {
+        int i = 0;
+
+        for( i = 0; i < 8; i++ )
+        {
+            rotation_Z( &cCube->tPoint[i], dDecallage_X, dDecallage_Y, dAngle );
+        }
+    }
 }
 
 void rotation_X( Point* pPoint, double dDecallage_Y, double dDecallage_Z, double dAngle )
@@ -194,6 +196,19 @@ void rotation_X( Point* pPoint, double dDecallage_Y, double dDecallage_Z, double
     pPoint->z = -sin( dAngle ) * pPoint->y + cos( dAngle ) * pPoint->z;
 
     pPoint->y += dDecallage_Y;
+    pPoint->z += dDecallage_Z;
+
+}
+
+void rotation_Y( Point* pPoint, double dDecallage_X, double dDecallage_Z, double dAngle )
+{
+    pPoint->x -= dDecallage_X;
+    pPoint->z -= dDecallage_Z;
+
+    pPoint->x = cos( dAngle ) * pPoint->x - sin( dAngle ) * pPoint->z;
+    pPoint->z = sin( dAngle ) * pPoint->x + cos( dAngle ) * pPoint->z;
+
+    pPoint->x += dDecallage_X;
     pPoint->z += dDecallage_Z;
 
 }
@@ -211,4 +226,23 @@ void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double
 
 }
 
+gboolean contientPoint( Cube* cCube, double x, double y )
+{
+    if( x >= cCube->tPoint[0].x  && x <= cCube->tPoint[1].x && y >= cCube->tPoint[0].y  && y <= cCube->tPoint[3].y
+    ||  x >= cCube->tPoint[1].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[5].y  && y <= cCube->tPoint[6].y
+    ||  x >= cCube->tPoint[0].x  && x <= cCube->tPoint[4].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[7].y
+    ||  x >= cCube->tPoint[0].x  && x <= cCube->tPoint[1].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[1].y
+    ||  x >= cCube->tPoint[4].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[7].y
+    ||  x >= cCube->tPoint[3].x  && x <= cCube->tPoint[2].x && y >= cCube->tPoint[7].y  && y <= cCube->tPoint[3].y)
+    {
+        cCube->estSelectionne =  TRUE;
+        return TRUE;
+    }
+    else
+    {
+        cCube->estSelectionne = FALSE;
+        return FALSE;
+    }
+
+}
 

@@ -1,3 +1,6 @@
+#ifndef POINT_H
+#define POINT_H
+
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
@@ -8,3 +11,6 @@ struct Point
     double y;
     double z;
 };
+
+
+#endif // POINT_H
