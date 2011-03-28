@@ -30,7 +30,7 @@ void rotation_Y( Point* pPoint, double dDecallage_X, double dDecallage_Z, double
 
 void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double angle );
 
-gboolean contientPoint( Cube* cCube, double x, double y );
+gboolean Cube_Contient_Point( Cube* cCube, double x, double y );
 
 
 #endif //CUBE_H

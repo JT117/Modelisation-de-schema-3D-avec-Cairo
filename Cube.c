@@ -220,7 +220,7 @@ void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double
 
 }
 
-gboolean contientPoint( Cube* cCube, double x, double y )
+gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
 {
     if( x >= cCube->tPoint[0].x  && x <= cCube->tPoint[1].x && y >= cCube->tPoint[0].y  && y <= cCube->tPoint[3].y
     ||  x >= cCube->tPoint[1].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[5].y  && y <= cCube->tPoint[6].y

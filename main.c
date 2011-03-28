@@ -3,7 +3,9 @@
 #include <math.h>
 
 #include "Cube.h"
+#include "Objet.h"
 #include "Scene.h"
+
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
@@ -40,9 +42,10 @@ static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event
     scene = (Scene*)malloc( 1 * sizeof( Scene) );
     initialiser_Scene( scene, zoneDeDessin );
 
-    ajouter_objet( scene, &cube1, 1 );
-    ajouter_objet( scene, &cube2, 1 );
-
+printf(" 1 \n");
+    ajouter_cube( scene, &cube1 );
+    ajouter_cube( scene, &cube2 );
+printf(" 2 \n");
 
     g_signal_connect( G_OBJECT( zoneDeDessin ), "realize", G_CALLBACK( realize_callback ), NULL );
     g_signal_connect( G_OBJECT( zoneDeDessin ), "expose-event", G_CALLBACK( expose_event_callback ), scene );

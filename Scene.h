@@ -5,16 +5,18 @@
 #include <gtk/gtk.h>
 #include <math.h>
 #include <string.h>
+
+#include "Objet.h"
 #include "Cube.h"
 
 typedef struct Scene Scene;
 struct Scene
 {
-    GArray* tCube;
-    GArray* tCubeSelection;
+    GArray* tObjet;
+    GArray* tSelection;
     GArray* tTouche;
-    int nbCube;
-    int nbCubeSelection;
+    int nbObjet;
+    int nbSelection;
     int nbTouche;
 };
 

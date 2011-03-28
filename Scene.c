@@ -2,27 +2,29 @@
 
 void initialiser_Scene( Scene* scene, GtkWidget* window )
 {
-    scene->tCube = g_array_new( FALSE, FALSE, sizeof( Cube* ) );
-    scene->nbCube = 0;
-    scene->tCubeSelection = g_array_new( FALSE, FALSE, sizeof( Cube* ) );
-    scene->nbCubeSelection = 0;
+    scene->tObjet = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+    scene->nbObjet = 0;
+    scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+    scene->nbSelection = 0;
     scene->tTouche= g_array_new( FALSE, FALSE, sizeof( char* ) );
     scene->nbTouche = 0;
 }
 
-void ajouter_objet( Scene* scene, Cube* cCube )
+void ajouter_cube( Scene* scene, Cube* cCube )
 {
-    g_array_append_val( scene->tCube, cCube );
-    scene->nbCube++;
+    Objet* objet = malloc( 1 * sizeof( Objet ) );
+    Objet_Cube( objet, cCube );
+    g_array_append_val( scene->tObjet, objet );
+    scene->nbObjet++;
 }
 
 void dessiner_Scene( Scene* scene, cairo_t* cr )
 {
     int i = 0;
 
-    for( i = 0; i < scene->nbCube; i++ )
+    for( i = 0; i < scene->nbObjet; i++ )
     {
-        dessiner_Cube( g_array_index( scene->tCube, Cube*, i ) , cr );
+        dessiner_Objet( g_array_index( scene->tObjet, Objet*, i ) , cr );
     }
 
 }
@@ -32,10 +34,10 @@ void selectionner_objet( Scene* scene, double x, double y )
     int i = 0;
     int nbNonSelectionner = 0;
 
-    for( i = 0; i < scene->nbCube; i++ )
+    for( i = 0; i < scene->nbObjet; i++ )
     {
-        Cube* cube = (Cube*)g_array_index( scene->tCube, Cube*, i );
-        gboolean estContenu = contientPoint( cube, x, y );
+        Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
+        gboolean estContenu = Objet_contient_Point( objet, x, y );
 
         printf(" -------------------------------- \n");
 
@@ -44,9 +46,9 @@ void selectionner_objet( Scene* scene, double x, double y )
             int j = 0;
             gboolean estDejaSelectionner = FALSE;
 
-            for( j = 0; j < scene->nbCubeSelection; j++ )
+            for( j = 0; j < scene->nbSelection; j++ )
             {
-                if( cube == g_array_index( scene->tCubeSelection, Cube*, j ) )
+                if( objet == g_array_index( scene->tSelection, Objet*, j ) )
                 {
                     estDejaSelectionner = TRUE;
                 }
@@ -55,9 +57,9 @@ void selectionner_objet( Scene* scene, double x, double y )
             if( !estDejaSelectionner )
             {
                 printf("SELECTION MULTIPLE ACTIVER \n");
-                g_array_append_val( scene->tCubeSelection, cube );
-                scene->nbCubeSelection++;
-                cube->estSelectionne = TRUE;
+                g_array_append_val( scene->tSelection, objet );
+                scene->nbSelection++;
+                Objet_Selection( objet );
                 printf("SELECTION MULTIPLE EFFECTUER \n");
             }
         }
@@ -65,11 +67,11 @@ void selectionner_objet( Scene* scene, double x, double y )
         {
             printf("SELECTION UNIQUE ACTIVER \n");
             deselectionner_tout( scene );
-            g_array_free( scene->tCubeSelection, FALSE );
-            scene->tCubeSelection = g_array_new( FALSE, FALSE, sizeof( Cube* ) );
-            g_array_append_val( scene->tCubeSelection, cube );
-            cube->estSelectionne = TRUE;
-            scene->nbCubeSelection = 1;
+            g_array_free( scene->tSelection, FALSE );
+            scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+            g_array_append_val( scene->tSelection, objet );
+            Objet_Selection( objet );
+            scene->nbSelection = 1;
             printf("SELECTION UNIQUE EFFECTUER \n");
         }
         else if( !estContenu )
@@ -78,26 +80,26 @@ void selectionner_objet( Scene* scene, double x, double y )
         }
     }
 
-    if( nbNonSelectionner == scene->nbCube )
+    if( nbNonSelectionner == scene->nbObjet )
     {
         printf("Deselection \n");
         deselectionner_tout( scene );
-        g_array_free( scene->tCubeSelection, FALSE );
-        scene->tCubeSelection = g_array_new( FALSE, FALSE, sizeof( Cube* ) );
-        scene->nbCubeSelection = 0;
+        g_array_free( scene->tSelection, FALSE );
+        scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+        scene->nbSelection = 0;
         printf("deselection EFFECTUER \n");
     }
-      printf("nombre de cube -> %d  |  nombre de selection %d \n", scene->nbCube, scene->nbCubeSelection );
+      printf("nombre de cube -> %d  |  nombre de selection %d \n", scene->nbObjet, scene->nbSelection );
 }
 
 void deselectionner_tout( Scene* scene )
 {
     int i = 0;
 
-    for( i = 0; i < scene->nbCubeSelection; i++ )
+    for( i = 0; i < scene->nbSelection; i++ )
     {
-        Cube* cube = (Cube*)g_array_index( scene->tCubeSelection, Cube*, i );
-        cube->estSelectionne = FALSE;
+        Objet* objet = (Objet*)g_array_index( scene->tSelection, Objet*, i );
+        Objet_Deselection( objet );
     }
 }
 
