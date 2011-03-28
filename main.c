@@ -7,7 +7,7 @@
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
-void gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data);
+static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data);
 static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event, gpointer data);
 
 
@@ -52,7 +52,8 @@ static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event
     gtk_window_set_position( GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER );
     gtk_widget_add_events( mainWindow, GDK_BUTTON_PRESS_MASK);   //active la detection de la souris
 
-    g_signal_connect( GTK_OBJECT( mainWindow ), "key_press_event", (GtkSignalFunc)gestion_clavier, scene);
+    g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
+    g_signal_connect( G_OBJECT( mainWindow ), "key-release-event", G_CALLBACK( gestion_clavier ), scene );
     g_signal_connect( G_OBJECT( mainWindow ), "button-press-event", G_CALLBACK( gestion_souris_callback ), scene );
 
     gtk_main();                                                                 // appel du main GTK
@@ -79,16 +80,26 @@ static gboolean realize_callback( GtkWidget *widget, GdkEventExpose *event, gpoi
     return TRUE;
 }
 
-void gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data)
+static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data)
 {
+    Scene* scene = (Scene*) data;
+
     if( event->type == GDK_KEY_PRESS )
     {
+        touche_appuyer( scene, gdk_keyval_name(event->keyval) );
+
         if( strcmp( gdk_keyval_name(event->keyval), "Right") == 0 )
         {
-            rotation_Cube( data, M_PI/2, 2 );
+            //rotation_Cube( data, M_PI/2, 2 );
             gtk_widget_queue_draw( window );
         }
     }
+    else if( event->type == GDK_KEY_RELEASE )
+    {
+        touche_relacher( scene, gdk_keyval_name(event->keyval) );
+    }
+
+    return TRUE;
 }
 
 static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event, gpointer data)
@@ -100,7 +111,6 @@ static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event
         selectionner_objet( scene, event->x, event->y );
 
         gtk_widget_queue_draw( window );
-
     }
 
     return TRUE;

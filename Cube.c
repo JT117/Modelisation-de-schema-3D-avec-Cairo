@@ -100,7 +100,6 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
     }
     else if( cCube->estSelectionne )
     {
-        printf("coucou \n");
         cairo_set_source_rgb ( cr, 255, 0, 0);
 
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
@@ -144,11 +143,6 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
 
         cairo_set_source_rgb ( cr, 255, 0, 0);
         cairo_stroke( cr );
-
-        cairo_move_to( cr, 10, 10 );
-        cairo_line_to( cr, 10, 10 );
-        cairo_stroke (cr);
-
     }
 }
 
@@ -235,12 +229,10 @@ gboolean contientPoint( Cube* cCube, double x, double y )
     ||  x >= cCube->tPoint[4].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[7].y
     ||  x >= cCube->tPoint[3].x  && x <= cCube->tPoint[2].x && y >= cCube->tPoint[7].y  && y <= cCube->tPoint[3].y)
     {
-        cCube->estSelectionne =  TRUE;
         return TRUE;
     }
     else
     {
-        cCube->estSelectionne = FALSE;
         return FALSE;
     }
 
