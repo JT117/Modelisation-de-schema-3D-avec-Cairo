@@ -95,7 +95,6 @@ void selectionner_objet( Scene* scene, double x, double y )
 
 void selectionner_click_drag( Scene* scene )
 {
-    printf(" selection click and drag \n");
     int i = 0;
 
     for( i = 0; i < scene->nbObjet; i++ )
@@ -131,9 +130,9 @@ void selectionner_click_drag( Scene* scene )
             y1 = (int)scene->departSelection.y;
         }
 
-        for( k = x1; k < x2; k+=35 )
+        for( k = x1; k < x2; k += 15 )
         {
-            for( j = y1; j < y2; j+=35 )
+            for( j = y1; j < y2; j += 15 )
             {
                  estContenu = estContenu || Objet_contient_Point( objet, k, j );
             }
@@ -165,7 +164,7 @@ void selectionner_click_drag( Scene* scene )
 
             for( n = 0; n < scene->nbSelection; n++ )
             {
-                if( objet == g_array_index( scene->tObjet, Objet*, n ) )
+                if( objet == g_array_index( scene->tSelection, Objet*, n ) )
                 {
                     g_array_remove_index_fast( scene->tSelection, n );
                     scene->nbSelection--;
@@ -174,7 +173,7 @@ void selectionner_click_drag( Scene* scene )
             }
         }
     }
-    printf(" Fin - selection click and drag \n");
+    printf("nombre d'objet selectionner : %d \n", scene->nbSelection );
 }
 
 void deselectionner_tout( Scene* scene )

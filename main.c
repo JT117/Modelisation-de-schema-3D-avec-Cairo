@@ -83,7 +83,6 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
     }
     cairo_destroy( cr );
 
-printf("FIN - Expose Event \n");
     return TRUE;
 }
 
@@ -129,14 +128,12 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     }
     else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
     {
-        printf("Motion Notify \n");
         scene->finSelection.x = event->x;
         scene->finSelection.y = event->y;
         selectionner_click_drag( scene );
         scene->selection_en_cours = TRUE;
 
         gtk_widget_queue_draw( widget );
-        printf("FIN - Motion Notify \n");
     }
     else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
     {
