@@ -8,6 +8,7 @@ void initialiser_Scene( Scene* scene, GtkWidget* window )
     scene->nbSelection = 0;
     scene->tTouche= g_array_new( FALSE, FALSE, sizeof( char* ) );
     scene->nbTouche = 0;
+    scene->selection_en_cours = FALSE;
 }
 
 void ajouter_cube( Scene* scene, Cube* cCube )
@@ -90,6 +91,90 @@ void selectionner_objet( Scene* scene, double x, double y )
         printf("deselection EFFECTUER \n");
     }
       printf("nombre de cube -> %d  |  nombre de selection %d \n", scene->nbObjet, scene->nbSelection );
+}
+
+void selectionner_click_drag( Scene* scene )
+{
+    printf(" selection click and drag \n");
+    int i = 0;
+
+    for( i = 0; i < scene->nbObjet; i++ )
+    {
+        Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
+        int k = 0;
+        int j = 0;
+        int x1 = 0;
+        int x2 = 0;
+        int y1 = 0;
+        int y2 = 0;
+        gboolean estContenu = FALSE;
+
+        if( (int)scene->departSelection.x > (int)scene->finSelection.x )
+        {
+            x1 = (int)scene->finSelection.x;
+            x2 = (int)scene->departSelection.x;
+        }
+        else
+        {
+            x2 = (int)scene->finSelection.x;
+            x1 = (int)scene->departSelection.x;
+        }
+
+        if( scene->departSelection.y > scene->finSelection.y )
+        {
+            y1 = (int)scene->finSelection.y;
+            y2 = (int)scene->departSelection.y;
+        }
+        else
+        {
+            y2 = (int)scene->finSelection.y;
+            y1 = (int)scene->departSelection.y;
+        }
+
+        for( k = x1; k < x2; k+=35 )
+        {
+            for( j = y1; j < y2; j+=35 )
+            {
+                 estContenu = estContenu || Objet_contient_Point( objet, k, j );
+            }
+        }
+
+        if( estContenu )
+        {
+            int m = 0;
+            gboolean estDejaSelectionner = FALSE;
+
+            for( m = 0; m < scene->nbSelection; m++ )
+            {
+                if( objet == g_array_index( scene->tSelection, Objet*, m ) )
+                {
+                    estDejaSelectionner = TRUE;
+                }
+            }
+
+            if( !estDejaSelectionner )
+            {
+                g_array_append_val( scene->tSelection, objet );
+                scene->nbSelection++;
+                Objet_Selection( objet );
+            }
+        }
+        else
+        {
+            int n = 0;
+
+            for( n = 0; n < scene->nbSelection; n++ )
+            {
+                if( objet == g_array_index( scene->tObjet, Objet*, n ) )
+                {
+                    g_array_remove_index_fast( scene->tSelection, n );
+                    scene->nbSelection--;
+                    Objet_Deselection( objet );
+                }
+            }
+        }
+    }
+    printf(" Fin - selection click and drag \n");
 }
 
 void deselectionner_tout( Scene* scene )

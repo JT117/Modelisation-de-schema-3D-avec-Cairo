@@ -42,10 +42,8 @@ static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event
     scene = (Scene*)malloc( 1 * sizeof( Scene) );
     initialiser_Scene( scene, zoneDeDessin );
 
-printf(" 1 \n");
     ajouter_cube( scene, &cube1 );
     ajouter_cube( scene, &cube2 );
-printf(" 2 \n");
 
     g_signal_connect( G_OBJECT( zoneDeDessin ), "realize", G_CALLBACK( realize_callback ), NULL );
     g_signal_connect( G_OBJECT( zoneDeDessin ), "expose-event", G_CALLBACK( expose_event_callback ), scene );
@@ -53,11 +51,15 @@ printf(" 2 \n");
     gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );                 // Nom totalement provisiore ^^
     gtk_window_set_default_size( GTK_WINDOW( mainWindow ), 1000, 900 );
     gtk_window_set_position( GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER );
-    gtk_widget_add_events( mainWindow, GDK_BUTTON_PRESS_MASK);   //active la detection de la souris
+    gtk_widget_add_events( mainWindow, GDK_BUTTON_PRESS_MASK);
+    gtk_widget_add_events( mainWindow, GDK_BUTTON_RELEASE_MASK);   //active la detection de la souris
+    gtk_widget_add_events( mainWindow, GDK_BUTTON1_MOTION_MASK);
 
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
     g_signal_connect( G_OBJECT( mainWindow ), "key-release-event", G_CALLBACK( gestion_clavier ), scene );
     g_signal_connect( G_OBJECT( mainWindow ), "button-press-event", G_CALLBACK( gestion_souris_callback ), scene );
+    g_signal_connect( G_OBJECT( mainWindow ), "button-release-event", G_CALLBACK( gestion_souris_callback ), scene );
+    g_signal_connect( G_OBJECT( mainWindow ), "motion-notify-event", G_CALLBACK( gestion_souris_callback ), scene );
 
     gtk_main();                                                                 // appel du main GTK
 
@@ -73,7 +75,15 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
 
     dessiner_Scene( scene, cr );
 
+    if( scene->selection_en_cours )
+    {
+        cairo_set_source_rgba( cr, 51.0, 255.0, 255.0, 0.25 );
+        cairo_rectangle( cr, scene->departSelection.x, scene->departSelection.y, scene->finSelection.x - scene->departSelection.x, scene->finSelection.y - scene->departSelection.y );
+        cairo_fill( cr );
+    }
+    cairo_destroy( cr );
 
+printf("FIN - Expose Event \n");
     return TRUE;
 }
 
@@ -105,15 +115,34 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
     return TRUE;
 }
 
-static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event, gpointer data)
+static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event, gpointer data)
 {
+    Scene* scene = (Scene*)data;
+
     if( event->type == GDK_BUTTON_PRESS && event->button == 1 )
     {
-        Scene* scene = (Scene*)data;
-
+        scene->departSelection.x = event->x;
+        scene->departSelection.y = event->y;
         selectionner_objet( scene, event->x, event->y );
 
-        gtk_widget_queue_draw( window );
+        gtk_widget_queue_draw( widget );
+    }
+    else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
+    {
+        printf("Motion Notify \n");
+        scene->finSelection.x = event->x;
+        scene->finSelection.y = event->y;
+        selectionner_click_drag( scene );
+        scene->selection_en_cours = TRUE;
+
+        gtk_widget_queue_draw( widget );
+        printf("FIN - Motion Notify \n");
+    }
+    else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
+    {
+        scene->selection_en_cours = FALSE;
+
+        gtk_widget_queue_draw( widget );
     }
 
     return TRUE;

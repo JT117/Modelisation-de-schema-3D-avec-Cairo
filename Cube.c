@@ -222,12 +222,27 @@ void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double
 
 gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
 {
-    if( x >= cCube->tPoint[0].x  && x <= cCube->tPoint[1].x && y >= cCube->tPoint[0].y  && y <= cCube->tPoint[3].y
-    ||  x >= cCube->tPoint[1].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[5].y  && y <= cCube->tPoint[6].y
-    ||  x >= cCube->tPoint[0].x  && x <= cCube->tPoint[4].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[7].y
-    ||  x >= cCube->tPoint[0].x  && x <= cCube->tPoint[1].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[1].y
-    ||  x >= cCube->tPoint[4].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[7].y
-    ||  x >= cCube->tPoint[3].x  && x <= cCube->tPoint[2].x && y >= cCube->tPoint[7].y  && y <= cCube->tPoint[3].y)
+    double distance_centre_point_X = 0;
+    double distance_centre_point_Y = 0;
+
+    double distance_centre_bord_X = 0;
+    double distance_centre_bord_Y = 0;
+
+    double dDecallage_X = sqrt( pow( cCube->tPoint[0].x - cCube->tPoint[1].x, 2 ) ) /2;
+    double dDecallage_Y = sqrt( pow( cCube->tPoint[0].y - cCube->tPoint[3].y, 2 ) ) /2;
+
+    double centre_X = cCube->tPoint[0].x + dDecallage_X;
+    double centre_Y = cCube->tPoint[0].y + dDecallage_Y;
+
+    distance_centre_point_X = sqrt( pow( centre_X - x, 2 ) );
+    distance_centre_point_Y = sqrt( pow( centre_Y - y, 2 ) );
+
+    distance_centre_bord_X = sqrt( pow( cCube->tPoint[0].x - centre_X, 2 ) );
+    distance_centre_bord_Y = sqrt( pow( cCube->tPoint[0].y - centre_Y, 2 ) );
+
+    //printf( "centre-point : %f - %f | centre - bord : %f - %f \n", distance_centre_point_X, distance_centre_point_Y, distance_centre_bord_X, distance_centre_bord_Y );
+
+    if( distance_centre_bord_X >= distance_centre_point_X && distance_centre_bord_Y >= distance_centre_point_Y )
     {
         return TRUE;
     }
@@ -235,6 +250,29 @@ gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
     {
         return FALSE;
     }
-
 }
+
+gboolean Cube_est_contenu( Cube* cube, double x1, double y1, double x2, double y2 )
+{
+    int i = 0;
+
+    for( i = 0; i < 8; i++ )
+    {
+        if( cube->tPoint[i].x >= x1 && cube->tPoint[i].x <= x2 || cube->tPoint[i].x <= x1 && cube->tPoint[i].x >= x2 )
+        {
+            if( cube->tPoint[i].y >= y1 && cube->tPoint[i].y <= y2 || cube->tPoint[i].y <= y1 && cube->tPoint[i].y >= y2 )
+            {
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+
+
+
+
+
 

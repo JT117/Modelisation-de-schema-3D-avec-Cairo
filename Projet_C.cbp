@@ -36,6 +36,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Cube.h" />
+		<Unit filename="Objet.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Objet.h" />
 		<Unit filename="Point.h" />
 		<Unit filename="Scene.c">
 			<Option compilerVar="CC" />
