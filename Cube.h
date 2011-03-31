@@ -32,7 +32,10 @@ void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double
 
 gboolean Cube_Contient_Point( Cube* cCube, double x, double y );
 
-gboolean Cube_est_contenu( Cube* cube, double x1, double y1, double x2, double y2 );
+gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
+
+int scalaire_result( Point a, Point b, int x, int y );
+
 
 
 #endif //CUBE_H

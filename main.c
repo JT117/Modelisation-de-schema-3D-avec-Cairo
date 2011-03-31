@@ -105,6 +105,24 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
             //rotation_Cube( data, M_PI/2, 2 );
             gtk_widget_queue_draw( window );
         }
+        else if( strcmp( gdk_keyval_name(event->keyval), "a") == 0 )
+        {
+            int i = 0;
+
+            for( i = 0; i < scene->nbTouche; i++ )
+            {
+                if( strcmp( g_array_index( scene->tTouche, char*, i ), "Control_L") == 0 )
+                {
+                    selectionner_tout( scene );
+                }
+            }
+            gtk_widget_queue_draw( window );
+        }
+        else if( strcmp( gdk_keyval_name(event->keyval), "Escape") == 0 )
+        {
+            deselectionner_tout( scene );
+            gtk_widget_queue_draw( window );
+        }
     }
     else if( event->type == GDK_KEY_RELEASE )
     {

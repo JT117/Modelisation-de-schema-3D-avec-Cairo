@@ -37,11 +37,3 @@ void Objet_Deselection( Objet* objet )
         objet->cube->estSelectionne = FALSE;
     }
 }
-
-gboolean Objet_est_contenu( Objet* objet, double x1, double y1, double x2, double y2 )
-{
-    if( strcmp( objet->type, "Cube" ) == 0 )
-    {
-        return Cube_est_contenu( objet->cube, x1, y1, x2, y2 );
-    }
-}

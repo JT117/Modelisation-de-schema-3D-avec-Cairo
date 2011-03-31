@@ -40,9 +40,7 @@ void selectionner_objet( Scene* scene, double x, double y )
         Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
         gboolean estContenu = Objet_contient_Point( objet, x, y );
 
-        printf(" -------------------------------- \n");
-
-        if( estContenu &&  selection_Multiple( scene ) )
+        if( estContenu  )
         {
             int j = 0;
             gboolean estDejaSelectionner = FALSE;
@@ -55,25 +53,35 @@ void selectionner_objet( Scene* scene, double x, double y )
                 }
             }
 
-            if( !estDejaSelectionner )
+            if( !estDejaSelectionner && selection_Multiple( scene ) )
             {
-                printf("SELECTION MULTIPLE ACTIVER \n");
                 g_array_append_val( scene->tSelection, objet );
                 scene->nbSelection++;
                 Objet_Selection( objet );
-                printf("SELECTION MULTIPLE EFFECTUER \n");
             }
-        }
-        else if( estContenu )
-        {
-            printf("SELECTION UNIQUE ACTIVER \n");
-            deselectionner_tout( scene );
-            g_array_free( scene->tSelection, FALSE );
-            scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
-            g_array_append_val( scene->tSelection, objet );
-            Objet_Selection( objet );
-            scene->nbSelection = 1;
-            printf("SELECTION UNIQUE EFFECTUER \n");
+            else if( !estDejaSelectionner )
+            {
+                deselectionner_tout( scene );
+                g_array_free( scene->tSelection, FALSE );
+                scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+                g_array_append_val( scene->tSelection, objet );
+                Objet_Selection( objet );
+                scene->nbSelection = 1;
+            }
+            else
+            {
+                int n = 0;
+
+                for( n = 0; n < scene->nbSelection; n++ )
+                {
+                    if( objet == g_array_index( scene->tSelection, Objet*, n ) )
+                    {
+                        g_array_remove_index_fast( scene->tSelection, n );
+                        scene->nbSelection--;
+                        Objet_Deselection( objet );
+                    }
+                }
+            }
         }
         else if( !estContenu )
         {
@@ -83,14 +91,11 @@ void selectionner_objet( Scene* scene, double x, double y )
 
     if( nbNonSelectionner == scene->nbObjet )
     {
-        printf("Deselection \n");
         deselectionner_tout( scene );
         g_array_free( scene->tSelection, FALSE );
         scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
         scene->nbSelection = 0;
-        printf("deselection EFFECTUER \n");
     }
-      printf("nombre de cube -> %d  |  nombre de selection %d \n", scene->nbObjet, scene->nbSelection );
 }
 
 void selectionner_click_drag( Scene* scene )
@@ -173,7 +178,6 @@ void selectionner_click_drag( Scene* scene )
             }
         }
     }
-    printf("nombre d'objet selectionner : %d \n", scene->nbSelection );
 }
 
 void deselectionner_tout( Scene* scene )
@@ -218,6 +222,7 @@ void touche_appuyer( Scene* scene, char* nomTouche )
 
     if( dejaAppuyer == FALSE )
     {
+        printf(" %s \n", nomTouche );
         g_array_append_val( scene->tTouche, nomTouche );
         scene->nbTouche++;
     }
@@ -235,5 +240,22 @@ void touche_relacher( Scene* scene, char* nomTouche )
             scene->nbTouche--;
         }
     }
+}
+
+void selectionner_tout( Scene* scene )
+{
+    int i = 0;
+
+    for( i = 0; i < scene->nbObjet; i++ )
+    {
+        Objet* objet = g_array_index( scene->tObjet, Objet*, i );
+        g_array_append_val( scene->tSelection, objet );
+        scene->nbSelection++;
+        Objet_Selection( objet );
+    }
 
 }
+
+
+
+

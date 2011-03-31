@@ -30,6 +30,8 @@ void ajouter_cube( Scene* scene, Cube* cCube );
 
 void dessiner_Scene( Scene* scene, cairo_t* cr );
 
+void selectionner_tout( Scene* scene );
+
 void selectionner_objet( Scene* scene, double x, double y );
 
 void selectionner_click_drag( Scene* scene );

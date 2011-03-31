@@ -222,52 +222,59 @@ void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double
 
 gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
 {
-    double distance_centre_point_X = 0;
-    double distance_centre_point_Y = 0;
+    gboolean est_contenu = FALSE;
 
-    double distance_centre_bord_X = 0;
-    double distance_centre_bord_Y = 0;
+    est_contenu = est_contenu || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[2], cCube->tPoint[3], x, y )
+                              || est_dans_face( cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[2], x, y )
+                              || est_dans_face( cCube->tPoint[4], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[7], x, y )
+                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[4], cCube->tPoint[7], cCube->tPoint[3], x, y )
+                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[4], x, y )
+                              || est_dans_face( cCube->tPoint[3], cCube->tPoint[2], cCube->tPoint[6], cCube->tPoint[7], x, y );
+    return est_contenu;
+}
 
-    double dDecallage_X = sqrt( pow( cCube->tPoint[0].x - cCube->tPoint[1].x, 2 ) ) /2;
-    double dDecallage_Y = sqrt( pow( cCube->tPoint[0].y - cCube->tPoint[3].y, 2 ) ) /2;
+gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
+{
+    int produitScalaire = 0;
+    int nb = 0;
 
-    double centre_X = cCube->tPoint[0].x + dDecallage_X;
-    double centre_Y = cCube->tPoint[0].y + dDecallage_Y;
+    nb += scalaire_result( a, b, x, y );
+    nb += scalaire_result( b, c, x, y );
+    nb += scalaire_result( c, d, x, y );
+    nb += scalaire_result( d, a, x, y );
 
-    distance_centre_point_X = sqrt( pow( centre_X - x, 2 ) );
-    distance_centre_point_Y = sqrt( pow( centre_Y - y, 2 ) );
-
-    distance_centre_bord_X = sqrt( pow( cCube->tPoint[0].x - centre_X, 2 ) );
-    distance_centre_bord_Y = sqrt( pow( cCube->tPoint[0].y - centre_Y, 2 ) );
-
-    //printf( "centre-point : %f - %f | centre - bord : %f - %f \n", distance_centre_point_X, distance_centre_point_Y, distance_centre_bord_X, distance_centre_bord_Y );
-
-    if( distance_centre_bord_X >= distance_centre_point_X && distance_centre_bord_Y >= distance_centre_point_Y )
+    if( nb == 4 || nb == -4 )
     {
         return TRUE;
     }
-    else
-    {
-        return FALSE;
-    }
+    else return FALSE;
 }
 
-gboolean Cube_est_contenu( Cube* cube, double x1, double y1, double x2, double y2 )
+int scalaire_result( Point a, Point b, int x, int y )
 {
-    int i = 0;
+    Point ab;
+    Point ap;
+    double produitScalaire = 0;
+    int nb = 0;
 
-    for( i = 0; i < 8; i++ )
+    ab.x = b.x - a.x;
+    ab.y = b.y - a.y;
+
+    ap.x = x - a.x;
+    ap.y = y - a.y;
+
+    produitScalaire = ab.x * ap.x + ab.y * ap.y;
+
+    if( produitScalaire > 0 )
     {
-        if( cube->tPoint[i].x >= x1 && cube->tPoint[i].x <= x2 || cube->tPoint[i].x <= x1 && cube->tPoint[i].x >= x2 )
-        {
-            if( cube->tPoint[i].y >= y1 && cube->tPoint[i].y <= y2 || cube->tPoint[i].y <= y1 && cube->tPoint[i].y >= y2 )
-            {
-                return TRUE;
-            }
-        }
+        return 1;
+    }
+    else if( produitScalaire < 0 )
+    {
+        return -1;
     }
 
-    return FALSE;
+    return 0;
 }
 
 
