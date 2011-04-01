@@ -144,6 +144,12 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 
         gtk_widget_queue_draw( widget );
     }
+    else if( event->type == GDK_BUTTON_PRESS && event->button == 3 )
+    {
+        GtkWidget* menu =  gtk_window_new( GTK_WINDOW_POPUP );
+        gtk_window_set_position( GTK_WINDOW(menu), event->x, event->y );
+
+    }
     else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
     {
         scene->finSelection.x = event->x;
