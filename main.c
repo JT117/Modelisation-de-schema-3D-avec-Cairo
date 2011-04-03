@@ -146,8 +146,13 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     }
     else if( event->type == GDK_BUTTON_PRESS && event->button == 3 )
     {
-        GtkWidget* menu =  gtk_window_new( GTK_WINDOW_POPUP );
-        gtk_window_set_position( GTK_WINDOW(menu), event->x, event->y );
+        GtkWidget *menu = gtk_menu_new();
+        GtkWidget *pItem = gtk_menu_item_new_with_label("New File");
+        GtkWidget *pItem2 = gtk_menu_item_new_with_label("New Folder");
+        gtk_menu_attach( GTK_MENU(menu), pItem, 0, 1, 0, 1 );
+        gtk_menu_attach( GTK_MENU(menu), pItem2, 0, 1, 1, 2 );
+        gtk_widget_show_all(menu);
+        gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
 
     }
     else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
