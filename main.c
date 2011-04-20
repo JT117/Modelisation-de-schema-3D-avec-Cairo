@@ -21,18 +21,34 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data );
     Scene* scene = NULL;
     cairo_t* cr = NULL;
 
-    gtk_init( &argc, &argv );                                                   // Initialisation de GTK
+    gtk_init( &argc, &argv );
+
+    GtkWidget* main_box = gtk_vbox_new(FALSE, 0);
+
+    GtkWidget* menuBarre = gtk_menu_bar_new();
+    GtkWidget* menu = gtk_menu_new();
+    GtkWidget* fichier = gtk_menu_item_new_with_label( "Fichier" );
+    GtkWidget *ouvrir = gtk_menu_item_new_with_label( "Ouvrir" );
+    GtkWidget *sauvegarder = gtk_menu_item_new_with_label( "Sauvegarder" );
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM (fichier), menu);
+
+    gtk_menu_attach( GTK_MENU(menu), ouvrir, 0, 1, 0, 1 );                                             // Initialisation de GTK
+    gtk_menu_attach( GTK_MENU(menu), sauvegarder, 0, 1, 1, 2 );
+    gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), fichier);
 
     mainWindow = gtk_window_new( GTK_WINDOW_TOPLEVEL );                         // appel au constructeur de la fenetre
     zoneDeDessin = gtk_drawing_area_new ();
 
-    gtk_widget_set_size_request( zoneDeDessin, 1000, 900 );                      //taille minimum de la zone de dessin
-    gtk_container_add( GTK_CONTAINER( mainWindow ), zoneDeDessin );             // Ajout de la zone de dessin dans le mainWindow
+    gtk_container_add( GTK_CONTAINER( main_box ), menuBarre );
+    gtk_container_add( GTK_CONTAINER( main_box ), zoneDeDessin );
+
+    gtk_widget_set_size_request( zoneDeDessin, 1000, 900 );//taille minimum de la zone de dessin
+    gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );             // Ajout de la zone de dessin dans le mainWindow
 
     gtk_widget_show_all( mainWindow );
+    gtk_widget_show_all( menuBarre );
 
-    g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( gtk_main_quit ), NULL );    // signal pour quitter
-
+    //*****************************************************************************************
     Cube cube1;
     initialiser_Cube( &cube1, 200, 200, 0, 250 );
 
@@ -46,21 +62,23 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data );
     Scene_ajouter_cube( scene, &cube1 );
     Scene_ajouter_cube( scene, &cube2 );
 
-    g_signal_connect( G_OBJECT( zoneDeDessin ), "realize", G_CALLBACK( realize_callback ), NULL );
-    g_signal_connect( G_OBJECT( zoneDeDessin ), "expose-event", G_CALLBACK( expose_event_callback ), scene );
+    //*******************************************************************************************
 
     gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );                 // Nom totalement provisiore ^^
     gtk_window_set_default_size( GTK_WINDOW( mainWindow ), 1000, 900 );
     gtk_window_set_position( GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER );
-    gtk_widget_add_events( mainWindow, GDK_BUTTON_PRESS_MASK);
-    gtk_widget_add_events( mainWindow, GDK_BUTTON_RELEASE_MASK);   //active la detection de la souris
-    gtk_widget_add_events( mainWindow, GDK_BUTTON1_MOTION_MASK);
+    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_PRESS_MASK);
+    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK);   //active la detection de la souris
+    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON1_MOTION_MASK);
 
+    g_signal_connect( G_OBJECT( zoneDeDessin ), "realize", G_CALLBACK( realize_callback ), NULL );
+    g_signal_connect( G_OBJECT( zoneDeDessin ), "expose-event", G_CALLBACK( expose_event_callback ), scene );
+    g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( gtk_main_quit ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
     g_signal_connect( G_OBJECT( mainWindow ), "key-release-event", G_CALLBACK( gestion_clavier ), scene );
-    g_signal_connect( G_OBJECT( mainWindow ), "button-press-event", G_CALLBACK( gestion_souris_callback ), scene );
-    g_signal_connect( G_OBJECT( mainWindow ), "button-release-event", G_CALLBACK( gestion_souris_callback ), scene );
-    g_signal_connect( G_OBJECT( mainWindow ), "motion-notify-event", G_CALLBACK( gestion_souris_callback ), scene );
+    g_signal_connect( G_OBJECT( zoneDeDessin ), "button-press-event", G_CALLBACK( gestion_souris_callback ), scene );
+    g_signal_connect( G_OBJECT( zoneDeDessin ), "button-release-event", G_CALLBACK( gestion_souris_callback ), scene );
+    g_signal_connect( G_OBJECT( zoneDeDessin ), "motion-notify-event", G_CALLBACK( gestion_souris_callback ), scene );
 
     gtk_main();                                                                 // appel du main GTK
 

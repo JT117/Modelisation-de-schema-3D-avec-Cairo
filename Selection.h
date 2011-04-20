@@ -20,9 +20,6 @@ struct Selection
 };
 
 
-
-
-
 #endif  //SELECTION_H
 
 

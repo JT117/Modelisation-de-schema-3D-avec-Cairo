@@ -9,11 +9,17 @@ struct FenetreAjoutCube
 {
     GtkWidget* fenetre;
     Scene* scene;
+    GtkWidget* entry;
+    GtkWidget* entry1;
+    GtkWidget* entry2;
+    GtkWidget* entry3;
+    GtkWidget* boutonOk;
+    GtkWidget* boutonAnnuler;
+
 };
 
 void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene );
 
-
-static gboolean nouvel_ajout( GtkWidget *widget, GdkEvent *event, gpointer data );
+static gboolean nouvel_ajout( GtkButton* button, gpointer data );
 
 #endif //FENETRE_AJOUT_CUBE_H

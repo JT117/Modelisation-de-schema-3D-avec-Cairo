@@ -5,20 +5,20 @@ void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     fao->fenetre = gtk_window_new( GTK_WINDOW_TOPLEVEL );
     fao->scene = scene;
 
-    GtkWidget* entry = gtk_entry_new();
+    fao->entry = gtk_entry_new();
     GtkWidget* text = gtk_label_new("Taille des cotés en pixel : ");
 
-    GtkWidget* entry1 = gtk_entry_new();
+    fao->entry1 = gtk_entry_new();
     GtkWidget* text1 = gtk_label_new("Position X : ");
 
-    GtkWidget* entry2 = gtk_entry_new();
+    fao->entry2 = gtk_entry_new();
     GtkWidget* text2 = gtk_label_new("Position Y : ");
 
-    GtkWidget* entry3 = gtk_entry_new();
+    fao->entry3 = gtk_entry_new();
     GtkWidget* text3 = gtk_label_new("Position Z : ");
 
-    GtkWidget* boutonOk = gtk_button_new_with_label("OK");
-    GtkWidget* boutonAnnuler = gtk_button_new_with_label("Annuler");
+    fao->boutonOk = gtk_button_new_with_label("OK");
+    fao->boutonAnnuler = gtk_button_new_with_label("Annuler");
 
     GtkWidget* vBox = gtk_vbox_new( TRUE, 20 );
     GtkWidget* hBox = gtk_hbox_new( TRUE, 20 );
@@ -32,31 +32,32 @@ void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_window_set_title( GTK_WINDOW( fao->fenetre ), "Création d'un nouvel objet" );
 
     gtk_container_add( GTK_CONTAINER( hBox ), text );
-    gtk_container_add( GTK_CONTAINER( hBox ), entry );
+    gtk_container_add( GTK_CONTAINER( hBox ), fao->entry );
 
     char buf[255];
-    sprintf( buf, "%.3f", scene->creation.x );
+    sprintf( buf, "%.3f", fao->scene->creation.x );
     char buf1[255];
-    sprintf( buf1, "%.3f", scene->creation.y );
+    sprintf( buf1, "%.3f", fao->scene->creation.y );
     char buf2[255];
-    sprintf( buf2, "%.3f", scene->creation.z );
+    sprintf( buf2, "%.3f", fao->scene->creation.z );
 
     gtk_container_add( GTK_CONTAINER( hBox1 ), text1 );
-    gtk_container_add( GTK_CONTAINER( hBox1 ), entry1 );
-    gtk_entry_set_text( GTK_ENTRY( entry1 ), buf );
+    gtk_container_add( GTK_CONTAINER( hBox1 ), fao->entry1 );
+    gtk_entry_set_text( GTK_ENTRY( fao->entry1 ), buf );
 
     gtk_container_add( GTK_CONTAINER( hBox2 ), text2 );
-    gtk_container_add( GTK_CONTAINER( hBox2 ), entry2 );
-    gtk_entry_set_text( GTK_ENTRY( entry2 ), buf1 );
+    gtk_container_add( GTK_CONTAINER( hBox2 ), fao->entry2 );
+    gtk_entry_set_text( GTK_ENTRY( fao->entry2 ), buf1 );
 
     gtk_container_add( GTK_CONTAINER( hBox3 ), text3 );
-    gtk_container_add( GTK_CONTAINER( hBox3 ), entry3 );
-    gtk_entry_set_text( GTK_ENTRY( entry3 ), buf2 );
+    gtk_container_add( GTK_CONTAINER( hBox3 ), fao->entry3 );
+    gtk_entry_set_text( GTK_ENTRY( fao->entry3 ), buf2 );
 
-    scene->tailleCreation = atof( gtk_entry_get_text( GTK_ENTRY( entry ) ) );
+    //scene->tailleCreation = atof( gtk_entry_get_text( GTK_ENTRY( entry ) ) );
+    printf( "Avant %f \n", fao->scene->tailleCreation  );
 
-    gtk_container_add( GTK_CONTAINER( hBox4 ), boutonOk );
-    gtk_container_add( GTK_CONTAINER( hBox4 ), boutonAnnuler );
+    gtk_container_add( GTK_CONTAINER( hBox4 ), fao->boutonOk );
+    gtk_container_add( GTK_CONTAINER( hBox4 ), fao->boutonAnnuler );
 
     gtk_container_add( GTK_CONTAINER( vBox ), hBox );
     gtk_container_add( GTK_CONTAINER( vBox ), hBox1 );
@@ -66,22 +67,25 @@ void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 
     gtk_container_add( GTK_CONTAINER( fao->fenetre ), vBox  );
 
-    g_signal_connect_object( G_OBJECT( boutonAnnuler ), "clicked", G_CALLBACK( gtk_widget_destroy ), fao->fenetre, G_CONNECT_SWAPPED );
-    g_signal_connect( G_OBJECT( boutonOk ), "clicked", G_CALLBACK( nouvel_ajout ), scene );
+    g_signal_connect_object( G_OBJECT( fao->boutonAnnuler ), "clicked", G_CALLBACK( gtk_widget_destroy ), fao->fenetre, G_CONNECT_SWAPPED );
+    g_signal_connect( G_OBJECT( fao->boutonOk ), "clicked", G_CALLBACK( nouvel_ajout ), fao );
+    g_signal_connect( G_OBJECT( fao->fenetre ), "delete-event", G_CALLBACK( gtk_widget_destroy ), NULL );
 
     gtk_widget_show_all(fao->fenetre);
 }
 
-static gboolean nouvel_ajout( GtkWidget *widget, GdkEvent *event, gpointer data )
+static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 {
-    Scene* scene = (Scene*)data;
-    printf("cocou\n");
-    printf( "%d\n", scene->tailleCreation );
-    if( scene->tailleCreation > 0 )
+    FenetreAjoutCube* fao = (FenetreAjoutCube*)data;
+    Scene* scene = fao->scene;
+    printf("coucou\n");
+    printf( "%f\ %f %f %f \n", scene->tailleCreation, scene->creation.x, scene->creation.y, scene->creation.z );
+    if( fao->scene->tailleCreation > 0 )
     {
-        Cube cube;
-        initialiser_Cube( &cube, scene->creation.x, scene->creation.y, scene->creation.z, scene->tailleCreation );
-        Scene_ajouter_cube( scene, &cube );
+        /*Cube cube;
+        initialiser_Cube( &cube, fao->scene->creation.x, fao->scene->creation.y, fao->scene->creation.z, fao->scene->tailleCreation );
+        Scene_ajouter_cube( fao->scene, &cube );*/
+        //g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
 
     }
 

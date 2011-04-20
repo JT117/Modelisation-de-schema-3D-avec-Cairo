@@ -11,19 +11,15 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->tTouche= g_array_new( FALSE, FALSE, sizeof( char* ) );
     scene->nbTouche = 0;
 
-    scene->tailleCreation = 50;
+    scene->tailleCreation = 50.0;
 }
 
 void Scene_ajouter_cube( Scene* scene, Cube* cCube )
 {
-    printf("Objet_Cube\n");
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
-    printf("fin malloc\n");
     Objet_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
-    printf("finajout\n");
     scene->nbObjet++;
-    printf("Objet_Cube_FIN\n");
 }
 
 void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
