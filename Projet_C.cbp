@@ -54,6 +54,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Scene.h" />
+		<Unit filename="Selection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Selection.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

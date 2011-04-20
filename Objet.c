@@ -20,6 +20,7 @@ gboolean Objet_contient_Point( Objet* objet, double x, double y )
     {
         return Cube_Contient_Point( objet->cube, x, y );
     }
+    return TRUE;
 }
 
 void Objet_Selection( Objet* objet )

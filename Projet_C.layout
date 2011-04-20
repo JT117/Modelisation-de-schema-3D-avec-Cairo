@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="Cube.c" open="1" top="0" tabpos="6">
+	<File name="Cube.c" open="0" top="0" tabpos="6">
 		<Cursor position="2009" topLine="21" />
 	</File>
-	<File name="Cube.h" open="1" top="0" tabpos="5">
+	<File name="Cube.h" open="0" top="0" tabpos="5">
 		<Cursor position="940" topLine="0" />
 	</File>
-	<File name="FenetreAjoutCube.c" open="1" top="1" tabpos="9">
-		<Cursor position="2478" topLine="18" />
+	<File name="FenetreAjoutCube.c" open="1" top="1" tabpos="6">
+		<Cursor position="1370" topLine="0" />
 	</File>
-	<File name="FenetreAjoutCube.h" open="1" top="0" tabpos="8">
-		<Cursor position="354" topLine="0" />
+	<File name="FenetreAjoutCube.h" open="0" top="0" tabpos="8">
+		<Cursor position="297" topLine="0" />
 	</File>
-	<File name="Objet.h" open="1" top="0" tabpos="4">
-		<Cursor position="456" topLine="0" />
+	<File name="Objet.c" open="0" top="0" tabpos="0">
+		<Cursor position="348" topLine="0" />
 	</File>
-	<File name="Point.h" open="1" top="0" tabpos="7">
+	<File name="Objet.h" open="0" top="0" tabpos="4">
+		<Cursor position="127" topLine="0" />
+	</File>
+	<File name="Point.h" open="0" top="0" tabpos="7">
 		<Cursor position="183" topLine="0" />
 	</File>
 	<File name="Scene.c" open="1" top="0" tabpos="3">
-		<Cursor position="431" topLine="0" />
+		<Cursor position="1091" topLine="0" />
 	</File>
 	<File name="Scene.h" open="1" top="0" tabpos="2">
-		<Cursor position="479" topLine="5" />
+		<Cursor position="168" topLine="0" />
+	</File>
+	<File name="Selection.c" open="1" top="0" tabpos="5">
+		<Cursor position="5769" topLine="0" />
+	</File>
+	<File name="Selection.h" open="1" top="0" tabpos="4">
+		<Cursor position="20" topLine="0" />
 	</File>
 	<File name="main.c" open="1" top="0" tabpos="1">
-		<Cursor position="1539" topLine="19" />
+		<Cursor position="145" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

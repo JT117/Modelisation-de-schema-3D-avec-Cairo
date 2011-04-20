@@ -74,16 +74,11 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
     Scene* scene = (Scene*)data;
     cairo_t* cr = gdk_cairo_create ( widget->window );
 
-    Scene_clear_scene( scene , cr );
+    Scene_clear_scene( scene , cr ); // A voir si necessaire
     Scene_dessiner_scene( scene, cr );
 
+    Selection_dessiner_rectangle( scene->selection, cr );
 
-    if( scene->selection_en_cours )
-    {
-        cairo_set_source_rgba( cr, 51.0, 255.0, 255.0, 0.25 );
-        cairo_rectangle( cr, scene->departSelection.x, scene->departSelection.y, scene->finSelection.x - scene->departSelection.x, scene->finSelection.y - scene->departSelection.y );
-        cairo_fill( cr );
-    }
     cairo_destroy( cr );
 
     return TRUE;
@@ -116,14 +111,14 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
             {
                 if( strcmp( g_array_index( scene->tTouche, char*, i ), "Control_L") == 0 )
                 {
-                    Scene_selectionner_tout( scene );
+                    Selection_selectionner_tout( scene );
                 }
             }
             gtk_widget_queue_draw( window );
         }
         else if( strcmp( gdk_keyval_name(event->keyval), "Escape") == 0 )
         {
-            Scene_deselectionner_tout( scene );
+            Selection_deselectionner_tout( scene->selection );
             gtk_widget_queue_draw( window );
         }
     }
@@ -141,9 +136,9 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 
     if( event->type == GDK_BUTTON_PRESS && event->button == 1 )
     {
-        scene->departSelection.x = event->x;
-        scene->departSelection.y = event->y;
-        Scene_selectionner_objet( scene, event->x, event->y );
+        scene->selection->departSelection.x = event->x;
+        scene->selection->departSelection.y = event->y;
+        Selection_selectionner_objet( scene, event->x, event->y );
 
         gtk_widget_queue_draw( widget );
     }
@@ -164,23 +159,23 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 
         gtk_widget_show_all(menu);
 
-        creation_objet( scene, event->x, event->y );
+        Scene_creation_objet( scene, event->x, event->y );
 
         gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
         g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(nouveau_cube), scene);
     }
     else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
     {
-        scene->finSelection.x = event->x;
-        scene->finSelection.y = event->y;
-        Scene_selectionner_click_drag( scene );
-        scene->selection_en_cours = TRUE;
+        scene->selection->finSelection.x = event->x;
+        scene->selection->finSelection.y = event->y;
+        Selection_selectionner_click_drag( scene );
+        scene->selection->selection_en_cours = TRUE;
 
         gtk_widget_queue_draw( widget );
     }
     else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
     {
-        scene->selection_en_cours = FALSE;
+        scene->selection->selection_en_cours = FALSE;
 
         gtk_widget_queue_draw( widget );
     }

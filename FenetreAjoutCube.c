@@ -43,17 +43,17 @@ void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 
     gtk_container_add( GTK_CONTAINER( hBox1 ), text1 );
     gtk_container_add( GTK_CONTAINER( hBox1 ), entry1 );
-    gtk_entry_set_text( entry1, buf );
+    gtk_entry_set_text( GTK_ENTRY( entry1 ), buf );
 
     gtk_container_add( GTK_CONTAINER( hBox2 ), text2 );
     gtk_container_add( GTK_CONTAINER( hBox2 ), entry2 );
-    gtk_entry_set_text( entry2, buf1 );
+    gtk_entry_set_text( GTK_ENTRY( entry2 ), buf1 );
 
     gtk_container_add( GTK_CONTAINER( hBox3 ), text3 );
     gtk_container_add( GTK_CONTAINER( hBox3 ), entry3 );
-    gtk_entry_set_text( entry3, buf2 );
+    gtk_entry_set_text( GTK_ENTRY( entry3 ), buf2 );
 
-    scene->tailleCreation = atof( gtk_entry_get_text( entry ) );
+    scene->tailleCreation = atof( gtk_entry_get_text( GTK_ENTRY( entry ) ) );
 
     gtk_container_add( GTK_CONTAINER( hBox4 ), boutonOk );
     gtk_container_add( GTK_CONTAINER( hBox4 ), boutonAnnuler );
@@ -76,7 +76,7 @@ static gboolean nouvel_ajout( GtkWidget *widget, GdkEvent *event, gpointer data 
 {
     Scene* scene = (Scene*)data;
     printf("cocou\n");
-    printf( "%f\n", scene->tailleCreation );
+    printf( "%d\n", scene->tailleCreation );
     if( scene->tailleCreation > 0 )
     {
         Cube cube;
@@ -85,7 +85,7 @@ static gboolean nouvel_ajout( GtkWidget *widget, GdkEvent *event, gpointer data 
 
     }
 
-
+    return TRUE;
 }
 
 
