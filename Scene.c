@@ -1,6 +1,6 @@
 #include "Scene.h"
 
-void initialiser_Scene( Scene* scene, GtkWidget* window )
+void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
 {
     scene->tObjet = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
     scene->nbObjet = 0;
@@ -9,9 +9,10 @@ void initialiser_Scene( Scene* scene, GtkWidget* window )
     scene->tTouche= g_array_new( FALSE, FALSE, sizeof( char* ) );
     scene->nbTouche = 0;
     scene->selection_en_cours = FALSE;
+    scene->tailleCreation = 50;
 }
 
-void ajouter_cube( Scene* scene, Cube* cCube )
+void Scene_ajouter_cube( Scene* scene, Cube* cCube )
 {
     Objet* objet = malloc( 1 * sizeof( Objet ) );
     Objet_Cube( objet, cCube );
@@ -19,7 +20,7 @@ void ajouter_cube( Scene* scene, Cube* cCube )
     scene->nbObjet++;
 }
 
-void dessiner_Scene( Scene* scene, cairo_t* cr )
+void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 {
     int i = 0;
 
@@ -30,7 +31,13 @@ void dessiner_Scene( Scene* scene, cairo_t* cr )
 
 }
 
-void selectionner_objet( Scene* scene, double x, double y )
+void Scene_clear_scene( Scene* scene, cairo_t* cr )
+{
+     cairo_set_source_rgb( cr, 0.190, 0.190, 0.190 );
+     cairo_paint( cr );
+}
+
+void Scene_selectionner_objet( Scene* scene, double x, double y )
 {
     int i = 0;
     int nbNonSelectionner = 0;
@@ -53,7 +60,7 @@ void selectionner_objet( Scene* scene, double x, double y )
                 }
             }
 
-            if( !estDejaSelectionner && selection_Multiple( scene ) )
+            if( !estDejaSelectionner && Scene_selection_Multiple( scene ) )
             {
                 g_array_append_val( scene->tSelection, objet );
                 scene->nbSelection++;
@@ -61,7 +68,7 @@ void selectionner_objet( Scene* scene, double x, double y )
             }
             else if( !estDejaSelectionner )
             {
-                deselectionner_tout( scene );
+                Scene_deselectionner_tout( scene );
                 g_array_free( scene->tSelection, FALSE );
                 scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
                 g_array_append_val( scene->tSelection, objet );
@@ -91,14 +98,14 @@ void selectionner_objet( Scene* scene, double x, double y )
 
     if( nbNonSelectionner == scene->nbObjet )
     {
-        deselectionner_tout( scene );
+        Scene_deselectionner_tout( scene );
         g_array_free( scene->tSelection, FALSE );
         scene->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
         scene->nbSelection = 0;
     }
 }
 
-void selectionner_click_drag( Scene* scene )
+void Scene_selectionner_click_drag( Scene* scene )
 {
     int i = 0;
 
@@ -180,7 +187,7 @@ void selectionner_click_drag( Scene* scene )
     }
 }
 
-void deselectionner_tout( Scene* scene )
+void Scene_deselectionner_tout( Scene* scene )
 {
     int i = 0;
 
@@ -191,7 +198,7 @@ void deselectionner_tout( Scene* scene )
     }
 }
 
-gboolean selection_Multiple( Scene* scene )
+gboolean Scene_selection_Multiple( Scene* scene )
 {
     int i = 0;
 
@@ -207,7 +214,7 @@ gboolean selection_Multiple( Scene* scene )
     return FALSE;
 }
 
-void touche_appuyer( Scene* scene, char* nomTouche )
+void Scene_touche_appuyer( Scene* scene, char* nomTouche )
 {
     int i = 0;
     gboolean dejaAppuyer = FALSE;
@@ -228,7 +235,7 @@ void touche_appuyer( Scene* scene, char* nomTouche )
     }
 }
 
-void touche_relacher( Scene* scene, char* nomTouche )
+void Scene_touche_relacher( Scene* scene, char* nomTouche )
 {
     int i = 0;
 
@@ -242,7 +249,7 @@ void touche_relacher( Scene* scene, char* nomTouche )
     }
 }
 
-void selectionner_tout( Scene* scene )
+void Scene_selectionner_tout( Scene* scene )
 {
     int i = 0;
 
@@ -256,6 +263,11 @@ void selectionner_tout( Scene* scene )
 
 }
 
-
+void creation_objet( Scene* scene, double x, double y )
+{
+    scene->creation.x = x;
+    scene->creation.y = y;
+    scene->creation.z = 0;
+}
 
 

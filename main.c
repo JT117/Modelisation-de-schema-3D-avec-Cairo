@@ -4,13 +4,14 @@
 
 #include "Cube.h"
 #include "Objet.h"
+#include "FenetreAjoutCube.h"
 #include "Scene.h"
-
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
 static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data);
 static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event, gpointer data);
+static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data );
 
 
  int main (int argc, char *argv[])
@@ -40,10 +41,10 @@ static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event
 
 
     scene = (Scene*)malloc( 1 * sizeof( Scene) );
-    initialiser_Scene( scene, zoneDeDessin );
+    Scene_initialiser_scene( scene, zoneDeDessin );
 
-    ajouter_cube( scene, &cube1 );
-    ajouter_cube( scene, &cube2 );
+    Scene_ajouter_cube( scene, &cube1 );
+    Scene_ajouter_cube( scene, &cube2 );
 
     g_signal_connect( G_OBJECT( zoneDeDessin ), "realize", G_CALLBACK( realize_callback ), NULL );
     g_signal_connect( G_OBJECT( zoneDeDessin ), "expose-event", G_CALLBACK( expose_event_callback ), scene );
@@ -73,7 +74,9 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
     Scene* scene = (Scene*)data;
     cairo_t* cr = gdk_cairo_create ( widget->window );
 
-    dessiner_Scene( scene, cr );
+    Scene_clear_scene( scene , cr );
+    Scene_dessiner_scene( scene, cr );
+
 
     if( scene->selection_en_cours )
     {
@@ -98,7 +101,7 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
 
     if( event->type == GDK_KEY_PRESS )
     {
-        touche_appuyer( scene, gdk_keyval_name(event->keyval) );
+        Scene_touche_appuyer( scene, gdk_keyval_name(event->keyval) );
 
         if( strcmp( gdk_keyval_name(event->keyval), "Right") == 0 )
         {
@@ -113,20 +116,20 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
             {
                 if( strcmp( g_array_index( scene->tTouche, char*, i ), "Control_L") == 0 )
                 {
-                    selectionner_tout( scene );
+                    Scene_selectionner_tout( scene );
                 }
             }
             gtk_widget_queue_draw( window );
         }
         else if( strcmp( gdk_keyval_name(event->keyval), "Escape") == 0 )
         {
-            deselectionner_tout( scene );
+            Scene_deselectionner_tout( scene );
             gtk_widget_queue_draw( window );
         }
     }
     else if( event->type == GDK_KEY_RELEASE )
     {
-        touche_relacher( scene, gdk_keyval_name(event->keyval) );
+        Scene_touche_relacher( scene, gdk_keyval_name(event->keyval) );
     }
 
     return TRUE;
@@ -140,26 +143,37 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     {
         scene->departSelection.x = event->x;
         scene->departSelection.y = event->y;
-        selectionner_objet( scene, event->x, event->y );
+        Scene_selectionner_objet( scene, event->x, event->y );
 
         gtk_widget_queue_draw( widget );
     }
     else if( event->type == GDK_BUTTON_PRESS && event->button == 3 )
     {
         GtkWidget *menu = gtk_menu_new();
-        GtkWidget *pItem = gtk_menu_item_new_with_label("New File");
-        GtkWidget *pItem2 = gtk_menu_item_new_with_label("New Folder");
+        GtkWidget *pItem = gtk_menu_item_new_with_label("Nouvel objet");
+        GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriete");
+
+        GtkWidget *sousMenu1 = gtk_menu_new();
+        GtkWidget *pItem3 = gtk_menu_item_new_with_label("Cube");
+        gtk_menu_attach( GTK_MENU(sousMenu1), pItem3, 0, 1, 0, 1 );
+
+        gtk_menu_item_set_submenu( GTK_MENU_ITEM(pItem), sousMenu1 );
+
         gtk_menu_attach( GTK_MENU(menu), pItem, 0, 1, 0, 1 );
         gtk_menu_attach( GTK_MENU(menu), pItem2, 0, 1, 1, 2 );
-        gtk_widget_show_all(menu);
-        gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
 
+        gtk_widget_show_all(menu);
+
+        creation_objet( scene, event->x, event->y );
+
+        gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
+        g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(nouveau_cube), scene);
     }
     else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
     {
         scene->finSelection.x = event->x;
         scene->finSelection.y = event->y;
-        selectionner_click_drag( scene );
+        Scene_selectionner_click_drag( scene );
         scene->selection_en_cours = TRUE;
 
         gtk_widget_queue_draw( widget );
@@ -170,6 +184,16 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 
         gtk_widget_queue_draw( widget );
     }
+
+    return TRUE;
+}
+
+static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
+{
+    Scene* scene = (Scene*)data;
+
+    FenetreAjoutCube fao;
+    initialier_FenetreAjoutCube( &fao, scene );
 
     return TRUE;
 }

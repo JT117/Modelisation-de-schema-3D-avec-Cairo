@@ -10,7 +10,7 @@
 typedef union Objet Objet;
 union Objet
 {
-    Cube* cube;
+    Cube* cube;               // !!!!!!!!!!!!!!!!!!!!!!! Union
     char* type;
 };
 

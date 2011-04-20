@@ -52,7 +52,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 1 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 255, 0, 0);
+        cairo_set_source_rgb ( cr, 0.255, 0, 0);
 
         cairo_move_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
         cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
@@ -61,7 +61,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );// Face 2 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0, 255, 0);
+        cairo_set_source_rgb ( cr, 0.196, 0.804, 0.196);
 
         cairo_move_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
         cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
@@ -70,7 +70,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y ); // Face 3 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0, 0, 255);
+        cairo_set_source_rgb ( cr, 0, 0, 0.9);
 
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
@@ -79,7 +79,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 4 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 255, 255, 0);
+        cairo_set_source_rgb ( cr, 0.255, 0.9, 0);
 
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
