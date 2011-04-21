@@ -2,22 +2,35 @@
 
 void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
 {
-    scene->tObjet = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+    scene->tObjet = g_array_new( FALSE, TRUE, sizeof( Objet* ) );
     scene->nbObjet = 0;
 
     scene->selection = (Selection*)malloc( 1 * sizeof(Selection) );
     Selection_initialiser( scene->selection );
 
-    scene->tTouche= g_array_new( FALSE, FALSE, sizeof( char* ) );
+    scene->tTouche= g_array_new( FALSE, TRUE, sizeof( char* ) );
     scene->nbTouche = 0;
 
     scene->tailleCreation = 50.0;
 }
 
+void Scene_detruire( Scene* scene )
+{
+    int i = 0;
+
+    for( i = 0; i < scene->nbObjet; i++ )
+    {
+        Objet_detruire( g_array_index( scene->tObjet, Objet*, i ) );
+    }
+    g_array_free( scene->tObjet, TRUE );
+    g_array_free( scene->tTouche, TRUE );
+    Selection_detruire( scene->selection );
+}
+
 void Scene_ajouter_cube( Scene* scene, Cube* cCube )
 {
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
-    Objet_Cube( objet, cCube );
+    Objet_est_un_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
 }
@@ -28,7 +41,7 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 
     for( i = 0; i < scene->nbObjet; i++ )
     {
-        dessiner_Objet( g_array_index( scene->tObjet, Objet*, i ) , cr );
+        Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr );
     }
 
 }

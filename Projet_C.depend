@@ -2,7 +2,7 @@
 1299146539 source:/home/julien/Documents/Projet_C/main.c
 	<cairo.h>
 
-1303226420 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
+1303395924 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
 	"Cube.h"
 	<math.h>
 
@@ -2208,14 +2208,14 @@
 1285658991 /usr/include/gtk-2.0/gtk/gtktipsquery.h
 	<gtk/gtk.h>
 
-1303306228 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
+1303396226 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
 	"FenetreAjoutCube.h"
 
-1303304866 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.h
+1303396227 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.h
 	<gtk/gtk.h>
 	"Scene.h"
 
-1303304082 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
+1303396530 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2225,16 +2225,16 @@
 	"Point.h"
 	"Selection.h"
 
-1303290250 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
+1303398106 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
 	"Cube.h"
 
-1303289793 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
+1303398166 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 
-1303299248 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
+1303400640 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2242,8 +2242,9 @@
 	"Objet.h"
 	"FenetreAjoutCube.h"
 	"Scene.h"
+	"Config.h"
 
-1303303412 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
+1303398194 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
 	"Scene.h"
 
 1303299961 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.h
@@ -2253,11 +2254,11 @@
 	"Objet.h"
 	"Point.h"
 
-1303300967 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.c
+1303398248 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.c
 	"Selection.h"
 	"Config.h"
 
-1303299952 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
+1303397242 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>

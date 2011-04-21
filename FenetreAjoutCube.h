@@ -20,6 +20,4 @@ struct FenetreAjoutCube
 
 void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene );
 
-static gboolean nouvel_ajout( GtkButton* button, gpointer data );
-
 #endif //FENETRE_AJOUT_CUBE_H

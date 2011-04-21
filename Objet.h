@@ -10,21 +10,21 @@
 typedef union Objet Objet;
 union Objet
 {
-
     Cube* cube;               // !!!!!!!!!!!!!!!!!!!!!!! Union
-
     char* type;
 };
 
-void Objet_Cube( Objet* objet, Cube* cube );
+void Objet_detruire( Objet* objet );
 
-void dessiner_Objet( Objet* objet, cairo_t* cr );
+void Objet_est_un_Cube( Objet* objet, Cube* cube );
 
-gboolean Objet_contient_Point( Objet* objet, double x, double y );
+void Objet_dessiner_objet( Objet* objet, cairo_t* cr );
 
-void Objet_Selection( Objet* objet );
+gboolean Objet_contient_point( Objet* objet, double x, double y );
 
-void Objet_Deselection( Objet* objet );
+void Objet_selection( Objet* objet );
+
+void Objet_deselection( Objet* objet );
 
 
 #endif  // OBJET_H

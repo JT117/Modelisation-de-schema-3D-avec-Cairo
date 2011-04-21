@@ -14,7 +14,6 @@
 typedef struct Scene Scene;
 struct Scene
 {
-    Scene* scene;
     Selection* selection;
     GArray* tObjet;
     GArray* tTouche;
@@ -39,6 +38,8 @@ gboolean Scene_selection_Multiple( Scene* scene );
 void Scene_creation_objet( Scene* scene, double x, double y );
 
 void Scene_clear_scene( Scene* scene, cairo_t* cr );
+
+void Scene_detruire( Scene* scene );
 
 
 #endif // SCENE_H

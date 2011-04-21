@@ -22,3 +22,5 @@ void Selection_selectionner_tout( Scene* scene );
 void Selection_selectionner_click_drag( Scene* scene );
 
 void Selection_dessiner_rectangle( Selection* selection, cairo_t* cr );
+
+void Selection_detruire( Selection* selection );

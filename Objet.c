@@ -1,12 +1,20 @@
 #include "Objet.h"
 
-void Objet_Cube( Objet* objet, Cube* cube )
+void Objet_detruire( Objet* objet )
+{
+    if( strcmp( objet->type, "Cube" ) == 0 )
+    {
+        // pas d'allocation dynamique pour le cube de base
+    }
+}
+
+void Objet_est_un_Cube( Objet* objet, Cube* cube )
 {
     objet->cube = cube;
     strcpy( objet->type, "Cube" );
 }
 
-void dessiner_Objet( Objet* objet, cairo_t* cr )
+void Objet_dessiner_objet( Objet* objet, cairo_t* cr )
 {
     if( strcmp( objet->type, "Cube" ) == 0 )
     {
@@ -14,7 +22,7 @@ void dessiner_Objet( Objet* objet, cairo_t* cr )
     }
 }
 
-gboolean Objet_contient_Point( Objet* objet, double x, double y )
+gboolean Objet_contient_point( Objet* objet, double x, double y )
 {
     if( strcmp( objet->type, "Cube" ) == 0 )
     {
@@ -23,7 +31,7 @@ gboolean Objet_contient_Point( Objet* objet, double x, double y )
     return TRUE;
 }
 
-void Objet_Selection( Objet* objet )
+void Objet_selection( Objet* objet )
 {
     if( strcmp( objet->type, "Cube" ) == 0 )
     {
@@ -31,7 +39,7 @@ void Objet_Selection( Objet* objet )
     }
 }
 
-void Objet_Deselection( Objet* objet )
+void Objet_deselection( Objet* objet )
 {
     if( strcmp( objet->type, "Cube" ) == 0 )
     {

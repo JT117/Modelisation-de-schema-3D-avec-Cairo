@@ -44,7 +44,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
    if( !cCube->estSelectionne )
    {
         cairo_set_source_rgb ( cr, 0, 0, 0);   // On definie la couleur du trait
-
+        printf("move to : %f | %f \n", cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
         cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
@@ -235,7 +235,6 @@ gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
 
 gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
 {
-    int produitScalaire = 0;
     int nb = 0;
 
     nb += scalaire_result( a, b, x, y );
@@ -255,7 +254,6 @@ int scalaire_result( Point a, Point b, int x, int y )
     Point ab;
     Point ap;
     double produitScalaire = 0;
-    int nb = 0;
 
     ab.x = b.x - a.x;
     ab.y = b.y - a.y;

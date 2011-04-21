@@ -14,7 +14,18 @@ void Selection_initialiser( Selection* selection )
     selection->selection_en_cours = FALSE;
 }
 
-void Selection_selectionner_objet( Scene* scene, double x, double y )   // A optimiser
+void Selection_detruire( Selection* selection )
+{
+    int i = 0;
+
+    for( i = 0; i < selection->nbSelection; i++ )
+    {
+        Objet_detruire( g_array_index( selection->tSelection, Objet*, i ) );
+    }
+    g_array_free( selection->tSelection, FALSE );
+}
+
+void Selection_selectionner_objet( Scene* scene, double x, double y )   // A optimiser + Si un objet a une alloc dyn vider les tableaux avant de les free
 {
     int i = 0;
     int nbNonSelectionner = 0;
@@ -22,7 +33,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
     for( i = 0; i < scene->nbObjet; i++ )
     {
         Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-        gboolean estContenu = Objet_contient_Point( objet, x, y );
+        gboolean estContenu = Objet_contient_point( objet, x, y );
 
         if( estContenu  )
         {
@@ -41,7 +52,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
             {
                 g_array_append_val( scene->selection->tSelection, objet );
                 scene->selection->nbSelection++;
-                Objet_Selection( objet );
+                Objet_selection( objet );
             }
             else if( !estDejaSelectionner )
             {
@@ -49,7 +60,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
                 g_array_free( scene->selection->tSelection, FALSE );
                 scene->selection->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
                 g_array_append_val( scene->selection->tSelection, objet );
-                Objet_Selection( objet );
+                Objet_selection( objet );
                 scene->selection->nbSelection = 1;
             }
             else
@@ -62,7 +73,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
                     {
                         g_array_remove_index_fast( scene->selection->tSelection, n );
                         scene->selection->nbSelection--;
-                        Objet_Deselection( objet );
+                        Objet_deselection( objet );
                     }
                 }
             }
@@ -123,7 +134,7 @@ void Selection_selectionner_click_drag( Scene* scene )
         {
             for( j = y1; j < y2; j += 15 )
             {
-                 estContenu = estContenu || Objet_contient_Point( objet, k, j );
+                 estContenu = estContenu || Objet_contient_point( objet, k, j );
             }
         }
 
@@ -144,7 +155,7 @@ void Selection_selectionner_click_drag( Scene* scene )
             {
                 g_array_append_val( scene->selection->tSelection, objet );
                 scene->selection->nbSelection++;
-                Objet_Selection( objet );
+                Objet_selection( objet );
             }
         }
         else
@@ -157,7 +168,7 @@ void Selection_selectionner_click_drag( Scene* scene )
                 {
                     g_array_remove_index_fast( scene->selection->tSelection, n );
                     scene->selection->nbSelection--;
-                    Objet_Deselection( objet );
+                    Objet_deselection( objet );
                 }
             }
         }
@@ -171,7 +182,7 @@ void Selection_deselectionner_tout( Selection* selection )
     for( i = 0; i < selection->nbSelection; i++ )
     {
         Objet* objet = (Objet*)g_array_index( selection->tSelection, Objet*, i );
-        Objet_Deselection( objet );
+        Objet_deselection( objet );
     }
 }
 
@@ -184,7 +195,7 @@ void Selection_selectionner_tout( Scene* scene )
         Objet* objet = g_array_index( scene->tObjet, Objet*, i );
         g_array_append_val( scene->selection->tSelection, objet );
         scene->selection->nbSelection++;
-        Objet_Selection( objet );
+        Objet_selection( objet );
     }
 }
 

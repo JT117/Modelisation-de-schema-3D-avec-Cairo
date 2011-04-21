@@ -1,5 +1,7 @@
 #include "FenetreAjoutCube.h"
 
+static gboolean nouvel_ajout( GtkButton* button, gpointer data );
+
 void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 {
     fao->fenetre = gtk_window_new( GTK_WINDOW_TOPLEVEL );
@@ -76,18 +78,18 @@ void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 {
-    FenetreAjoutCube* fao = (FenetreAjoutCube*)data;
+    /*FenetreAjoutCube* fao = (FenetreAjoutCube*)data;
     Scene* scene = fao->scene;
     printf("coucou\n");
     printf( "%f\ %f %f %f \n", scene->tailleCreation, scene->creation.x, scene->creation.y, scene->creation.z );
     if( fao->scene->tailleCreation > 0 )
     {
-        /*Cube cube;
+        Cube cube;
         initialiser_Cube( &cube, fao->scene->creation.x, fao->scene->creation.y, fao->scene->creation.z, fao->scene->tailleCreation );
-        Scene_ajouter_cube( fao->scene, &cube );*/
-        //g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
+        Scene_ajouter_cube( fao->scene, &cube );
+        g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
 
-    }
+    }*/
 
     return TRUE;
 }
