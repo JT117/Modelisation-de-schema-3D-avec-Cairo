@@ -12,6 +12,9 @@ void Selection_initialiser( Selection* selection )
     selection->finSelection.y = 0;
     selection->finSelection.z = 0;
     selection->selection_en_cours = FALSE;
+    selection->timer = g_timer_new();
+    g_timer_stop( selection->timer );
+    selection->start = FALSE;
 }
 
 void Selection_detruire( Selection* selection )
@@ -95,84 +98,118 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
 
 void Selection_selectionner_click_drag( Scene* scene )
 {
-    int i,k,j,x1,x2,y1,y2 = 0;
-
-    if( (int)scene->selection->departSelection.x > (int)scene->selection->finSelection.x )
+    if( !scene->selection->start )
     {
-        x1 = (int)scene->selection->finSelection.x;
-        x2 = (int)scene->selection->departSelection.x;
-    }
-    else
-    {
-        x2 = (int)scene->selection->finSelection.x;
-        x1 = (int)scene->selection->departSelection.x;
+        g_timer_start( scene->selection->timer );
+        scene->selection->start = TRUE;
     }
 
-    if( scene->selection->departSelection.y > scene->selection->finSelection.y )
+    if( scene->selection->start && g_timer_elapsed( scene->selection->timer, NULL ) > 0.030 ) //Timer empechant un rafraichissement trop rapide induisant un lag (30FPS)
     {
-        y1 = (int)scene->selection->finSelection.y;
-        y2 = (int)scene->selection->departSelection.y;
-    }
-    else
-    {
-        y2 = (int)scene->selection->finSelection.y;
-        y1 = (int)scene->selection->departSelection.y;
-    }
+        g_timer_start( scene->selection->timer );
+        int i,k,j,x1,x2,y1,y2 = 0;
 
-    for( k = x1; k < x2; k += 15 )
-    {
-        for( j = y1; j < y2; j += 15 )
+        if( (int)scene->selection->departSelection.x > (int)scene->selection->finSelection.x )
         {
-            for( i = 0; i < scene->nbObjet; i++ )
+            x1 = (int)scene->selection->finSelection.x;
+            x2 = (int)scene->selection->departSelection.x;
+        }
+        else
+        {
+            x2 = (int)scene->selection->finSelection.x;
+            x1 = (int)scene->selection->departSelection.x;
+        }
+
+        if( scene->selection->departSelection.y > scene->selection->finSelection.y )
+        {
+            y1 = (int)scene->selection->finSelection.y;
+            y2 = (int)scene->selection->departSelection.y;
+        }
+        else
+        {
+            y2 = (int)scene->selection->finSelection.y;
+            y1 = (int)scene->selection->departSelection.y;
+        }
+
+        for( i = 0; i < scene->nbObjet; i++ )
+        {
+            Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
+            gboolean estContenu = FALSE;
+
+            for( k = x1; k < x2; k += 15 )
             {
-                Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-                gboolean estDejaSelectionner = FALSE;
-
-                if( Objet_contient_point( objet, k, j ) )
+                for( j = y1; j < y2; j += 15 )
                 {
-                    int m = 0;
-
-                    for( m = 0; m < scene->selection->nbSelection; m++ )
-                    {
-                        if( objet == g_array_index( scene->selection->tSelection, Objet*, m ) )
-                        {
-                            estDejaSelectionner = TRUE;
-                        }
-                    }
-
-                    if( !estDejaSelectionner )
-                    {
-                        g_array_append_val( scene->selection->tSelection, objet );
-                        scene->selection->nbSelection++;
-                        Objet_selection( objet );
-                        objet->doitEtreDeselectionner = FALSE;
-                        k = x2;
-                        j = y2;
-                    }
+                     estContenu = estContenu || Objet_contient_point( objet, k, j );
+                     if( estContenu )
+                     {
+                         k = x2;
+                         j = y2;
+                     }
                 }
+            }
+
+            if( estContenu )
+            {
+                Selection_selectionner( scene->selection, objet );
+            }
+            else
+            {
+                Selection_deselectionner( scene->selection, objet );
             }
         }
     }
-    for( i = 0; i < scene->nbObjet; i++ )
+
+}
+
+void Selection_deselectionner( Selection* selection, Objet* objet )
+{
+    int i = 0;
+
+    for( i = 0; i < selection->nbSelection; i++ )
     {
-        Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-
-        if( objet->doitEtreDeselectionner )
+        if( objet == g_array_index( selection->tSelection, Objet*, i ) )
         {
-            int n = 0;
-
-            for( n = 0; n < scene->selection->nbSelection; n++ )
-            {
-                if( objet == g_array_index( scene->selection->tSelection, Objet*, n ) )
-                {
-                    g_array_remove_index_fast( scene->selection->tSelection, n );
-                    scene->selection->nbSelection--;
-                    Objet_deselection( objet );
-                }
-            }
+            g_array_remove_index_fast( selection->tSelection, i );
+            selection->nbSelection--;
+            Objet_deselection( objet );
         }
-        objet->doitEtreDeselectionner = TRUE;
     }
+}
+
+void Selection_selectionner( Selection* selection, Objet* objet )
+{
+    int i = 0;
+    gboolean estDejaSelectionner = FALSE;
+
+    for( i = 0; i < selection->nbSelection; i++ )
+    {
+        if( objet == g_array_index( selection->tSelection, Objet*, i ) )
+        {
+            estDejaSelectionner = TRUE;
+        }
+    }
+
+    if( !estDejaSelectionner )
+    {
+        g_array_append_val( selection->tSelection, objet );
+        selection->nbSelection++;
+        Objet_selection( objet );
+    }
+}
+
+gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet )
+{
+    int i = 0;
+
+    for( i = 0; i < selection->nbSelection; i++ )
+    {
+        if( objet == g_array_index( selection->tSelection, Objet*, i ) )
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 void Selection_deselectionner_tout( Selection* selection )

@@ -17,6 +17,8 @@ struct Selection
     gboolean selection_en_cours;
     Point departSelection;
     Point finSelection;
+    GTimer* timer;
+    gboolean start;
 };
 
 

@@ -24,3 +24,9 @@ void Selection_selectionner_click_drag( Scene* scene );
 void Selection_dessiner_rectangle( Selection* selection, cairo_t* cr );
 
 void Selection_detruire( Selection* selection );
+
+gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet );
+
+void Selection_deselectionner( Selection* selection, Objet* objet );
+
+void Selection_selectionner( Selection* selection, Objet* objet );

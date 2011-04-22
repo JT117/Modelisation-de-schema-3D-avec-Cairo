@@ -244,7 +244,6 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
         {
             char deb[5] = "     ";
             fscanf( fichier, "%s", deb );
-            printf(".%s.\n", deb );
 
             if( strcmp( deb, "DEBUT" ) == 0 )
             {
