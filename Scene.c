@@ -13,6 +13,9 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->tTouche= g_array_new( FALSE, TRUE, sizeof( char* ) );
     scene->nbTouche = 0;
 
+    scene->modification = (Modification*)malloc( 1 * sizeof( Modification ) );
+    Modification_initialiser( scene->modification );
+
     scene->tailleCreation = 50.0;
     scene->creation = (Point*)malloc( 1* sizeof( Point ) );
     scene->creation->x = 0.0;
@@ -116,4 +119,10 @@ void Scene_creation_objet( Scene* scene, double x, double y )
     scene->creation->z = 0;
 }
 
-
+void Scene_reset( Scene* scene, GtkWidget* window )
+{
+    Scene_detruire( scene );
+    free( scene );
+    scene = (Scene*)malloc( 1 * sizeof( Scene ) );
+    Scene_initialiser_scene( scene, window );
+}

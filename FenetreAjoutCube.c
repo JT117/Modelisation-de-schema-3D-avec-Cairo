@@ -84,6 +84,7 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
         initialiser_Cube( cube, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z, fao->scene->tailleCreation );
         Scene_ajouter_cube( fao->scene, cube );
         gtk_widget_queue_draw( scene->zoneDeDessin );
+        Modification_modification_effectuer( scene );
         g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
 
     }

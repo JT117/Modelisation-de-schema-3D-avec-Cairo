@@ -8,6 +8,7 @@
 #include "Objet.h"
 #include "Selection.h"
 #include "Scene.h"
+#include "Modification.h"
 
 
 // **************** Selection ***************************************
@@ -30,3 +31,12 @@ gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet );
 void Selection_deselectionner( Selection* selection, Objet* objet );
 
 void Selection_selectionner( Selection* selection, Objet* objet );
+
+//*******************Modification************************************
+void Modification_modification_effectuer( Scene* scene );
+
+void Modification_initialiser( Modification* modif );
+
+void Modification_annuler( Scene* scene );
+
+void Modification_refaire( Scene* scene );

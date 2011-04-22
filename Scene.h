@@ -10,10 +10,12 @@
 #include "Cube.h"
 #include "Point.h"
 #include "Selection.h"
+#include "Modification.h"
 
 typedef struct Scene Scene;
 struct Scene
 {
+    Modification* modification;
     Selection* selection;
     GArray* tObjet;
     GArray* tTouche;
@@ -41,6 +43,8 @@ void Scene_creation_objet( Scene* scene, double x, double y );
 void Scene_clear_scene( Scene* scene, cairo_t* cr );
 
 void Scene_detruire( Scene* scene );
+
+void Scene_reset( Scene* scene, GtkWidget* window );
 
 
 #endif // SCENE_H
