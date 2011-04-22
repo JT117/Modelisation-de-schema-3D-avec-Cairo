@@ -37,6 +37,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Config.h" />
 		<Unit filename="Cube.c">
 			<Option compilerVar="CC" />
 		</Unit>

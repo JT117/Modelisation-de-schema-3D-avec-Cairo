@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
+	<File name="Config.h" open="0" top="0" tabpos="0">
+		<Cursor position="665" topLine="0" />
+	</File>
 	<File name="Cube.c" open="0" top="0" tabpos="6">
-		<Cursor position="2009" topLine="21" />
+		<Cursor position="9667" topLine="0" />
 	</File>
 	<File name="Cube.h" open="0" top="0" tabpos="5">
 		<Cursor position="940" topLine="0" />
 	</File>
-	<File name="FenetreAjoutCube.c" open="1" top="1" tabpos="6">
-		<Cursor position="1370" topLine="0" />
+	<File name="FenetreAjoutCube.c" open="0" top="0" tabpos="6">
+		<Cursor position="96" topLine="0" />
 	</File>
 	<File name="FenetreAjoutCube.h" open="0" top="0" tabpos="8">
-		<Cursor position="297" topLine="0" />
+		<Cursor position="441" topLine="0" />
 	</File>
-	<File name="Objet.c" open="0" top="0" tabpos="0">
-		<Cursor position="348" topLine="0" />
+	<File name="Objet.c" open="1" top="0" tabpos="4">
+		<Cursor position="933" topLine="0" />
 	</File>
-	<File name="Objet.h" open="0" top="0" tabpos="4">
-		<Cursor position="127" topLine="0" />
+	<File name="Objet.h" open="1" top="0" tabpos="3">
+		<Cursor position="207" topLine="0" />
 	</File>
 	<File name="Point.h" open="0" top="0" tabpos="7">
 		<Cursor position="183" topLine="0" />
 	</File>
-	<File name="Scene.c" open="1" top="0" tabpos="3">
-		<Cursor position="1091" topLine="0" />
+	<File name="Scene.c" open="0" top="0" tabpos="3">
+		<Cursor position="1009" topLine="18" />
 	</File>
-	<File name="Scene.h" open="1" top="0" tabpos="2">
-		<Cursor position="168" topLine="0" />
+	<File name="Scene.h" open="0" top="0" tabpos="2">
+		<Cursor position="261" topLine="0" />
 	</File>
-	<File name="Selection.c" open="1" top="0" tabpos="5">
-		<Cursor position="5769" topLine="0" />
+	<File name="Selection.c" open="1" top="0" tabpos="2">
+		<Cursor position="3350" topLine="89" />
 	</File>
-	<File name="Selection.h" open="1" top="0" tabpos="4">
+	<File name="Selection.h" open="0" top="0" tabpos="4">
 		<Cursor position="20" topLine="0" />
 	</File>
-	<File name="main.c" open="1" top="0" tabpos="1">
-		<Cursor position="145" topLine="0" />
+	<File name="main.c" open="1" top="1" tabpos="1">
+		<Cursor position="12006" topLine="57" />
 	</File>
 </CodeBlocks_layout_file>
