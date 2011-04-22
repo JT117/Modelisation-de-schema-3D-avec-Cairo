@@ -20,4 +20,6 @@ struct FenetreAjoutCube
 
 void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene );
 
+
+
 #endif //FENETRE_AJOUT_CUBE_H

@@ -5,6 +5,8 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->tObjet = g_array_new( FALSE, TRUE, sizeof( Objet* ) );
     scene->nbObjet = 0;
 
+    scene->zoneDeDessin = window;
+
     scene->selection = (Selection*)malloc( 1 * sizeof(Selection) );
     Selection_initialiser( scene->selection );
 
@@ -12,6 +14,10 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->nbTouche = 0;
 
     scene->tailleCreation = 50.0;
+    scene->creation = (Point*)malloc( 1* sizeof( Point ) );
+    scene->creation->x = 0.0;
+    scene->creation->y = 0.0;
+    scene->creation->z = 0.0;
 }
 
 void Scene_detruire( Scene* scene )
@@ -43,7 +49,6 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
     {
         Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr );
     }
-
 }
 
 void Scene_clear_scene( Scene* scene, cairo_t* cr )
@@ -106,9 +111,9 @@ void Scene_touche_relacher( Scene* scene, char* nomTouche )
 
 void Scene_creation_objet( Scene* scene, double x, double y )
 {
-    scene->creation.x = x;
-    scene->creation.y = y;
-    scene->creation.z = 0;
+    scene->creation->x = x;
+    scene->creation->y = y;
+    scene->creation->z = 0;
 }
 
 

@@ -52,35 +52,31 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data );
 
 
     //*****************************************************************************************
-    Cube cube1;
-    initialiser_Cube( &cube1, 200, 200, 0, 250 );
+    Cube* cube1 = (Cube*)malloc( 1 * sizeof( Cube ) );
+    initialiser_Cube( cube1, 200, 200, 0, 250 );
 
-    Cube cube2;
-    initialiser_Cube( &cube2, 300, 300, 0, 250 );
+    Cube* cube2 = (Cube*)malloc( 1 * sizeof( Cube ) );
+    initialiser_Cube( cube2, 300, 300, 0, 250 );
 
 
     scene = (Scene*)malloc( 1 * sizeof( Scene) );
     Scene_initialiser_scene( scene, zoneDeDessin );
 
-    Scene_ajouter_cube( scene, &cube1 );
-    Scene_ajouter_cube( scene, &cube2 );
+    Scene_ajouter_cube( scene, cube1 );
+    Scene_ajouter_cube( scene, cube2 );
 
     //*******************************************************************************************
 
-    gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );
-    printf("coucou 5.1\n");                 // Nom totalement provisiore ^^
+    gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );          // Nom totalement provisiore ^^
     gtk_window_set_default_size( GTK_WINDOW( mainWindow ), 1000, 900 );
-    printf("coucou 5.2\n");
     gtk_window_set_position( GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER );
-    printf("coucou 5.4\n");
+
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_PRESS_MASK);
-    printf("coucou 5.41\n");
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK);   //active la detection de la souris
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON1_MOTION_MASK);
-printf("coucou 5.5\n");
+
     g_signal_connect( G_OBJECT( zoneDeDessin ), "realize", G_CALLBACK( realize_callback ), NULL );
     g_signal_connect( G_OBJECT( zoneDeDessin ), "expose-event", G_CALLBACK( expose_event_callback ), scene );
-    printf("coucou 5.6\n");
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( gtk_main_quit ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
     g_signal_connect( G_OBJECT( mainWindow ), "key-release-event", G_CALLBACK( gestion_clavier ), scene );
@@ -102,7 +98,7 @@ printf("coucou 5.5\n");
 
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
-    printf("Expose Event \n");
+    //printf("Expose Event \n");
     Scene* scene = (Scene*)data;
     cairo_t* cr = gdk_cairo_create ( widget->window );
 
@@ -220,8 +216,8 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
-    FenetreAjoutCube fao;
-    initialier_FenetreAjoutCube( &fao, scene );
+    FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube ) );
+    initialier_FenetreAjoutCube( fao, scene );
 
     return TRUE;
 }
@@ -232,7 +228,7 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
 
     GtkWidget* opener = gtk_file_chooser_dialog_new ("Ouvrir un fichier de sauvegarde ...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
-    GtkWidget* filtre = gtk_file_filter_new();
+    GtkFileFilter* filtre = gtk_file_filter_new();
     gtk_file_filter_add_pattern( GTK_FILE_FILTER (filtre), "*.txt");
     gtk_file_chooser_set_filter( GTK_FILE_CHOOSER(opener), GTK_FILE_FILTER(filtre) );
 
@@ -267,10 +263,9 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
                     fscanf( fichier, "%f", &taille );
                     fscanf( fichier, "%f %f %f %f", &r, &g, &b, &a );
 
-                    Cube cube;
-                    printf("%f - %f - %f - %f \n", x, y, z, taille );
-                    initialiser_Cube( &cube, x, y, z, taille );
-                    Scene_ajouter_cube( scene, &cube );
+                    Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
+                    initialiser_Cube( cube, x, y, z, taille );
+                    Scene_ajouter_cube( scene, cube );
 
                     fscanf( fichier, "%s", typeObjet );
                 }
@@ -279,6 +274,7 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
         }
     }
     gtk_widget_destroy (opener);
+    gtk_widget_queue_draw( scene->zoneDeDessin );
     return TRUE;
 }
 
@@ -290,7 +286,7 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
     {
         GtkWidget *dialog = gtk_file_chooser_dialog_new ("Sauvegarder la scene", NULL, GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, NULL);
         gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-        GtkWidget* filtre = gtk_file_filter_new();
+        GtkFileFilter* filtre = gtk_file_filter_new();
         gtk_file_filter_add_pattern( GTK_FILE_FILTER (filtre), "*.txt");
         gtk_file_chooser_set_filter( GTK_FILE_CHOOSER(dialog), GTK_FILE_FILTER(filtre) );
 
@@ -310,12 +306,12 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
                 for( i = 0; i < scene->nbObjet; i++ )
                 {
                     Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-                    fprintf( fichier, "%s\n%d\n", objet->type, 0 ); // A changer quand l'implementation du groupe sera faite
+                    fprintf( fichier, "%s\n%d\n", objet->typeObjet, 0 ); // A changer quand l'implementation du groupe sera faite
 
-                    if( strcmp( objet->type, "Cube") == 0 )
+                    if( strcmp( objet->typeObjet, "Cube") == 0 )
                     {
-                        fprintf( fichier, "%f %f %f\n", objet->cube->tPoint[0].x, objet->cube->tPoint[0].y, objet->cube->tPoint[0].z );
-                        fprintf( fichier, "%f\n", objet->cube->tPoint[1].x - objet->cube->tPoint[0].x );
+                        fprintf( fichier, "%f %f %f\n", objet->type.cube->tPoint[0].x, objet->type.cube->tPoint[0].y, objet->type.cube->tPoint[0].z );
+                        fprintf( fichier, "%f\n", objet->type.cube->tPoint[1].x - objet->type.cube->tPoint[0].x );
                         fprintf( fichier, "%f %f %f %f\n", 0.150, 0.150, 0.150, 0.150 );
                     }
                 }
@@ -331,6 +327,7 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
     {
         printf("Scene vide : sauvegarde inutile\n");
     }
+    return TRUE;
 }
 
 

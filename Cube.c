@@ -44,7 +44,6 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
    if( !cCube->estSelectionne )
    {
         cairo_set_source_rgb ( cr, 0, 0, 0);   // On definie la couleur du trait
-        printf("move to : %f | %f \n", cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
         cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );

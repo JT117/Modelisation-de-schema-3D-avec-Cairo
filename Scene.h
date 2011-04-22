@@ -19,8 +19,9 @@ struct Scene
     GArray* tTouche;
     int nbObjet;
     int nbTouche;
-    Point creation;
+    Point* creation;
     float tailleCreation;
+    GtkWidget* zoneDeDessin;
 };
 
 void Scene_initialiser_scene( Scene* scene, GtkWidget* window );

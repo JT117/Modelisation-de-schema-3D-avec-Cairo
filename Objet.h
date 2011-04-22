@@ -7,12 +7,16 @@
 
 #include "Cube.h"
 
-typedef union Objet Objet;
-union Objet
+typedef struct Objet Objet;
+struct Objet
 {
+    char* typeObjet;
+    gboolean doitEtreDeselectionner;
+
+    union{
             Cube* cube;
-                // !!!!!!!!!!!!!!!!!!!!!!! Union
-    char* type;
+         }type;
+
 };
 
 void Objet_detruire( Objet* objet );
