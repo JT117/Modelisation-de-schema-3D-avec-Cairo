@@ -100,12 +100,13 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
     gtk_widget_set_sensitive(scene->modification->annuler, FALSE);
     gtk_widget_set_sensitive(scene->modification->refaire, FALSE);
 
-    printf("coucou 6\n");
-
     gtk_main();
 
     Modification_detruire_temporaire( scene->modification );
     Scene_detruire( scene );
+    free( scene->selection );
+    free( scene->clavier );
+    free( scene->creation );
     free( scene->modification );
     free( scene );                                                         // appel du main GTK
 
@@ -142,7 +143,7 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
 
     if( event->type == GDK_KEY_PRESS )
     {
-        Scene_touche_appuyer( scene, gdk_keyval_name(event->keyval) );
+        Clavier_touche_appuyer( scene, gdk_keyval_name(event->keyval) );
 
         if( strcmp( gdk_keyval_name(event->keyval), "Right") == 0 )
         {
@@ -151,14 +152,9 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
         }
         else if( strcmp( gdk_keyval_name(event->keyval), "a") == 0 )
         {
-            int i = 0;
-
-            for( i = 0; i < scene->nbTouche; i++ )
+            if( Clavier_est_appuyer( scene, "Control_L" ) )
             {
-                if( strcmp( g_array_index( scene->tTouche, char*, i ), "Control_L") == 0 )
-                {
-                    Selection_selectionner_tout( scene );
-                }
+                Selection_selectionner_tout( scene );
             }
             gtk_widget_queue_draw( window );
         }
@@ -169,27 +165,17 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
         }
         else if( strcmp( gdk_keyval_name( event->keyval), "z" ) == 0 )
         {
-            int i = 0;
-
-            for( i = 0; i < scene->nbTouche; i++ )
+            if( Clavier_est_appuyer( scene, "Control_L" ) && gtk_widget_get_sensitive( scene->modification->annuler ) )
             {
-                if( strcmp( g_array_index( scene->tTouche, char*, i ), "Control_L") == 0 )
-                {
-                    if( gtk_widget_get_sensitive( scene->modification->annuler ) )
-                    {
-                        printf("annuler \n");
-                        Modification_annuler( scene );
-                    }
-                }
+                Modification_annuler( scene );
             }
             gtk_widget_queue_draw( window );
         }
     }
     else if( event->type == GDK_KEY_RELEASE )
     {
-        Scene_touche_relacher( scene, gdk_keyval_name(event->keyval) );
+        Clavier_touche_relacher( scene, gdk_keyval_name(event->keyval) );
     }
-
     return TRUE;
 }
 
@@ -227,7 +213,7 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
         g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(nouveau_cube), scene);
     }
-    else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
+    else if( event->type == GDK_MOTION_NOTIFY )    // Prob lag normalement resolu grace à GDK_POINTER_MOTION_HINT_MASK
     {
         scene->selection->finSelection.x = event->x;
         scene->selection->finSelection.y = event->y;
@@ -305,7 +291,29 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
                     fscanf( fichier, "%s", typeObjet );
                 }
             }
+             else
+            {
+                GtkWidget* avertissement =
+                gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Le fichier n'est pas un fichier de sauvegarde Sch3Dma" );
+
+                if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+                {
+                    gtk_widget_destroy( avertissement );
+
+                }
+            }
             fclose( fichier );
+        }
+        else
+        {
+            GtkWidget* avertissement =
+            gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Le fichier n'a pas pu etre ouvert" );
+
+            if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+            {
+                gtk_widget_destroy( avertissement );
+
+            }
         }
     }
     gtk_widget_destroy (opener);
@@ -363,7 +371,14 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
     }
     else
     {
-        printf("Scene vide : sauvegarde inutile\n");
+        GtkWidget* avertissement =
+        gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "La scene est vide sauvegarde inutile !" );
+
+        if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+        {
+            gtk_widget_destroy( avertissement );
+
+        }
     }
     return TRUE;
 }

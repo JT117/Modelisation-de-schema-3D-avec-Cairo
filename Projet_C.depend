@@ -2208,15 +2208,15 @@
 1285658991 /usr/include/gtk-2.0/gtk/gtktipsquery.h
 	<gtk/gtk.h>
 
-1303637334 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
+1303663421 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
 	"FenetreAjoutCube.h"
 	"Config.h"
 
-1303467078 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.h
+1303668916 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.h
 	<gtk/gtk.h>
 	"Scene.h"
 
-1303487004 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
+1303657152 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2226,6 +2226,7 @@
 	"Point.h"
 	"Selection.h"
 	"Modification.h"
+	"Clavier.h"
 
 1303475136 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	<stdlib.h>
@@ -2236,7 +2237,7 @@
 1303475592 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 
-1303639376 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
+1303659250 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2246,7 +2247,7 @@
 	"Scene.h"
 	"Config.h"
 
-1303638408 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
+1303659205 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
 	"Scene.h"
 
 1303636659 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.h
@@ -2260,7 +2261,7 @@
 	"Selection.h"
 	"Config.h"
 
-1303638886 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
+1303657137 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
@@ -2271,13 +2272,21 @@
 	"Selection.h"
 	"Scene.h"
 	"Modification.h"
+	"Clavier.h"
 
 1303488365 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
 
-1303639150 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
+1303639523 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
 	"Modification.h"
 	"Config.h"
+
+1303659179 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.c
+	"Clavier.h"
+	"Scene.h"
+
+1303656823 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.h
+	<gtk/gtk.h>
 

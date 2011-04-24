@@ -37,6 +37,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Clavier.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Clavier.h" />
 		<Unit filename="Config.h" />
 		<Unit filename="Cube.c">
 			<Option compilerVar="CC" />

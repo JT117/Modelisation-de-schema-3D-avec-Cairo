@@ -15,7 +15,10 @@ struct FenetreAjoutCube
     GtkWidget* entry3;
     GtkWidget* boutonOk;
     GtkWidget* boutonAnnuler;
-
+    GtkWidget* barreSelection;
+    GtkWidget* barrePosition;
+    GtkWidget* barreBouton;
+    GtkWidget* layout;
 };
 
 void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene );

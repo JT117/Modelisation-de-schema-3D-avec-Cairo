@@ -10,8 +10,9 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->selection = (Selection*)malloc( 1 * sizeof(Selection) );
     Selection_initialiser( scene->selection );
 
-    scene->tTouche= g_array_new( FALSE, TRUE, sizeof( char* ) );
-    scene->nbTouche = 0;
+    Clavier* clavier = (Clavier*)malloc( 1 * sizeof( Clavier ) );
+    Clavier_initialiser( clavier );
+    scene->clavier = clavier;
 
     scene->modification = (Modification*)malloc( 1 * sizeof( Modification ) );
     Modification_initialiser( scene->modification );
@@ -32,10 +33,9 @@ void Scene_detruire( Scene* scene )
         Objet_detruire( g_array_index( scene->tObjet, Objet*, i ) );
     }
     g_array_free( scene->tObjet, TRUE );
-    g_array_free( scene->tTouche, TRUE );
+
     Selection_detruire( scene->selection );
-    free( scene->selection );
-    free( scene->creation );
+    Clavier_detruire( scene->clavier );
 }
 
 void Scene_ajouter_cube( Scene* scene, Cube* cCube )
@@ -44,7 +44,6 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube )
     Objet_est_un_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
-    //Modification_modification_effectuer( scene );
 }
 
 void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
@@ -67,10 +66,10 @@ gboolean Scene_selection_Multiple( Scene* scene )
 {
     int i = 0;
 
-    for( i = 0; i < scene->nbTouche; i++ )
+    for( i = 0; i < scene->clavier->nbTouche; i++ )
     {
-        printf(" %s \n", g_array_index( scene->tTouche, char*, i ) );
-        if( strcmp( g_array_index( scene->tTouche, char*, i ), "Shift_L") == 0 )
+        printf(" %s \n", g_array_index( scene->clavier->tTouche, char*, i ) );
+        if( strcmp( g_array_index( scene->clavier->tTouche, char*, i ), "Shift_L") == 0 )
         {
             return TRUE;
         }
@@ -78,42 +77,6 @@ gboolean Scene_selection_Multiple( Scene* scene )
 
     return FALSE;
 }
-
-void Scene_touche_appuyer( Scene* scene, char* nomTouche )
-{
-    int i = 0;
-    gboolean dejaAppuyer = FALSE;
-
-    for( i = 0; i < scene->nbTouche; i++ )
-    {
-        if( strcmp( g_array_index( scene->tTouche, char*, i ), nomTouche) == 0 )
-        {
-            dejaAppuyer = TRUE;
-        }
-    }
-
-    if( dejaAppuyer == FALSE )
-    {
-        printf(" %s \n", nomTouche );
-        g_array_append_val( scene->tTouche, nomTouche );
-        scene->nbTouche++;
-    }
-}
-
-void Scene_touche_relacher( Scene* scene, char* nomTouche )
-{
-    int i = 0;
-
-    for( i = 0; i < scene->nbTouche; i++ )
-    {
-        if( strcmp( g_array_index( scene->tTouche, char*, i ), nomTouche) == 0 )
-        {
-            g_array_remove_index_fast( scene->tTouche, i );
-            scene->nbTouche--;
-        }
-    }
-}
-
 
 void Scene_creation_objet( Scene* scene, double x, double y )
 {
@@ -126,7 +89,6 @@ void Scene_reset( Scene* scene, GtkWidget* window )
 {
     Modification* modif = scene->modification;
     Scene_detruire( scene );
-    free( scene );
     scene = (Scene*)malloc( 1 * sizeof( Scene ) );
     Scene_initialiser_scene( scene, window );
     scene->modification = modif;
