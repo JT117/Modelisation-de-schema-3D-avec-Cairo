@@ -46,6 +46,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FenetreAjoutCube.h" />
+		<Unit filename="Modification.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Modification.h" />
 		<Unit filename="Objet.c">
 			<Option compilerVar="CC" />
 		</Unit>

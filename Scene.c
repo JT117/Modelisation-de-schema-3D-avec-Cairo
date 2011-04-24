@@ -34,6 +34,8 @@ void Scene_detruire( Scene* scene )
     g_array_free( scene->tObjet, TRUE );
     g_array_free( scene->tTouche, TRUE );
     Selection_detruire( scene->selection );
+    free( scene->selection );
+    free( scene->creation );
 }
 
 void Scene_ajouter_cube( Scene* scene, Cube* cCube )
@@ -42,6 +44,7 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube )
     Objet_est_un_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
+    //Modification_modification_effectuer( scene );
 }
 
 void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
@@ -121,8 +124,10 @@ void Scene_creation_objet( Scene* scene, double x, double y )
 
 void Scene_reset( Scene* scene, GtkWidget* window )
 {
+    Modification* modif = scene->modification;
     Scene_detruire( scene );
     free( scene );
     scene = (Scene*)malloc( 1 * sizeof( Scene ) );
     Scene_initialiser_scene( scene, window );
+    scene->modification = modif;
 }

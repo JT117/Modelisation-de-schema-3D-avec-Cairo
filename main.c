@@ -17,6 +17,8 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data );
 static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data );
 static gboolean main_annuler( GtkWidget *menuItem, gpointer data );
 static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
+static gboolean main_quitter( GtkWidget *menuItem, gpointer data );
+static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
 
 
  int main (int argc, char *argv[])
@@ -39,8 +41,10 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
 
     GtkWidget* menu = gtk_menu_new();
     GtkWidget* fichier = gtk_menu_item_new_with_label( "Fichier" );
-    GtkWidget *ouvrir = gtk_menu_item_new_with_label( "Ouvrir" );
-    GtkWidget *sauvegarder = gtk_menu_item_new_with_label( "Sauvegarder" );
+    GtkWidget* nouveau = gtk_menu_item_new_with_label( "Nouveau" );
+    GtkWidget* ouvrir = gtk_menu_item_new_with_label( "Ouvrir" );
+    GtkWidget* sauvegarder = gtk_menu_item_new_with_label( "Sauvegarder" );
+    GtkWidget* quitter = gtk_menu_item_new_with_label( "Quitter" );
     gtk_menu_item_set_submenu(GTK_MENU_ITEM (fichier), menu);
 
     GtkWidget* menu2 = gtk_menu_new();
@@ -52,8 +56,10 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
     gtk_menu_attach( GTK_MENU(menu2), scene->modification->annuler, 0, 1, 0, 1 );
     gtk_menu_attach( GTK_MENU(menu2), scene->modification->refaire, 0, 1, 1, 2 );
 
-    gtk_menu_attach( GTK_MENU(menu), ouvrir, 0, 1, 0, 1 );                                             // Initialisation de GTK
-    gtk_menu_attach( GTK_MENU(menu), sauvegarder, 0, 1, 1, 2 );
+    gtk_menu_attach( GTK_MENU(menu), nouveau, 0, 1, 0, 1 );
+    gtk_menu_attach( GTK_MENU(menu), ouvrir, 0, 1, 1, 2 );
+    gtk_menu_attach( GTK_MENU(menu), sauvegarder, 0, 1, 2, 3 );
+    gtk_menu_attach( GTK_MENU(menu), quitter, 0, 1, 3, 4 );
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), fichier);
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), edition);
 
@@ -69,12 +75,13 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
     gtk_window_set_default_size( GTK_WINDOW( mainWindow ), 1000, 900 );
     gtk_window_set_position( GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER );
 
-    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_PRESS_MASK);
-    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK);   //active la detection de la souris
-    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON1_MOTION_MASK);
+    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_PRESS_MASK );
+    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK );   //active la detection de la souris
+    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON1_MOTION_MASK );
+    gtk_widget_add_events( zoneDeDessin, GDK_POINTER_MOTION_HINT_MASK );
 
 
-    g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( gtk_main_quit ), NULL );
+    g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
     g_signal_connect( G_OBJECT( zoneDeDessin ), "realize", G_CALLBACK( realize_callback ), NULL );
     g_signal_connect( G_OBJECT( zoneDeDessin ), "expose-event", G_CALLBACK( expose_event_callback ), scene );
@@ -83,8 +90,10 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
     g_signal_connect( G_OBJECT( zoneDeDessin ), "button-release-event", G_CALLBACK( gestion_souris_callback ), scene );
     g_signal_connect( G_OBJECT( zoneDeDessin ), "motion-notify-event", G_CALLBACK( gestion_souris_callback ), scene );
 
+    g_signal_connect( G_OBJECT( nouveau ), "activate", G_CALLBACK( main_nouveau ), scene);
     g_signal_connect( G_OBJECT( ouvrir ), "activate", G_CALLBACK( main_ouvrir ), scene);
     g_signal_connect( G_OBJECT( sauvegarder ), "activate", G_CALLBACK( main_sauvegarder ), scene);
+    g_signal_connect( G_OBJECT( quitter ), "activate", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( scene->modification->annuler ), "activate", G_CALLBACK( main_annuler ), scene);
     g_signal_connect( G_OBJECT( scene->modification->refaire ), "activate", G_CALLBACK( main_refaire ), scene);
 
@@ -95,7 +104,9 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
 
     gtk_main();
 
+    Modification_detruire_temporaire( scene->modification );
     Scene_detruire( scene );
+    free( scene->modification );
     free( scene );                                                         // appel du main GTK
 
     return EXIT_SUCCESS;
@@ -156,6 +167,23 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
             Selection_deselectionner_tout( scene->selection );
             gtk_widget_queue_draw( window );
         }
+        else if( strcmp( gdk_keyval_name( event->keyval), "z" ) == 0 )
+        {
+            int i = 0;
+
+            for( i = 0; i < scene->nbTouche; i++ )
+            {
+                if( strcmp( g_array_index( scene->tTouche, char*, i ), "Control_L") == 0 )
+                {
+                    if( gtk_widget_get_sensitive( scene->modification->annuler ) )
+                    {
+                        printf("annuler \n");
+                        Modification_annuler( scene );
+                    }
+                }
+            }
+            gtk_widget_queue_draw( window );
+        }
     }
     else if( event->type == GDK_KEY_RELEASE )
     {
@@ -201,22 +229,12 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     }
     else if( event->type == GDK_MOTION_NOTIFY )    // Attention probleme performances !!!!!!!!!!!!!!
     {
-        if( !scene->selection->start )
-        {
-            g_timer_start( scene->selection->timer );
-            scene->selection->start = TRUE;
-        }
+        scene->selection->finSelection.x = event->x;
+        scene->selection->finSelection.y = event->y;
+        Selection_selectionner_click_drag( scene );
+        scene->selection->selection_en_cours = TRUE;
 
-        if( scene->selection->start && g_timer_elapsed( scene->selection->timer, NULL ) > 0.015 ) //Timer empechant un rafraichissement trop rapide induisant un lag (60 FPS)
-        {
-            g_timer_start( scene->selection->timer );
-            scene->selection->finSelection.x = event->x;
-            scene->selection->finSelection.y = event->y;
-            Selection_selectionner_click_drag( scene );
-            scene->selection->selection_en_cours = TRUE;
-
-            gtk_widget_queue_draw( widget );
-        }
+        gtk_widget_queue_draw( widget );
     }
     else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
     {
@@ -282,6 +300,7 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
                     Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
                     initialiser_Cube( cube, x, y, z, taille );
                     Scene_ajouter_cube( scene, cube );
+                    Modification_modification_effectuer( scene );
 
                     fscanf( fichier, "%s", typeObjet );
                 }
@@ -311,6 +330,9 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
             char *filename;
             FILE* fichier = NULL;
             filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+            filename = (char*)realloc( filename, ( strlen(filename) + 4 ) * sizeof( char ) );
+            filename = strcat( filename, ".txt" );
+
             fichier = fopen( filename, "w+" );
             g_free (filename);
 
@@ -364,7 +386,41 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+static gboolean main_quitter( GtkWidget *menuItem, gpointer data )
+{
+    GtkWidget* avertissement =
+    gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_OK_CANCEL, "Etes-vous sur de vouloir quitter ? Tout travail non sauvegardé sera perdu !" );
 
+    if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+    {
+        gtk_widget_destroy( avertissement );
+        gtk_main_quit();
+    }
+    else
+    {
+        gtk_widget_destroy( avertissement );
+    }
+    return TRUE;
+}
+
+static gboolean main_nouveau( GtkWidget *menuItem, gpointer data )
+{
+    Scene* scene = (Scene*)data;
+    GtkWidget* avertissement =
+    gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_OK_CANCEL, "Tout travail non sauvegardé sera perdu ! Etes-vous sur de vouloir continuer ?" );
+
+    if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+    {
+        gtk_widget_destroy( avertissement );
+        Scene_reset( scene, scene->zoneDeDessin );
+        gtk_widget_queue_draw( scene->zoneDeDessin );
+    }
+    else
+    {
+        gtk_widget_destroy( avertissement );
+    }
+    return TRUE;
+}
 
 
 

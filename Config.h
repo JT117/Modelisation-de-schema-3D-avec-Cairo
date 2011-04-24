@@ -40,3 +40,5 @@ void Modification_initialiser( Modification* modif );
 void Modification_annuler( Scene* scene );
 
 void Modification_refaire( Scene* scene );
+
+void Modification_detruire_temporaire( Modification* modif );

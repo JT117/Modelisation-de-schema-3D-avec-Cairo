@@ -12,9 +12,6 @@ void Selection_initialiser( Selection* selection )
     selection->finSelection.y = 0;
     selection->finSelection.z = 0;
     selection->selection_en_cours = FALSE;
-    selection->timer = g_timer_new();
-    g_timer_stop( selection->timer );
-    selection->start = FALSE;
 }
 
 void Selection_detruire( Selection* selection )

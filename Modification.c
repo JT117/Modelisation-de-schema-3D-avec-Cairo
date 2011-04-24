@@ -7,19 +7,36 @@ void Modification_initialiser( Modification* modif )
     modif->nbMax = -1;
 }
 
-void Modification_modification_effectuer( Scene* scene )
+void Modification_detruire_temporaire( Modification* modif )
 {
-    if( scene->modification->actuel < 49 )
+    int i = 0;
+
+    for( i = 0; i <= modif->nbMax; i++ )
     {
         char* filename = (char*)malloc( 20* sizeof( char ) );
         strcpy( filename, "systeme/temporaire/" );
-        char number[2];
+        char number[3];
+        sprintf( number, "%d.txt", i );
+        filename = (char*)realloc( filename, (size_t)(strlen(filename) + 7) * sizeof(char) );
+        filename = strcat( filename, number );
+        printf(" Suppression du fichier temporaire : %s\n", filename );
+        remove( filename );
+    }
+}
+
+void Modification_modification_effectuer( Scene* scene )
+{
+    if( scene->modification->actuel < 500 )
+    {
+        char* filename = (char*)malloc( 20* sizeof( char ) );
+        strcpy( filename, "systeme/temporaire/" );
+        char number[3];
 
         scene->modification->actuel++;
         scene->modification->nbMax++;
         sprintf( number, "%d.txt", scene->modification->actuel );
 
-        filename = (char*)realloc( filename, (size_t)(strlen(filename) + 6) * sizeof(char) );
+        filename = (char*)realloc( filename, (size_t)(strlen(filename) + 7) * sizeof(char) );
         filename = strcat( filename, number );
 
         FILE* fichier = NULL;
@@ -52,6 +69,7 @@ void Modification_modification_effectuer( Scene* scene )
             }
 
             gtk_widget_set_sensitive( scene->modification->refaire, FALSE );
+
         }
     }
 }
@@ -82,7 +100,7 @@ void Modification_annuler( Scene* scene )
         scene->modification->actuel--;
         sprintf( number, "%d.txt", scene->modification->actuel );
 
-        filename = (char*)realloc( filename, (size_t)(strlen(filename) + 6) * sizeof(char) );
+        filename = (char*)realloc( filename, (size_t)(strlen(filename) + 7) * sizeof(char) );
         filename = strcat( filename, number );
         printf("%s\n", filename );
 
@@ -156,7 +174,7 @@ void Modification_refaire( Scene* scene )
         scene->modification->actuel++;
         sprintf( number, "%d.txt", scene->modification->actuel );
 
-        filename = (char*)realloc( filename, (size_t)(strlen(filename) + 6) * sizeof(char) );
+        filename = (char*)realloc( filename, (size_t)(strlen(filename) + 7) * sizeof(char) );
         filename = strcat( filename, number );
         printf("%s\n", filename );
 

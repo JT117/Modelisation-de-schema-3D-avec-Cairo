@@ -1,4 +1,5 @@
 #include "FenetreAjoutCube.h"
+#include "Config.h"
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data );
 
