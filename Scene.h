@@ -13,16 +13,24 @@
 #include "Modification.h"
 #include "Clavier.h"
 
+/** Structure representant la scene */
 typedef struct Scene Scene;
 struct Scene
 {
+    /** Pointeur sur le module des modifications */
     Modification* modification;
+    /** Pointeur sur le module de selection */
     Selection* selection;
+    /** Tableau contenant tous les objets de la scene */
     GArray* tObjet;
-    Clavier* clavier;
+    /** Int contenant le nombre d'objet dans le tableau tObjet */
     int nbObjet;
+    /** Pointeur sur la module clavier */
+    Clavier* clavier;
+    /** Un point contenant les informations necessaire à l'ajout d'un nouvel element */
     Point* creation;
     float tailleCreation;
+    /** Pointeur sur la zone de dessin */
     GtkWidget* zoneDeDessin;
 };
 
@@ -41,6 +49,8 @@ void Scene_clear_scene( Scene* scene, cairo_t* cr );
 void Scene_detruire( Scene* scene );
 
 void Scene_reset( Scene* scene, GtkWidget* window );
+
+void Scene_reconstruire( Scene* scene, GtkWidget* window );
 
 
 #endif // SCENE_H

@@ -1,5 +1,9 @@
 #include "Scene.h"
 
+/** Fonction qui initialise une scene vierge
+ * @param scene, un pointeur sur une scene vierge
+ * @param window, la zone de dessin à garder
+ **/
 void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
 {
     scene->tObjet = g_array_new( FALSE, TRUE, sizeof( Objet* ) );
@@ -24,6 +28,22 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->creation->z = 0.0;
 }
 
+void Scene_reconstruire( Scene* scene, GtkWidget* window )
+{
+    scene->tObjet = g_array_new( FALSE, TRUE, sizeof( Objet* ) );
+    scene->nbObjet = 0;
+
+    scene->zoneDeDessin = window;
+
+    scene->selection = (Selection*)malloc( 1 * sizeof(Selection) );
+    Selection_initialiser( scene->selection );
+
+}
+
+/** Fonction qui libère une scene initialisée
+ * @param scene, un pointeur sur une scene initialisée
+ * @warning scene et les pointeurs sur les modules ne sont pas liberée
+ **/
 void Scene_detruire( Scene* scene )
 {
     int i = 0;
@@ -35,9 +55,13 @@ void Scene_detruire( Scene* scene )
     g_array_free( scene->tObjet, TRUE );
 
     Selection_detruire( scene->selection );
-    Clavier_detruire( scene->clavier );
+    //Clavier_detruire( scene->clavier );
 }
 
+/** Fonction qui ajoute un objet de type Cube à la scene
+ * @param scene, un pointeur sur une scene initialisée
+ * @param cCube, le cube à ajouter
+ **/
 void Scene_ajouter_cube( Scene* scene, Cube* cCube )
 {
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
@@ -46,6 +70,10 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube )
     scene->nbObjet++;
 }
 
+/** Fonction qui dessiner tout les objets de la scene
+ * @param scene, un pointeur sur une scene initialisée
+ * @param cr, un contexte cairo créer sur la zoneDeDessin
+ **/
 void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 {
     int i = 0;
@@ -56,12 +84,20 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
     }
 }
 
+/** Fonction qui dessine une scene vierge
+ * @param scene, un pointeur sur une scene initialisée
+ * @param cr, un contexte cairo créer sur la zoneDeDessin
+ **/
 void Scene_clear_scene( Scene* scene, cairo_t* cr )
 {
      cairo_set_source_rgb( cr, 0.190, 0.190, 0.190 );
      cairo_paint( cr );
 }
 
+/** Fonction qui indique si une selection multiple est en cours
+ * @param scene, un pointeur sur une scene initialisée
+ * @return TRUE si une selection multiple est en cours
+ **/
 gboolean Scene_selection_Multiple( Scene* scene )
 {
     int i = 0;
@@ -85,11 +121,15 @@ void Scene_creation_objet( Scene* scene, double x, double y )
     scene->creation->z = 0;
 }
 
+/** Fonction qui remets la scene en etat d'initialisation
+ * @param scene, un pointeur sur une scene initialisée
+ * @param window, une pointeur sur la zoneDeDessin
+ * @warning La zone de dessin est conservé
+ **/
 void Scene_reset( Scene* scene, GtkWidget* window )
 {
-    Modification* modif = scene->modification;
     Scene_detruire( scene );
-    scene = (Scene*)malloc( 1 * sizeof( Scene ) );
-    Scene_initialiser_scene( scene, window );
-    scene->modification = modif;
+    free( scene->selection );
+    Scene_reconstruire( scene, window );
 }
+

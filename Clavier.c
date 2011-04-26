@@ -3,7 +3,7 @@
 
 void Clavier_initialiser( Clavier* clavier )
 {
-    clavier->tTouche= g_array_new( FALSE, FALSE, sizeof( char* ) );
+    clavier->tTouche= g_array_new( FALSE, TRUE, sizeof( char* ) );
     clavier->nbTouche = 0;
 }
 
@@ -15,7 +15,7 @@ void Clavier_detruire( Clavier* clavier )
     {
         g_free( g_array_index( clavier->tTouche, char*, i ) );
     }
-    g_array_free( clavier->tTouche, TRUE );
+    g_array_free( clavier->tTouche, FALSE );
 }
 
 gboolean Clavier_est_appuyer( Scene* scene, char* touche )

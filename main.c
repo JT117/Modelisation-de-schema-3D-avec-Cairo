@@ -35,9 +35,9 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
     scene = (Scene*)malloc( 1 * sizeof( Scene) );
     Scene_initialiser_scene( scene, zoneDeDessin );
 
-    GtkWidget* main_box = gtk_vbox_new(FALSE, 0);
-
+    GtkWidget* main_box = gtk_vbox_new( FALSE, 0 );
     GtkWidget* menuBarre = gtk_menu_bar_new();
+    gtk_widget_set_size_request( menuBarre, -1, -1 );
 
     GtkWidget* menu = gtk_menu_new();
     GtkWidget* fichier = gtk_menu_item_new_with_label( "Fichier" );
@@ -66,20 +66,22 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
     gtk_container_add( GTK_CONTAINER( main_box ), menuBarre );
     gtk_container_add( GTK_CONTAINER( main_box ), zoneDeDessin );
 
-    gtk_widget_set_size_request( zoneDeDessin, 1000, 900 );//taille minimum de la zone de dessin
+    GdkScreen* screen = NULL;
+    screen = gtk_window_get_screen(GTK_WINDOW(mainWindow));
+    double width = gdk_screen_get_width(screen);
+    double height = gdk_screen_get_height(screen);
+
+    gtk_widget_set_size_request( zoneDeDessin, width-10, height-75 );        //taille minimum de la zone de dessin
     gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );             // Ajout de la zone de dessin dans le mainWindow
 
     gtk_widget_show_all( mainWindow );
 
     gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );          // Nom totalement provisiore ^^
-    gtk_window_set_default_size( GTK_WINDOW( mainWindow ), 1000, 900 );
-    gtk_window_set_position( GTK_WINDOW(mainWindow), GTK_WIN_POS_CENTER );
 
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_PRESS_MASK );
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK );   //active la detection de la souris
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON1_MOTION_MASK );
     gtk_widget_add_events( zoneDeDessin, GDK_POINTER_MOTION_HINT_MASK );
-
 
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
@@ -100,33 +102,42 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
     gtk_widget_set_sensitive(scene->modification->annuler, FALSE);
     gtk_widget_set_sensitive(scene->modification->refaire, FALSE);
 
+    gtk_window_maximize( GTK_WINDOW( mainWindow ) );
+
     gtk_main();
 
     Modification_detruire_temporaire( scene->modification );
     Scene_detruire( scene );
+    Clavier_detruire( scene->clavier );
     free( scene->selection );
     free( scene->clavier );
     free( scene->creation );
     free( scene->modification );
-    free( scene );                                                         // appel du main GTK
+    free( scene );
 
     return EXIT_SUCCESS;
 
  }
 
+/** Fonction dessinant la scene, partie principale du programme, gérant aussi le dessin du rectangle de selection
+ * @param widget, la fenetre contenant la zone de dessin à dessiner
+ * @param event, l'evenement associer à l'appel du CallBack, ici inutiliser contenant "expose-event"
+ * @param data, pointer générique contenant la scene qui elle contient toutes les informations necessaire au dessin
+ * @return TRUE pour que l'expose event soit propagé dans l'application
+ */
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
-    //printf("Expose Event \n");
-    Scene* scene = (Scene*)data;
-    cairo_t* cr = gdk_cairo_create ( widget->window );
+    Scene* scene = (Scene*)data;                                     //Cast du pointeur generique en Scene*
 
-    Scene_clear_scene( scene , cr ); // A voir si necessaire
+    cairo_t* cr = gdk_cairo_create ( widget->window );               //Creation du contexte pour pouvoir dessiner
 
-    Scene_dessiner_scene( scene, cr );
+    Scene_clear_scene( scene , cr );                                 //Nettoyage de la scene
 
-    Selection_dessiner_rectangle( scene->selection, cr );
+    Scene_dessiner_scene( scene, cr );                               //On dessine tout les objets
 
-    cairo_destroy( cr );
+    Selection_dessiner_rectangle( scene->selection, cr );            //Si selection de zone en cours, on dessine le rectangle de selection
+
+    cairo_destroy( cr );                                             //Destruction du contexte
 
     return TRUE;
 }
@@ -137,61 +148,73 @@ static gboolean realize_callback( GtkWidget *widget, GdkEventExpose *event, gpoi
     return TRUE;
 }
 
+/** Fonction gérant les entrées clavier, associant aux touches/combinaison de touches les fonctions associées
+ * @param window, le widget ayant reçu l'evenement "key-press-event" ou "key-release-event"
+ * @param event, le type d'evenement ici deux evenements nous interessent : "key-press-event" ou "key-release-event"
+ * @param data, pointeur générique sur la scene, qui contient toutes les informations sur l'etat du clavier
+ * @return TRUE pour propager les evenements dans l'application
+ */
 static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data)
 {
-    Scene* scene = (Scene*) data;
+    Scene* scene = (Scene*) data;                                                               //Cast du pointeur generique en Scene*
 
     if( event->type == GDK_KEY_PRESS )
     {
-        Clavier_touche_appuyer( scene, gdk_keyval_name(event->keyval) );
+        Clavier_touche_appuyer( scene, gdk_keyval_name(event->keyval) );                        //On stocke toutes les touches qui ont ete appuyés et non relachés
 
         if( strcmp( gdk_keyval_name(event->keyval), "Right") == 0 )
         {
-            //rotation_Cube( data, M_PI/2, 2 );
+            // Fonction de rotation scene/objet
             gtk_widget_queue_draw( window );
         }
         else if( strcmp( gdk_keyval_name(event->keyval), "a") == 0 )
         {
             if( Clavier_est_appuyer( scene, "Control_L" ) )
             {
-                Selection_selectionner_tout( scene );
+                Selection_selectionner_tout( scene );                                           //Raccourci Ctrl_L + a = selectionner tout
             }
             gtk_widget_queue_draw( window );
         }
         else if( strcmp( gdk_keyval_name(event->keyval), "Escape") == 0 )
         {
-            Selection_deselectionner_tout( scene->selection );
+            Selection_deselectionner_tout( scene->selection );                                  //Echap = Tout deselectionner
             gtk_widget_queue_draw( window );
         }
         else if( strcmp( gdk_keyval_name( event->keyval), "z" ) == 0 )
         {
             if( Clavier_est_appuyer( scene, "Control_L" ) && gtk_widget_get_sensitive( scene->modification->annuler ) )
             {
-                Modification_annuler( scene );
+                Modification_annuler( scene );                                                  //Ctrl_L + z = annuler si annuler disponible
             }
             gtk_widget_queue_draw( window );
         }
     }
     else if( event->type == GDK_KEY_RELEASE )
     {
-        Clavier_touche_relacher( scene, gdk_keyval_name(event->keyval) );
+        Clavier_touche_relacher( scene, gdk_keyval_name(event->keyval) );                       //On eneleve les touches relachées
     }
     return TRUE;
 }
 
+/** Fonction gérant les clics/deplacements souris, associant aux clics les differentes fonctions
+ * @param window, le widget ayant reçu l'evenement
+ * @param event, le type d'evenement ici plusieurs evenements nous interessent : "button-press-event", "button-release-event", "motion-notify-event"
+ * @param data, pointeur générique sur la scene, qui contient toutes les informations sur l'etat de la souris
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event, gpointer data)
 {
     Scene* scene = (Scene*)data;
 
     if( event->type == GDK_BUTTON_PRESS && event->button == 1 )
     {
-        scene->selection->departSelection.x = event->x;
+        scene->selection->departSelection.x = event->x;                                       //Click gauche, on stocke le point clické au cas ou l'evenement soit suivi d'un motion-notify-event
         scene->selection->departSelection.y = event->y;
-        Selection_selectionner_objet( scene, event->x, event->y );
+        Selection_selectionner_objet( scene, event->x, event->y );                            //On regarde si le click ne dois pas selectionner un objet
 
         gtk_widget_queue_draw( widget );
     }
-    else if( event->type == GDK_BUTTON_PRESS && event->button == 3 )
+    else if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel
     {
         GtkWidget *menu = gtk_menu_new();
         GtkWidget *pItem = gtk_menu_item_new_with_label("Nouvel objet");
@@ -213,9 +236,9 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
         g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(nouveau_cube), scene);
     }
-    else if( event->type == GDK_MOTION_NOTIFY )    // Prob lag normalement resolu grace à GDK_POINTER_MOTION_HINT_MASK
+    else if( event->type == GDK_MOTION_NOTIFY )                                                 //Prob lag normalement resolu grace à GDK_POINTER_MOTION_HINT_MASK
     {
-        scene->selection->finSelection.x = event->x;
+        scene->selection->finSelection.x = event->x;                                            //Motion-notify-event on stocke le point d'arrive pour dessiner le rectangle
         scene->selection->finSelection.y = event->y;
         Selection_selectionner_click_drag( scene );
         scene->selection->selection_en_cours = TRUE;
@@ -232,6 +255,11 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     return TRUE;
 }
 
+/** Fonction créant la fenetre d'ajout d'un nouvel objet dans la scene
+ * @param menuItem, l'element du menu ayant ete cliqué
+ * @param data, pointeur générique sur la scene, qui contient la represantation de la scene a laquelle il faudra ajouter le nouvel objet
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
@@ -242,6 +270,11 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+/** Fonction gérant l'ouverture d'un fichier de sauvegarde
+ * @param menuItem, l'element du menu ayant ete cliqué
+ * @param data, pointeur générique sur la scene, qui sera reecrite selon le ficier de sauvegarde lu
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
@@ -321,6 +354,11 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+/** Fonction gérant la sauvegarde d'une scene
+ * @param menuItem, l'element du menu ayant ete cliqué
+ * @param data, pointeur générique sur la scene, qui sera lu et ecrite dans un fichier
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
@@ -383,6 +421,12 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+
+/** Fonction gérant le click sur l'element annuler
+ * @param menuItem, l'element du menu ayant ete cliqué
+ * @param data, pointeur générique sur la scene, qui contient un pointeur sur le module Modification
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean main_annuler( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
@@ -392,6 +436,11 @@ static gboolean main_annuler( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+/** Fonction gérant le click sur l'element refaire
+ * @param menuItem, l'element du menu ayant ete cliqué
+ * @param data, pointeur générique sur la scene, qui contient un pointeur sur le module Modification
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean main_refaire( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
@@ -401,6 +450,11 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+/** Fonction gérant la destruction de la fenetre principale
+ * @param menuItem, l'element du menu ayant ete cliqué
+ * @param data, NULL
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean main_quitter( GtkWidget *menuItem, gpointer data )
 {
     GtkWidget* avertissement =
@@ -418,6 +472,12 @@ static gboolean main_quitter( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+/** Fonction gérant la demande d'une nouvelle scene
+ * @warning l'ancienne scene sera detruite, à l'exception de la zone de dessin qui sera conservé
+ * @param menuItem, l'element du menu ayant ete cliqué
+ * @param data, pointeur générique sur la scene, qui sera detruite et reconstruite vierge
+ * @return TRUE pour propager les evenements dans l'application
+ **/
 static gboolean main_nouveau( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;

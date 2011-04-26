@@ -252,7 +252,7 @@ int scalaire_result( Point a, Point b, int x, int y )
 {
     Point ab;
     Point ap;
-    double produitScalaire = 0;
+    double produitScalaire = 0.0;
 
     ab.x = b.x - a.x;
     ab.y = b.y - a.y;
@@ -270,8 +270,7 @@ int scalaire_result( Point a, Point b, int x, int y )
     {
         return -1;
     }
-
-    return 0;
+    else return 0;
 }
 
 

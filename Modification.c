@@ -21,6 +21,7 @@ void Modification_detruire_temporaire( Modification* modif )
         filename = strcat( filename, number );
         printf(" Suppression du fichier temporaire : %s\n", filename );
         remove( filename );
+        free( filename );
     }
 }
 
@@ -82,20 +83,7 @@ void Modification_annuler( Scene* scene )
         char number[2];
         strcpy( filename, "systeme/temporaire/" );
 
-        Modification* modif = (Modification*)malloc( 1 * sizeof( char ) );
-        modif->actuel = scene->modification->actuel;
-        modif->nbMax = scene->modification->nbMax;
-        GtkWidget* annuler = scene->modification->annuler;
-        GtkWidget* refaire = scene->modification->refaire;
-
         Scene_reset( scene, scene->zoneDeDessin );
-
-        scene->modification->annuler = annuler;
-        scene->modification->refaire = refaire;
-        scene->modification->actuel = modif->actuel;
-        scene->modification->nbMax = modif->nbMax;
-        free( modif );
-
 
         scene->modification->actuel--;
         sprintf( number, "%d.txt", scene->modification->actuel );
