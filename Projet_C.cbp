@@ -13,8 +13,11 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-I /usr/include/cairo -L /usr/lib -lcairo" />
+					<Add option="`pkg-config --cflags --libs gtk+-2.0`" />
 				</Compiler>
+				<Linker>
+					<Add option="`pkg-config --cflags --libs gtk+-2.0`" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/Projet_C" prefix_auto="1" extension_auto="1" />
@@ -23,24 +26,47 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="$(pkg-config --libs gtk+-2.0)" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="$(pkg-config --libs gtk+-2.0)" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Clavier.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Clavier.h" />
+		<Unit filename="Config.h" />
 		<Unit filename="Cube.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Cube.h" />
+		<Unit filename="FenetreAjoutCube.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="FenetreAjoutCube.h" />
+		<Unit filename="Modification.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Modification.h" />
+		<Unit filename="Objet.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Objet.h" />
 		<Unit filename="Point.h" />
 		<Unit filename="Scene.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Scene.h" />
+		<Unit filename="Selection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Selection.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

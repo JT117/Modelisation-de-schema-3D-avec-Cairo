@@ -44,7 +44,6 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
    if( !cCube->estSelectionne )
    {
         cairo_set_source_rgb ( cr, 0, 0, 0);   // On definie la couleur du trait
-
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
         cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
@@ -52,7 +51,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 1 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 255, 0, 0);
+        cairo_set_source_rgb ( cr, 0.255, 0, 0);
 
         cairo_move_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
         cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
@@ -61,7 +60,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );// Face 2 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0, 255, 0);
+        cairo_set_source_rgb ( cr, 0.196, 0.804, 0.196);
 
         cairo_move_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
         cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
@@ -70,7 +69,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y ); // Face 3 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0, 0, 255);
+        cairo_set_source_rgb ( cr, 0, 0, 0.9);
 
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
@@ -79,7 +78,7 @@ void dessiner_Cube(Cube* cCube, cairo_t* cr )
         cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 4 dessinée
 
         cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 255, 255, 0);
+        cairo_set_source_rgb ( cr, 0.255, 0.9, 0);
 
         cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
         cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
@@ -222,19 +221,61 @@ void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double
 
 gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
 {
-    if( x >= cCube->tPoint[0].x  && x <= cCube->tPoint[1].x && y >= cCube->tPoint[0].y  && y <= cCube->tPoint[3].y
-    ||  x >= cCube->tPoint[1].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[5].y  && y <= cCube->tPoint[6].y
-    ||  x >= cCube->tPoint[0].x  && x <= cCube->tPoint[4].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[7].y
-    ||  x >= cCube->tPoint[0].x  && x <= cCube->tPoint[1].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[1].y
-    ||  x >= cCube->tPoint[4].x  && x <= cCube->tPoint[5].x && y >= cCube->tPoint[4].y  && y <= cCube->tPoint[7].y
-    ||  x >= cCube->tPoint[3].x  && x <= cCube->tPoint[2].x && y >= cCube->tPoint[7].y  && y <= cCube->tPoint[3].y)
+    gboolean est_contenu = FALSE;
+
+    est_contenu = est_contenu || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[2], cCube->tPoint[3], x, y )
+                              || est_dans_face( cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[2], x, y )
+                              || est_dans_face( cCube->tPoint[4], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[7], x, y )
+                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[4], cCube->tPoint[7], cCube->tPoint[3], x, y )
+                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[4], x, y )
+                              || est_dans_face( cCube->tPoint[3], cCube->tPoint[2], cCube->tPoint[6], cCube->tPoint[7], x, y );
+    return est_contenu;
+}
+
+gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
+{
+    int nb = 0;
+
+    nb += scalaire_result( a, b, x, y );
+    nb += scalaire_result( b, c, x, y );
+    nb += scalaire_result( c, d, x, y );
+    nb += scalaire_result( d, a, x, y );
+
+    if( nb == 4 || nb == -4 )
     {
         return TRUE;
     }
-    else
-    {
-        return FALSE;
-    }
-
+    else return FALSE;
 }
+
+int scalaire_result( Point a, Point b, int x, int y )
+{
+    Point ab;
+    Point ap;
+    double produitScalaire = 0.0;
+
+    ab.x = b.x - a.x;
+    ab.y = b.y - a.y;
+
+    ap.x = x - a.x;
+    ap.y = y - a.y;
+
+    produitScalaire = ab.x * ap.x + ab.y * ap.y;
+
+    if( produitScalaire > 0 )
+    {
+        return 1;
+    }
+    else if( produitScalaire < 0 )
+    {
+        return -1;
+    }
+    else return 0;
+}
+
+
+
+
+
+
 
