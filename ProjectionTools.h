@@ -9,7 +9,9 @@
  *
  * @param pPoint pointeur vers la structure point à projetter
  * @param pCam Infos sur caméra
+ *
+ * @return Structure contenant le point qui correspond
  */
-tdCoord2D* ProjectionTools_getPictureCoord(sPoint* pPoint, sInfoCamera* pCam);
+tdCoord2D* ProjectionTools_getPictureCoord(Point* pPoint, InfoCamera* pCam);
 
 #endif

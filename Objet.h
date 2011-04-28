@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "Cube.h"
+#include "Rectangle.h"
 
 typedef struct Objet Objet;
 struct Objet
@@ -15,13 +16,16 @@ struct Objet
 
     union{
             Cube* cube;
+            Rectangle* rectangle;
          }type;
 
 };
 
 void Objet_detruire( Objet* objet );
 
+/***** Fonctions d'initialisation des structures objets en fonction du type *****/
 void Objet_est_un_Cube( Objet* objet, Cube* cube );
+void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect );
 
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr );
 

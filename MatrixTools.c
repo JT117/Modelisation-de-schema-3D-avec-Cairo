@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "./include/MatrixTools.h"
+#include "MatrixTools.h"
 
 void Matrix_initMatrix(tdMatrix mat)
 {

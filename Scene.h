@@ -8,10 +8,12 @@
 
 #include "Objet.h"
 #include "Cube.h"
+#include "Rectangle.h"
 #include "Point.h"
 #include "Selection.h"
 #include "Modification.h"
 #include "Clavier.h"
+#include "Camera.h"
 
 /** Structure representant la scene */
 typedef struct Scene Scene;
@@ -25,13 +27,16 @@ struct Scene
     GArray* tObjet;
     /** Int contenant le nombre d'objet dans le tableau tObjet */
     int nbObjet;
-    /** Pointeur sur la module clavier */
+    /** Pointeur sur le module clavier */
     Clavier* clavier;
-    /** Un point contenant les informations necessaire à l'ajout d'un nouvel element */
+    /** Un point contenant les informations necessaires à l'ajout d'un nouvel element */
     Point* creation;
     float tailleCreation;
     /** Pointeur sur la zone de dessin */
     GtkWidget* zoneDeDessin;
+
+    /** Caméra de notre scéne 3D **/
+    InfoCamera* camera;
 };
 
 void Scene_initialiser_scene( Scene* scene, GtkWidget* window );
@@ -52,5 +57,6 @@ void Scene_reset( Scene* scene, GtkWidget* window );
 
 void Scene_reconstruire( Scene* scene, GtkWidget* window );
 
+void Scene_ajouter_rectangle( Scene* scene, Rectangle* pRect );
 
 #endif // SCENE_H

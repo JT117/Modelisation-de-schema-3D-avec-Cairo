@@ -2,8 +2,9 @@
 #define CUBE_H
 
 #include <stdlib.h>
-#include "Point.h"
 #include <gtk/gtk.h>
+
+#include "Point.h"
 
 typedef struct Cube Cube;
 struct Cube

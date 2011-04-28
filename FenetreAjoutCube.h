@@ -29,8 +29,6 @@ struct FenetreAjoutCube
     double l;
 };
 
-void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene );
-
-
+void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene );
 
 #endif //FENETRE_AJOUT_CUBE_H

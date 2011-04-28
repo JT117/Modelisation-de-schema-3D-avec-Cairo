@@ -70,6 +70,20 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube )
     scene->nbObjet++;
 }
 
+/** Fonction qui ajoute un objet de type Rectangle à la scene
+ * @param pScene Pointeur sur une scene initialisée
+ * @param pRect Pointeur sur le rectangle à ajouter
+ **/
+void Scene_ajouter_rectangle( Scene* scene, Rectangle* pRect )
+{
+	/* Création d'un nouvel objet*/
+    Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
+    /* L'objet est un rectangle, on initialise les infos nécessaire de notre nouvelle structure objet*/
+    Objet_est_un_Rectangle( objet, pRect );
+    g_array_append_val( scene->tObjet, objet );
+    scene->nbObjet++;
+}
+
 /** Fonction qui dessiner tout les objets de la scene
  * @param scene, un pointeur sur une scene initialisée
  * @param cr, un contexte cairo créer sur la zoneDeDessin

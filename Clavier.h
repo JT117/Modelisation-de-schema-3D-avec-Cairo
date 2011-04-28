@@ -11,6 +11,4 @@ struct Clavier
 };
 
 
-
-
 #endif  //CLAVIER_H

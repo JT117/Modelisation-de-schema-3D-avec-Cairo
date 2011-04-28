@@ -1,9 +1,48 @@
-#include <math.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
-#include "./include/Camera.h"
+#include "Camera.h"
 
-void Camera_setCoordCam(sInfoCamera* pCam,double dX, double dY, double dZ)
+InfoCamera* Camera_createDefaultCam()
+{
+	InfoCamera* cam = NULL;
+
+	if( (cam = (InfoCamera*)malloc(sizeof(InfoCamera))) != NULL)
+	{
+		Camera_setCoordCam(cam,0,0,-160);
+		Camera_setDistancePlan(cam,80,160);
+		Camera_setFrustum(cam,3.14/4,4.0/3);
+	}
+	else
+	{
+		/*TODO : implémenter FATALERROR */
+	}
+
+	return cam;
+}
+
+InfoCamera* Camera_createCam(double dLength, double dWidth)
+{
+	InfoCamera* cam = NULL;
+	double dDistancePlanProj = 0;
+
+	if( (cam = (InfoCamera*)malloc(sizeof(InfoCamera))) != NULL)
+	{
+		dDistancePlanProj = (dWidth/2)/tan(0.6108);
+		Camera_setCoordCam(cam, 0, 0, -2*dDistancePlanProj);
+		Camera_setDistancePlan(cam, dDistancePlanProj, 2*dDistancePlanProj);
+		Camera_setFrustum(cam, 0.6108, dLength/dWidth); /* angle de vue vertical de 70 degrés*/
+	}
+	else
+	{
+		/*TODO : implémenter FATALERROR */
+	}
+
+	return cam;
+}
+
+void Camera_setCoordCam(InfoCamera* pCam,double dX, double dY, double dZ)
 {
 	pCam->CoordCam[0]=dX;
 	pCam->CoordCam[1]=dY;
@@ -12,10 +51,9 @@ void Camera_setCoordCam(sInfoCamera* pCam,double dX, double dY, double dZ)
 
 	/* On en profite pour modifer la matrice de passage World->repére caméra */
 	Camera_setMatPassage(pCam, dX, dY, dZ);
-
 }
 
-void Camera_setMatPassage(sInfoCamera* pCam,double dX, double dY, double dZ)
+void Camera_setMatPassage(InfoCamera* pCam,double dX, double dY, double dZ)
 {
 	int iLoop1, iLoop2;
 
@@ -35,7 +73,7 @@ void Camera_setMatPassage(sInfoCamera* pCam,double dX, double dY, double dZ)
 }
 
 
-void Camera_setFrustum(sInfoCamera* pCam, double dAngleV, double dRatio)
+void Camera_setFrustum(InfoCamera* pCam, double dAngleV, double dRatio)
 {
 	if(pCam->dDMin != 0)
 	{
@@ -48,13 +86,13 @@ void Camera_setFrustum(sInfoCamera* pCam, double dAngleV, double dRatio)
 		printf("Aucune distance du near plan renseignée !");
 }
 
-void Camera_setDistancePlan(sInfoCamera* pCam, double dDMin, double dDmax)
+void Camera_setDistancePlan(InfoCamera* pCam, double dDMin, double dDmax)
 {
 	pCam->dDMin=dDMin;
 	pCam->dDMax=dDmax;
 }
 
-void Camera_projectionCalculation(sInfoCamera *pCam)
+void Camera_projectionCalculation(InfoCamera *pCam)
 {
 	/* TODO : des boucles */
 

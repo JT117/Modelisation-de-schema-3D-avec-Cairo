@@ -4,7 +4,7 @@
 static gboolean nouvel_ajout( GtkButton* button, gpointer data );
 static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpointer data );
 
-void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
+void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 {
     fao->fenetre = gtk_window_new( GTK_WINDOW_TOPLEVEL );
     fao->scene = scene;
@@ -19,7 +19,7 @@ void initialier_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     fao->barreSelection = gtk_hbutton_box_new();
     GtkWidget* comboBox = gtk_combo_box_new_text();
     gtk_combo_box_append_text( comboBox, "Cube" );
-    gtk_combo_box_append_text( comboBox, "Rectangle" );
+    gtk_combo_box_append_text( comboBox, "Parallélépipède rectangle" );
 
     gtk_widget_set_size_request( comboBox, 100, -1 );
 
@@ -142,7 +142,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
         gtk_widget_draw( fao->fenetre, NULL );
         gtk_widget_show_all(fao->fenetre);
     }
-    else if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Rectangle" ) == 0 )
+    else if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Parallélépipède rectangle" ) == 0 )
     {
         FenetreAjoutCube_enlever_layout( fao );
 
@@ -209,6 +209,8 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 
     if( fao->scene->tailleCreation > 0 )
     {
+    	/* TODO : récupérer valeur combobox pour pouvoir adapter l'init */
+    	//if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Rectangle" ) == 0 )
         Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
         initialiser_Cube( cube, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z, fao->scene->tailleCreation );
         Scene_ajouter_cube( fao->scene, cube );
@@ -231,8 +233,3 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 
     return TRUE;
 }
-
-
-
-
-
