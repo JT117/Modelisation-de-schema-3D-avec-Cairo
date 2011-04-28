@@ -174,6 +174,53 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 	}
 }
 
+void Rectangle_ModSizeRectangle(Rectangle* pRectangle, double dRatio)
+{
+	int iLoop;
+	tdMatrix tdMatTransfo, tdMatPassRepObj;
+	tdCoord tdCoordRepObj, tdCoordApTransfo;
+
+	/* Initialisation des coordonées*/
+	tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
+	tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
+	tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
+	tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+
+	/* Construction de la matrice de passage World -> Repere objet */
+	Matrix_initMatrix(tdMatPassRepObj); /* initialisation de la matrice de passage dans repere objet*/
+	tdMatPassRepObj[0][3] = -pRectangle->sCenter.tdCoordWorld[0];
+	tdMatPassRepObj[1][3] = -pRectangle->sCenter.tdCoordWorld[1];
+	tdMatPassRepObj[2][3] = -pRectangle->sCenter.tdCoordWorld[2];
+
+	if(dRatio != 1)
+	{
+		/*Récupération de la matrice d'homothétie*/
+		TransfoTools_getMatrixHomothety(tdMatTransfo, dRatio);
+
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=1 ; iLoop<4 ;iLoop++)
+		{
+			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
+			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tsPointsSquare[iLoop].tdCoordWorld, tdCoordRepObj);
+			/*Puis transformation, toujours dans le repere objet*/
+			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0]
+																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
+			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
+			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
+
+			/* on réinitialise les vecteurs contenant les infos sur la transformation */
+			tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
+			tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
+			tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
+			tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+		}
+	}
+}
+
 gboolean Rectangle_Contient_Point( Rectangle* pRect, double x, double y )
 {
     gboolean est_contenu = FALSE;
