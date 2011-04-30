@@ -16,10 +16,10 @@ Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
 		if(tdCorner1[1]>tdCorner2[1]) /* Verif effectuée sur l'axe des Y (arbitrairement axe vertical)*/
 		{
 			/*Sauvegarde des infos sur les points dans notre structure */
-			Point_init( &((pNewRect->tsPointsSquare)[0]), tdCorner1[0], tdCorner1[1], tdCorner1[2]);
-			Point_init( &((pNewRect->tsPointsSquare)[1]), tdCorner2[0], tdCorner1[1], tdCorner2[2]);
-			Point_init( &((pNewRect->tsPointsSquare)[2]), tdCorner2[0], tdCorner2[1], tdCorner2[2]);
-			Point_init( &((pNewRect->tsPointsSquare)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
+			Point_init( &((pNewRect->tPoint)[0]), tdCorner1[0], tdCorner1[1], tdCorner1[2]);
+			Point_init( &((pNewRect->tPoint)[1]), tdCorner2[0], tdCorner1[1], tdCorner2[2]);
+			Point_init( &((pNewRect->tPoint)[2]), tdCorner2[0], tdCorner2[1], tdCorner2[2]);
+			Point_init( &((pNewRect->tPoint)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
 
 			/* Init du centre du repere de la figure (centre de gravité du rectangle) */
 			Point_init( &(pNewRect->sCenter), tdCorner1[0]+((tdCorner2[0]-tdCorner1[0])/2),tdCorner1[1]+((tdCorner2[1]-tdCorner1[1])/2), tdCorner1[2]+((tdCorner2[2]-tdCorner1[2])/2));
@@ -51,15 +51,15 @@ void Rectangle_drawRectangle(Rectangle* pRectangle, cairo_t* cr, InfoCamera* pCa
 	tdCoord2D* pPointProj2 = NULL;
 
 	/* Construction du path */
-	pPointProj1 = ProjectionTools_getPictureCoord(&((pRectangle->tsPointsSquare)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[0]),pCam);
 	cairo_move_to( cr, (*pPointProj1)[0], (*pPointProj1)[1]);
-	pPointProj2 = ProjectionTools_getPictureCoord(&((pRectangle->tsPointsSquare)[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[1]),pCam);
 	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
 	free(pPointProj2);
-	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tsPointsSquare[2]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[2]),pCam);
 	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
 	free(pPointProj2);
-	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tsPointsSquare[3]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[3]),pCam);
 	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
 	cairo_close_path(cr);
 
@@ -101,15 +101,15 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 		for(iLoop=1 ; iLoop<4 ;iLoop++)
 		{
 			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
-			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tsPointsSquare[iLoop].tdCoordWorld, tdCoordRepObj);
+			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
 			/*Puis transformation, toujours dans le repere objet*/
 			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
 			/* Modification des coordonnées dans le repere du monde !*/
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0]
+			pRectangle->tPoint[iLoop].tdCoordWorld[0] = pRectangle->tPoint[iLoop].tdCoordWorld[0]
 																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1]
+			pRectangle->tPoint[iLoop].tdCoordWorld[1] = pRectangle->tPoint[iLoop].tdCoordWorld[1]
 																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2]
+			pRectangle->tPoint[iLoop].tdCoordWorld[2] = pRectangle->tPoint[iLoop].tdCoordWorld[2]
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
 			/* on réinitialise les vecteurs contenant les infos sur la transformation */
@@ -128,15 +128,15 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 		for(iLoop=0 ; iLoop<4 ;iLoop++)
 		{
 			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
-			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tsPointsSquare[iLoop].tdCoordWorld, tdCoordRepObj);
+			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
 			/*Puis transformation, toujours dans le repere objet*/
 			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
 			/* Modification des coordonnées dans le repere du monde !*/
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0]
+			pRectangle->tPoint[iLoop].tdCoordWorld[0] = pRectangle->tPoint[iLoop].tdCoordWorld[0]
 																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1]
+			pRectangle->tPoint[iLoop].tdCoordWorld[1] = pRectangle->tPoint[iLoop].tdCoordWorld[1]
 																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2]
+			pRectangle->tPoint[iLoop].tdCoordWorld[2] = pRectangle->tPoint[iLoop].tdCoordWorld[2]
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
 			tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
@@ -155,15 +155,15 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 		for(iLoop=1 ; iLoop<4 ;iLoop++)
 		{
 			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
-			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tsPointsSquare[iLoop].tdCoordWorld, tdCoordRepObj);
+			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
 			/*Puis transformation, toujours dans le repere objet*/
 			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
 			/* Modification des coordonnées dans le repere du monde !*/
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0]
+			pRectangle->tPoint[iLoop].tdCoordWorld[0] = pRectangle->tPoint[iLoop].tdCoordWorld[0]
 																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1]
+			pRectangle->tPoint[iLoop].tdCoordWorld[1] = pRectangle->tPoint[iLoop].tdCoordWorld[1]
 																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2]
+			pRectangle->tPoint[iLoop].tdCoordWorld[2] = pRectangle->tPoint[iLoop].tdCoordWorld[2]
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
 			tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
@@ -201,15 +201,15 @@ void Rectangle_ModSizeRectangle(Rectangle* pRectangle, double dRatio)
 		for(iLoop=1 ; iLoop<4 ;iLoop++)
 		{
 			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
-			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tsPointsSquare[iLoop].tdCoordWorld, tdCoordRepObj);
+			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
 			/*Puis transformation, toujours dans le repere objet*/
 			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
 			/* Modification des coordonnées dans le repere du monde !*/
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[0]
+			pRectangle->tPoint[iLoop].tdCoordWorld[0] = pRectangle->tPoint[iLoop].tdCoordWorld[0]
 																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[1]
+			pRectangle->tPoint[iLoop].tdCoordWorld[1] = pRectangle->tPoint[iLoop].tdCoordWorld[1]
 																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
-			pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2] = pRectangle->tsPointsSquare[iLoop].tdCoordWorld[2]
+			pRectangle->tPoint[iLoop].tdCoordWorld[2] = pRectangle->tPoint[iLoop].tdCoordWorld[2]
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
 			/* on réinitialise les vecteurs contenant les infos sur la transformation */

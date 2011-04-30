@@ -27,7 +27,7 @@ void Objet_detruire( Objet* objet );
 void Objet_est_un_Cube( Objet* objet, Cube* cube );
 void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect );
 
-void Objet_dessiner_objet( Objet* objet, cairo_t* cr );
+void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam);
 
 gboolean Objet_contient_point( Objet* objet, double x, double y );
 

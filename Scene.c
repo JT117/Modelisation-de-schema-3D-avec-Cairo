@@ -94,7 +94,7 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 
     for( i = 0; i < scene->nbObjet; i++ )
     {
-        Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr );
+        Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr, scene->camera );
     }
 }
 

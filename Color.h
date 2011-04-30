@@ -2,7 +2,7 @@
 #define COLOR_H
 
 
-typedef double tColor[4];
+typedef double Color[4];
 
 /**
  * Setter d'une structure sColor.
@@ -12,7 +12,7 @@ typedef double tColor[4];
  * @param g Composante Verte
  * @param b Composante Bleue
  */
-void Color_setColor(tColor* ptColor,double r, double g, double b, double a);
+void Color_setColor(Color* ptColor,double r, double g, double b, double a);
 
 
 #endif

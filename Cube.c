@@ -1,5 +1,161 @@
-#include "Cube.h"
 #include <math.h>
+
+#include "Cube.h"
+
+Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth)
+{
+	double dHalfH, dHalfW, dHalfD;
+	Cube* pNewCube = NULL;
+
+	if( (pNewCube = (Cube*)malloc(sizeof(Cube))) != NULL )
+	{
+		dHalfH = dHeight/2;
+		dHalfW = dWidth/2;
+		dHalfD = dDepth/2;
+
+		/*Sauvegarde des infos sur les points dans notre structure */
+		Point_init( &((pNewCube->tPoint)[0]), tCenter[0]-dHalfW, tCenter[1]+dHalfH, tCenter[2]-dHalfD);
+		Point_init( &((pNewCube->tPoint)[1]), tCenter[0]+dHalfW, tCenter[1]+dHalfH, tCenter[2]-dHalfD);
+		Point_init( &((pNewCube->tPoint)[2]), tCenter[0]+dHalfW, tCenter[1]-dHeight, tCenter[2]-dHalfD);
+		Point_init( &((pNewCube->tPoint)[3]), tCenter[0]-dHalfW, tCenter[1]-dHeight, tCenter[2]-dHalfD);
+
+		Point_init( &((pNewCube->tPoint)[4]), tCenter[0]-dHalfW, tCenter[1]+dHalfH, tCenter[2]+dHalfD);
+		Point_init( &((pNewCube->tPoint)[5]), tCenter[0]+dHalfW, tCenter[1]+dHalfH, tCenter[2]+dHalfD);
+		Point_init( &((pNewCube->tPoint)[6]), tCenter[0]+dHalfW, tCenter[1]-dHalfH, tCenter[2]+dHalfD);
+		Point_init( &((pNewCube->tPoint)[7]), tCenter[0]-dHalfW, tCenter[1]-dHalfH, tCenter[2]+dHalfD);
+
+
+		/* Init du centre du repere de la figure (centre de gravité du cube */
+		Point_init( &(pNewCube->Center), tCenter[0], tCenter[1], tCenter[2]);
+
+		/*Couleur par défaut, pas de transparence*/
+		pNewCube->tColor[0]=153.0;
+		pNewCube->tColor[1]=153.0;
+		pNewCube->tColor[2]=255.0;
+		pNewCube->tColor[3]=1.0;
+	}
+	else
+	{
+		/* TODO : Implémenter fatalError*/
+	}
+	return pNewCube;
+}
+
+void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
+{
+	tdCoord2D* pPointProj0 = NULL;tdCoord2D* pPointProj4 = NULL;
+	tdCoord2D* pPointProj1 = NULL;tdCoord2D* pPointProj5 = NULL;
+	tdCoord2D* pPointProj2 = NULL;tdCoord2D* pPointProj6 = NULL;
+	tdCoord2D* pPointProj3 = NULL;tdCoord2D* pPointProj7 = NULL;
+
+	pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[2]),pCam);
+	pPointProj3 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[3]),pCam);
+	pPointProj4 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[4]),pCam);
+	pPointProj5 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[5]),pCam);
+	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
+	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
+
+	/* Dessin de toutes les faces */
+	/* FACE 1 : Construction du path */
+	cairo_move_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]);
+	cairo_line_to( cr, (*pPointProj1)[0], (*pPointProj1)[1]);
+	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
+	cairo_line_to( cr, (*pPointProj3)[0], (*pPointProj3)[1]);
+	cairo_line_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]); /* fermeture premiere face */
+
+	cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] ,pCube->tColor[3]); /*Couleur */
+	cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
+	cairo_set_line_width(cr,1.0);/* réglage taille de la ligne*/
+	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	cairo_stroke(cr); /* dessin contour, perte du path */
+
+	/* FACE 2*/
+	cairo_move_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_line_to( cr, (*pPointProj5)[0], (*pPointProj5)[1]);
+	cairo_line_to( cr, (*pPointProj6)[0], (*pPointProj6)[1]);
+	cairo_line_to( cr, (*pPointProj7)[0], (*pPointProj7)[1]);
+	cairo_line_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+
+	cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
+	cairo_set_line_width(cr,0.5);/* réglage taille de la ligne*/
+	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	cairo_stroke(cr); /* dessin contour, perte du path */
+
+
+	cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] ,pCube->tColor[3]); /*Couleur */
+	/* FACE 3*/
+	cairo_move_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_line_to( cr, (*pPointProj5)[0], (*pPointProj5)[1]);
+	cairo_line_to( cr, (*pPointProj6)[0], (*pPointProj6)[1]);
+	cairo_line_to( cr, (*pPointProj7)[0], (*pPointProj7)[1]);
+	cairo_line_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_fill(cr);
+
+	/* FACE 4*/
+	cairo_move_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_line_to( cr, (*pPointProj5)[0], (*pPointProj5)[1]);
+	cairo_line_to( cr, (*pPointProj6)[0], (*pPointProj6)[1]);
+	cairo_line_to( cr, (*pPointProj7)[0], (*pPointProj7)[1]);
+	cairo_line_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_fill(cr);
+
+	/* FACE 4*/
+	cairo_move_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_line_to( cr, (*pPointProj5)[0], (*pPointProj5)[1]);
+	cairo_line_to( cr, (*pPointProj6)[0], (*pPointProj6)[1]);
+	cairo_line_to( cr, (*pPointProj7)[0], (*pPointProj7)[1]);
+	cairo_line_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_fill(cr);
+
+	/* FACE 5*/
+	cairo_move_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_line_to( cr, (*pPointProj5)[0], (*pPointProj5)[1]);
+	cairo_line_to( cr, (*pPointProj6)[0], (*pPointProj6)[1]);
+	cairo_line_to( cr, (*pPointProj7)[0], (*pPointProj7)[1]);
+	cairo_line_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_fill(cr);
+
+	/* FACE 6*/
+	cairo_move_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_line_to( cr, (*pPointProj5)[0], (*pPointProj5)[1]);
+	cairo_line_to( cr, (*pPointProj6)[0], (*pPointProj6)[1]);
+	cairo_line_to( cr, (*pPointProj7)[0], (*pPointProj7)[1]);
+	cairo_line_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_fill(cr);
+
+	/* On relit les points manquants */
+	cairo_move_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]);
+	cairo_line_to( cr, (*pPointProj4)[0], (*pPointProj4)[1]);
+	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	cairo_set_line_width(cr,0.5);/* réglage taille de la ligne*/
+	cairo_stroke(cr);
+
+	cairo_move_to( cr, (*pPointProj1)[0], (*pPointProj1)[1]);
+	cairo_line_to( cr, (*pPointProj5)[0], (*pPointProj5)[1]);
+	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	cairo_set_line_width(cr,0.5);/* réglage taille de la ligne*/
+	cairo_stroke(cr);
+
+	cairo_move_to( cr, (*pPointProj3)[0], (*pPointProj3)[1]);
+	cairo_line_to( cr, (*pPointProj7)[0], (*pPointProj7)[1]);
+	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	cairo_set_line_width(cr,0.5);/* réglage taille de la ligne*/
+	cairo_stroke(cr);
+
+	cairo_move_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
+	cairo_line_to( cr, (*pPointProj6)[0], (*pPointProj6)[1]);
+	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	cairo_set_line_width(cr,0.5);/* réglage taille de la ligne*/
+	cairo_stroke(cr);
+
+
+	free(pPointProj0);	free(pPointProj4);
+	free(pPointProj1);	free(pPointProj5);
+	free(pPointProj2);	free(pPointProj6);
+	free(pPointProj3);	free(pPointProj7);
+}
 
 void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote )
 {
@@ -39,7 +195,7 @@ void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCot
 
 }
 
-void dessiner_Cube(Cube* cCube, cairo_t* cr )
+void dessiner_Cube(Cube* cCube, cairo_t* cr, InfoCamera* cam)
 {
    if( !cCube->estSelectionne )
    {

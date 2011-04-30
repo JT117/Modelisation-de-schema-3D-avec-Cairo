@@ -13,14 +13,14 @@ typedef struct Rectangle
 {
 	/**
 	 * Ordres des points du rectangle:
-	 * 	1+---+2
+	 * 	0+---+1
 	 * 	 |	 |
-	 * 	4+---+3
+	 * 	3+---+2
 	 */
-	Point tsPointsSquare[4];
+	Point tPoint[4];
 
 	Point sCenter; /* Coordonées du repere de l'objet, utilisé pour les transformations */
-	tColor tColor;
+	Color tColor; /* Couleur de l'objet */
 } Rectangle;
 
 

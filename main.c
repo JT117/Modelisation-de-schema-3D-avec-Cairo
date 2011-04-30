@@ -138,7 +138,7 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
 
     Scene_clear_scene( scene , cr );                                 //Nettoyage de la scene
 
-    Scene_dessiner_scene( scene, cr );                               //On dessine tout les objets
+    Scene_dessiner_scene( scene, cr );                               //On dessine tous les objets
 
     Selection_dessiner_rectangle( scene->selection, cr );            //Si selection de zone en cours, on dessine le rectangle de selection
 

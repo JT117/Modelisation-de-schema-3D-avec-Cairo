@@ -24,15 +24,15 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     pObj->doitEtreDeselectionner = TRUE;
 }
 
-void Objet_dessiner_objet( Objet* objet, cairo_t* cr )
+void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        dessiner_Cube( objet->type.cube, cr );
+        dessiner_Cube( objet->type.cube, cr, cam);
     }
     else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
 	{
-		dessiner_Cube( objet->type.cube, cr );
+		dessiner_Cube( objet->type.cube, cr, cam);
 	}
 }
 
