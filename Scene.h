@@ -34,22 +34,31 @@ struct Scene
     GtkWidget* zoneDeDessin;
 };
 
+/** Fonction qui initialise une scene */
 void Scene_initialiser_scene( Scene* scene, GtkWidget* window );
 
+/** Fonction qui ajoute un cube à la scene */
 void Scene_ajouter_cube( Scene* scene, Cube* cCube );
 
+/** Fonction qui eneleve un objet de la scene */
+void Scene_enlever_objet( Scene* scene, Objet* objet );
+
+/** Fonction qui dessine tout les objets de la scene */
 void Scene_dessiner_scene( Scene* scene, cairo_t* cr );
 
-gboolean Scene_selection_Multiple( Scene* scene );
-
+/** Fonction qui est temporaire */
 void Scene_creation_objet( Scene* scene, double x, double y );
 
+/** Fontion qui nettoie une scene */
 void Scene_clear_scene( Scene* scene, cairo_t* cr );
 
+/** Fonction qui "detruit" de façon specifique une scene */
 void Scene_detruire( Scene* scene );
 
+/** Fonction qui fait un "reset" de la scene */
 void Scene_reset( Scene* scene, GtkWidget* window );
 
+/** Fonction qui recostruit la scene apres un reset */
 void Scene_reconstruire( Scene* scene, GtkWidget* window );
 
 

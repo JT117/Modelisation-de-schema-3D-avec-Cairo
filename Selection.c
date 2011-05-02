@@ -1,6 +1,10 @@
 #include "Selection.h"
 #include "Config.h"
 
+/** Fonction qui initialise une structure selection
+ * @param selection, un pointeur sur la selection à initialiser
+ * @warning La selection est a libérer avec Selection_detruire
+ **/
 void Selection_initialiser( Selection* selection )
 {
     selection->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
@@ -12,8 +16,12 @@ void Selection_initialiser( Selection* selection )
     selection->finSelection.y = 0;
     selection->finSelection.z = 0;
     selection->selection_en_cours = FALSE;
+    selection->selection_multiple = FALSE;
 }
 
+/** Fonction qui libère la mémoire alloué pour une selection
+ * @param selection, un pointeur sur une selection initialisée
+ **/
 void Selection_detruire( Selection* selection )
 {
     int i = 0;
@@ -25,6 +33,11 @@ void Selection_detruire( Selection* selection )
     g_array_free( selection->tSelection, FALSE );
 }
 
+/** Fonction gérant la selection par clic simple
+ * @param scene, un pointeur sur une scene initialisée
+ * @param x, la coordonnées x à tester
+ * @param y, la coordonnées y à tester
+**/
 void Selection_selectionner_objet( Scene* scene, double x, double y )   // A optimiser + Si un objet a une alloc dyn vider les tableaux avant de les free
 {
     int i = 0;
@@ -48,7 +61,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
                 }
             }
 
-            if( !estDejaSelectionner && Scene_selection_Multiple( scene ) )
+            if( !estDejaSelectionner && scene->selection->selection_multiple )
             {
                 g_array_append_val( scene->selection->tSelection, objet );
                 scene->selection->nbSelection++;
@@ -63,7 +76,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
                 Objet_selection( objet );
                 scene->selection->nbSelection = 1;
             }
-            else
+            else if( !scene->selection->selection_multiple )
             {
               Selection_deselectionner( scene->selection, objet );
             }
@@ -83,6 +96,9 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
     }
 }
 
+/** Fonction gérant la selection par rectangle dynamique
+ * @param scene, un pointeur sur une scene initialisée
+ **/
 void Selection_selectionner_click_drag( Scene* scene )
 {
     int i,k,j,x1,x2,y1,y2 = 0;
@@ -138,6 +154,10 @@ void Selection_selectionner_click_drag( Scene* scene )
     }
 }
 
+/** Fonction qui deselectionne l'objet, objet
+ * @param selection , un pointeur sur une selection initialisée
+ * @param objet, un pointeur sur l'objet à deselectionner
+ **/
 void Selection_deselectionner( Selection* selection, Objet* objet )
 {
     int i = 0;
@@ -146,13 +166,17 @@ void Selection_deselectionner( Selection* selection, Objet* objet )
     {
         if( objet == g_array_index( selection->tSelection, Objet*, i ) )
         {
-            g_array_remove_index_fast( selection->tSelection, i );
+            g_array_remove_index( selection->tSelection, i );
             selection->nbSelection--;
             Objet_deselection( objet );
         }
     }
 }
 
+/** Fonction qui selectionne l'objet objet
+ * @param selection, un pointeur sur une selection initialisée
+ * @param objet, un pointeur sur l'objet à selectionner
+ **/
 void Selection_selectionner( Selection* selection, Objet* objet )
 {
     int i = 0;
@@ -174,6 +198,10 @@ void Selection_selectionner( Selection* selection, Objet* objet )
     }
 }
 
+/** Fonction qui renvoie si un objet est deja selectionné
+ * @param selection, un pointeur sur une selection initialisé
+ * @param objet, un pointeur sur l'objet à tester
+ **/
 gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet )
 {
     int i = 0;
@@ -188,6 +216,9 @@ gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet )
     return FALSE;
 }
 
+/** Fonction qui deselectionne tout les objets
+ * @param selection, un pointeur sur une selection initialisée
+ **/
 void Selection_deselectionner_tout( Selection* selection )
 {
     int i = 0;
@@ -199,6 +230,9 @@ void Selection_deselectionner_tout( Selection* selection )
     }
 }
 
+/** Fonction qui selectionne tous les objets de la scene
+ * @param scene, un pointeur sur une scene initialisée
+ **/
 void Selection_selectionner_tout( Scene* scene )
 {
     int i = 0;
@@ -212,6 +246,10 @@ void Selection_selectionner_tout( Scene* scene )
     }
 }
 
+/** Fonction qui dessine le rectangle de selection dynamique à l'ecran
+ * @param selection, un pointeur sur une selection initialisée
+ * @param cr, un pointeur sur un contexte cairo pour dessiner sur une zoneDeDessin
+ **/
 void Selection_dessiner_rectangle( Selection* selection, cairo_t* cr )
 {
     if( selection->selection_en_cours )

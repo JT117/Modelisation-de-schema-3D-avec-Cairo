@@ -98,7 +98,7 @@ void Scene_clear_scene( Scene* scene, cairo_t* cr )
  * @param scene, un pointeur sur une scene initialisée
  * @return TRUE si une selection multiple est en cours
  **/
-gboolean Scene_selection_Multiple( Scene* scene )
+/*gboolean Scene_selection_Multiple( Scene* scene )
 {
     int i = 0;
 
@@ -112,7 +112,7 @@ gboolean Scene_selection_Multiple( Scene* scene )
     }
 
     return FALSE;
-}
+}*/
 
 void Scene_creation_objet( Scene* scene, double x, double y )
 {
@@ -132,4 +132,30 @@ void Scene_reset( Scene* scene, GtkWidget* window )
     free( scene->selection );
     Scene_reconstruire( scene, window );
 }
+
+/** Fonction qui supprime un objet de la scene
+  * @param scene, un pointeur sur la scene initialisée
+  * @param objet, un pointeur sur l'objet à enlever de la scene
+  **/
+void Scene_enlever_objet( Scene* scene, Objet* objet )
+{
+    int i = 0;
+
+    for( i = 0; i < scene->nbObjet; i++ )
+    {
+        Objet* objetDuTableau = g_array_index( scene->tObjet, Objet*, i );
+
+        if( objet == objetDuTableau )
+        {
+            g_array_remove_index_fast( scene->tObjet, i );
+            scene->nbObjet--;
+
+            Objet_detruire( objet );
+            free( objet );
+        }
+    }
+}
+
+
+
 
