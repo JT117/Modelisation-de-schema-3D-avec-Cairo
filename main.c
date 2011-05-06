@@ -7,6 +7,7 @@
 #include "FenetreAjoutCube.h"
 #include "Scene.h"
 #include "Config.h"
+#include "FenetrePropriete.h"
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
@@ -41,6 +42,7 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
     GtkWidget* menuBarre = gtk_menu_bar_new();
     gtk_widget_set_size_request( menuBarre, -1, -1 );
 
+//******************Creation de la barre de menu ********************************************
     GtkWidget* menu = gtk_menu_new();
     GtkWidget* fichier = gtk_menu_item_new_with_label( "Fichier" );
     GtkWidget* nouveau = gtk_menu_item_new_with_label( "Nouveau" );
@@ -65,17 +67,50 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), fichier);
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), edition);
 
-    gtk_container_add( GTK_CONTAINER( main_box ), menuBarre );
-    gtk_container_add( GTK_CONTAINER( main_box ), zoneDeDessin );
-
+//***********************************Ajusteùent de la Zone de dessin************************************
     GdkScreen* screen = NULL;
     screen = gtk_window_get_screen(GTK_WINDOW(mainWindow));
     double width = gdk_screen_get_width(screen);
     double height = gdk_screen_get_height(screen);
 
-    gtk_widget_set_size_request( zoneDeDessin, width-10, height-75 );        //taille minimum de la zone de dessin
-    gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );             // Ajout de la zone de dessin dans le mainWindow
+       /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
+    scene->camera = Camera_createCam(width-200,height-75);
 
+    gtk_widget_set_size_request( zoneDeDessin, width-200, height-75 );
+    gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );
+//*******************************************************************************************************
+    enum{ GROUPE };
+
+    GtkTreeStore *store = gtk_tree_store_new( 1, G_TYPE_STRING );
+
+    GtkTreeIter iter1;
+    gtk_tree_store_append (store, &iter1, NULL);
+    gtk_tree_store_set (store, &iter1, GROUPE, "Groupe 0", -1);
+
+    GtkTreeIter iter2;
+    gtk_tree_store_append (store, &iter2, &iter1 );
+    gtk_tree_store_set (store, &iter2, GROUPE, "Groupe 1", -1);
+
+    GtkWidget *tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
+
+    renderer = gtk_cell_renderer_text_new ();
+    column = gtk_tree_view_column_new_with_attributes ("Groupe", renderer, "text", GROUPE, NULL );
+    gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+    gtk_widget_set_size_request( tree, 200, height-75 );
+
+//*******************************Layout****************************************************************
+
+    GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
+    gtk_container_add( GTK_CONTAINER( hbox ), zoneDeDessin );
+    gtk_container_add( GTK_CONTAINER( hbox ), tree );
+    gtk_container_add( GTK_CONTAINER( main_box ), menuBarre );
+    gtk_container_add( GTK_CONTAINER( main_box ), hbox );
+
+//*****************************************************************************************************
     gtk_widget_show_all( mainWindow );
 
     gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );          // Nom totalement provisiore ^^
@@ -180,6 +215,20 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
                 Selection_selectionner_tout( scene );                                           //Raccourci Ctrl_L + a = selectionner tout
             }
             gtk_widget_queue_draw( window );
+        }
+        else if( strcmp( gdk_keyval_name(event->keyval), "o") == 0 )
+        {
+            if( Clavier_est_appuyer( scene, "Control_L" ) )
+            {
+                main_ouvrir( NULL, scene );
+            }
+        }
+        else if( strcmp( gdk_keyval_name(event->keyval), "s") == 0 )
+        {
+            if( Clavier_est_appuyer( scene, "Control_L" ) )
+            {
+                main_sauvegarder( NULL, scene );
+            }
         }
         else if( strcmp( gdk_keyval_name(event->keyval), "Escape") == 0 )
         {
@@ -441,7 +490,6 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
-
 /** Fonction gérant le click sur l'element annuler
  * @param menuItem, l'element du menu ayant ete cliqué
  * @param data, pointeur générique sur la scene, qui contient un pointeur sur le module Modification
@@ -552,8 +600,10 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data )
 
     if( scene->selection->nbSelection == 1 )
     {
-
+        FenetrePropriete* fp = (FenetrePropriete*)malloc( 1 * sizeof( FenetrePropriete ) );
+        FenetrePropriete_initialiser( fp, scene );
     }
+    return TRUE;
 }
 
 

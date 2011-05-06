@@ -23,21 +23,33 @@ void Objet_est_un_Cube( Objet* objet, Cube* cube )
     objet->type.cube = cube;
     strcpy( objet->typeObjet, "Cube" );
     objet->doitEtreDeselectionner = TRUE;
-    objet->tGroupe = g_array_new( FALSE, TRUE, sizeof( int* ) );
-    objet->nbGroupe = 0;
+}
+
+void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
+{
+    pObj->typeObjet = (char*)malloc( 10 * sizeof(char) ); /* allocation chaine de type */
+    pObj->type.rectangle = pRect; /* sauvegarde pointeur sur objet */
+    strcpy( pObj->typeObjet, "Rectangle" );
+    pObj->doitEtreDeselectionner = TRUE;
 }
 
 /** Fonction qui dessine l'objet
  * @param objet, un pointeur sur l'objet à dessiner
  * @param cr, un pointeur sur le contexte cairo servant à dessiner sur la zoneDeDessin
  **/
-void Objet_dessiner_objet( Objet* objet, cairo_t* cr )
+void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        dessiner_Cube( objet->type.cube, cr );
+        //dessiner_Cube( objet->type.cube, cr, cam);
+        Cube_drawCube( objet->type.cube, cr, cam );
     }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+	{
+		Rectangle_drawRectangle( objet->type.rectangle, cr, cam);
+	}
 }
+
 
 /** Fonction qui indique si un point est contenu par un objet
  * @param objet, l'objet que l'on cherche à tester

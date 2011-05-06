@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include "Point.h"
+#include "Color.h"
+#include "Camera.h"
 #include <gtk/gtk.h>
 
 typedef struct Cube Cube;
@@ -15,12 +17,19 @@ struct Cube
 
     Point tPoint[8];
     gboolean estSelectionne;
+    Point Center; /* Coordonées du repere de l'objet, utilisé pour les transformations */
+	Color tColor; /* Couleur de l'objet */
 
 };
 
+
+void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam);
+
+Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth);
+
 void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote );
 
-void dessiner_Cube( Cube* cCube, cairo_t* cr );
+void dessiner_Cube( Cube* cCube, cairo_t* cr, InfoCamera* cam );
 
 void rotation_Cube( Cube* cCube, double dAngle, int iAxe );
 
@@ -36,6 +45,7 @@ gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
 
 int scalaire_result( Point a, Point b, int x, int y );
 
+GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam);
 
 
 #endif //CUBE_H

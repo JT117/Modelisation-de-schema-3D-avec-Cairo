@@ -21,6 +21,12 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->modification = (Modification*)malloc( 1 * sizeof( Modification ) );
     Modification_initialiser( scene->modification );
 
+    Groupe* groupeDeBase = (Groupe*)malloc( 1 * sizeof( Groupe ) );
+    Groupe_initialiser( groupeDeBase, NULL, 0 );
+    scene->tGroupe = g_array_new( FALSE, TRUE, sizeof( Groupe* ) ); //coucou =)
+    g_array_append_val( scene->tGroupe, groupeDeBase );
+    scene->nbGroupe = 1;
+
     scene->tailleCreation = 50.0;
     scene->creation = (Point*)malloc( 1* sizeof( Point ) );
     scene->creation->x = 0.0;
@@ -70,6 +76,14 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube )
     scene->nbObjet++;
 }
 
+void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect )
+{
+    Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
+    Objet_est_un_Rectangle( objet, rect );
+    g_array_append_val( scene->tObjet, objet );
+    scene->nbObjet++;
+}
+
 /** Fonction qui dessiner tout les objets de la scene
  * @param scene, un pointeur sur une scene initialisée
  * @param cr, un contexte cairo créer sur la zoneDeDessin
@@ -80,7 +94,7 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 
     for( i = 0; i < scene->nbObjet; i++ )
     {
-        Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr );
+        Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr, scene->camera );
     }
 }
 
