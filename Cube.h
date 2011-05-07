@@ -24,9 +24,29 @@ struct Cube
     gboolean estSelectionne;
 };
 
+void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam);
+
 Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth);
 
-void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam);
+/**
+ * Rotation d'un objet cube autour de son centre de gravité.
+ * @param pCube L'objet cube à faire tourner
+ * @param dAngleX Angle de rotation suivant l'axe X
+ * @param dAngleY Angle de rotation suivant l'axe Y
+ * @param dAngleZ Angle de rotation suivant l'axe Z
+ * @warning Les angles doivent être en radian
+ */
+void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ);
+
+/**
+ * Rotation d'un objet cube autour du centre de l'univers.
+ * @param pCube L'objet cube à faire tourner
+ * @param dAngleX Angle de rotation suivant l'axe X
+ * @param dAngleY Angle de rotation suivant l'axe Y
+ * @param dAngleZ Angle de rotation suivant l'axe Z
+ * @warning Les angles doivent être en radian
+ */
+void Cube_rotateCubeWorld(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ);
 
 void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote );
 
@@ -45,5 +65,12 @@ gboolean Cube_Contient_Point( Cube* cCube, double x, double y );
 gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
 
 int scalaire_result( Point a, Point b, int x, int y );
+
+/**
+ * Agrandit/retrécit un objet de type cube suivant le ratio fourni en param.
+ * @param pRectangle Le cube en question
+ * @param dRatio Le ratio d'agrandissement/rétrecissement
+ */
+void Cube_modSize(Cube* pRectangle, double dRatio);
 
 #endif //CUBE_H

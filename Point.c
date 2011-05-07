@@ -43,3 +43,15 @@ void Point_initCoord(tdCoord pCoord,double dX, double dY, double dZ)
 	pCoord[2] = dZ;
 	pCoord[3] = 1;
 }
+
+void Point_middlePoint(Point* pRes, Point* pP1, Point* pP2)
+{
+	Point_init(pRes, (pP2->tdCoordWorld[0]+pP1->tdCoordWorld[0])/2, (pP2->tdCoordWorld[1]+pP1->tdCoordWorld[1])/2,
+							(pP2->tdCoordWorld[2]+pP1->tdCoordWorld[2])/2);
+}
+
+double Point_euclideanDistance(Point* pP1, Point* pP2)
+{
+	return sqrt(pow(pP2->tdCoordWorld[0]-pP1->tdCoordWorld[0],2.0) + pow(pP2->tdCoordWorld[1]-pP1->tdCoordWorld[1],2.0)
+							+ pow(pP2->tdCoordWorld[2]-pP1->tdCoordWorld[2],2.0));
+}
