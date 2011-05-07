@@ -3,6 +3,7 @@
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data );
 static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpointer data );
+void FenetreAjoutCube_enlever_layout( FenetreAjoutCube* fao );
 
 void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 {
@@ -18,8 +19,9 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     //********* Barre de selection***************************
     fao->barreSelection = gtk_hbutton_box_new();
     GtkWidget* comboBox = gtk_combo_box_new_text();
-    gtk_combo_box_append_text( comboBox, "Cube" );
-    gtk_combo_box_append_text( comboBox, "Parallélépipède rectangle" );
+
+    gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Cube" );
+    gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Parallélépipède rectangle" );
 
     gtk_widget_set_size_request( comboBox, 100, -1 );
 
@@ -27,7 +29,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 
     gtk_container_add( GTK_CONTAINER( fao->barreSelection ), text );
     gtk_container_add( GTK_CONTAINER( fao->barreSelection ), comboBox );
-    gtk_button_box_set_layout( fao->barreSelection, GTK_BUTTONBOX_START );
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barreSelection ), GTK_BUTTONBOX_START );
 
     g_object_ref( fao->barreSelection );
 
@@ -41,7 +43,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_widget_set_size_request(fao->entry2, 70, -1 );
     gtk_widget_set_size_request(fao->entry3, 70, -1 );
 
-    GtkWidget* text0 = gtk_label_new("Taille des cotés en pixel : ");
+//    GtkWidget* text0 = gtk_label_new("Taille des cotés en pixel : ");
     GtkWidget* text1 = gtk_label_new("Position X : ");
     GtkWidget* text2 = gtk_label_new("Position Y : ");
     GtkWidget* text3 = gtk_label_new("Position Z : ");
@@ -70,7 +72,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_container_add( GTK_CONTAINER( fao->barrePosition ), fao->entry3 );
     gtk_entry_set_text( GTK_ENTRY( fao->entry3 ), buf2 );
 
-    gtk_button_box_set_layout( fao->barrePosition, GTK_BUTTONBOX_START );
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barrePosition ), GTK_BUTTONBOX_START );
 
     g_object_ref( fao->barrePosition );
 
@@ -80,7 +82,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     fao->boutonAnnuler = gtk_button_new_with_label("Annuler");
 
     fao->barreBouton = gtk_hbutton_box_new();
-    gtk_button_box_set_layout( fao->barreBouton, GTK_BUTTONBOX_END );
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barreBouton ), GTK_BUTTONBOX_END );
 
     gtk_container_add( GTK_CONTAINER( fao->barreBouton ), fao->boutonOk );
     gtk_container_add( GTK_CONTAINER( fao->barreBouton ), fao->boutonAnnuler );
@@ -102,8 +104,8 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 
     gtk_container_add( GTK_CONTAINER( fao->fenetre ), fao->layout );
 
-    gtk_combo_box_set_active( comboBox, 0 );
-    g_signal_emit( GTK_OBJECT( comboBox ), "changed", NULL );
+    gtk_combo_box_set_active( GTK_COMBO_BOX( comboBox ), 0 );
+    g_signal_emit_by_name( GTK_OBJECT( comboBox ), "changed", NULL );
 
     gtk_widget_show_all(fao->fenetre);
 }
@@ -117,7 +119,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
         FenetreAjoutCube_enlever_layout( fao );
 
         fao->layout = gtk_vbutton_box_new();
-        gtk_button_box_set_layout( fao->layout, GTK_BUTTONBOX_START );
+        gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START );
 
         fao->hbox_cube = gtk_hbutton_box_new();
         GtkWidget* text = gtk_label_new("Taille des cotés : ");
@@ -128,7 +130,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
         gtk_container_add( GTK_CONTAINER( fao->hbox_cube ), text );
         gtk_container_add( GTK_CONTAINER( fao->hbox_cube ), fao->longueur );
 
-        gtk_button_box_set_layout( fao->hbox_cube, GTK_BUTTONBOX_START );
+        gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_cube ), GTK_BUTTONBOX_START );
 
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreSelection );
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barrePosition );
@@ -147,7 +149,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
         FenetreAjoutCube_enlever_layout( fao );
 
         fao->layout = gtk_vbutton_box_new();
-        gtk_button_box_set_layout( fao->layout, GTK_BUTTONBOX_START );
+        gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START );
 
         fao->hbox_rect = gtk_hbox_new( FALSE, 10 );
         GtkWidget* text = gtk_label_new("Largeur : ");
@@ -172,6 +174,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
         gtk_widget_draw( fao->fenetre, NULL );
         gtk_widget_show_all(fao->fenetre);
     }
+    return TRUE;
 }
 
 void FenetreAjoutCube_enlever_layout( FenetreAjoutCube* fao )
@@ -214,19 +217,42 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 
     if( fao->scene->tailleCreation > 0 )
     {
+
     	/* TODO : récupérer valeur combobox pour pouvoir adapter l'init */
     	//if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Rectangle" ) == 0 )
         //Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
-
+    	/*
 		tdCenter[0] = fao->scene->creation->x;
     	tdCenter[1] = fao->scene->creation->y;
     	tdCenter[2] = fao->scene->creation->z;
     	tdCenter[3] = 1;
 
     	pNewCube = Cube_createCube(tdCenter, largeur, longueur, 40); /* TODO : récup aussi profondeur */
-
-        //initialiser_Cube( cube, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z, fao->scene->tailleCreation );
+    	/*
         Scene_ajouter_cube( fao->scene, pNewCube);
+        */
+        if( strcmp( fao->dernierLayout, "Cube" ) == 0 )
+        {
+            Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
+            tdCoord coord;
+            Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
+            printf("%f |%f | %f\n", coord[0], coord[1], coord[2] );
+            Cube_createCube( coord, fao->scene->tailleCreation, fao->scene->tailleCreation, 5 );
+            Scene_ajouter_cube( fao->scene, cube );
+        }
+        else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
+        {
+            Rectangle rect;
+            tdCoord coord;
+            tdCoord coord1;
+            Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
+            // Largeur non prise en compte pour le test
+            Point_initCoord( coord1, fao->scene->creation->x + fao->scene->tailleCreation , fao->scene->creation->y + fao->scene->tailleCreation, fao->scene->creation->z );
+            printf("Apres init :\n x = %f | x1 = %f\n y = %f | y1 = %f\n", coord[0], coord1[0], coord[1], coord1[1] );
+            Rectangle_createRectangle( coord, coord1 );
+            Scene_ajouter_rectangle( fao->scene, &rect );
+        }
+
         gtk_widget_queue_draw( scene->zoneDeDessin );
         Modification_modification_effectuer( scene );
         g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );

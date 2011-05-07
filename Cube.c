@@ -1,8 +1,9 @@
-#include <math.h>
 #include <gtk/gtk.h>
-
 #include "Cube.h"
 #include "ProjectionTools.h"
+#include <math.h>
+#include "Point.h"
+
 
 Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth)
 {
@@ -34,6 +35,7 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 		pNewCube->tColor[1]=0.4;
 		pNewCube->tColor[2]=0.8;
 		pNewCube->tColor[3]=0.8;
+
 	}
 	else
 	{
@@ -41,45 +43,6 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 	}
 	return pNewCube;
 }
-
-void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote )
-{
-    cCube->tPoint[0].x = dX;
-    cCube->tPoint[0].y = dY;
-    cCube->tPoint[0].z = dZ;
-
-    cCube->tPoint[1].x = dX + dCote;
-    cCube->tPoint[1].y = dY;
-    cCube->tPoint[1].z = dZ;
-
-    cCube->tPoint[2].x = dX + dCote;
-    cCube->tPoint[2].y = dY + dCote;
-    cCube->tPoint[2].z = dZ;
-
-    cCube->tPoint[3].x = dX;
-    cCube->tPoint[3].y = dY + dCote;
-    cCube->tPoint[3].z = dZ;
-
-    cCube->tPoint[4].x = dX;
-    cCube->tPoint[4].y = dY;
-    cCube->tPoint[4].z = dZ + dCote;
-
-    cCube->tPoint[5].x = dX + dCote;
-    cCube->tPoint[5].y = dY;
-    cCube->tPoint[5].z = dZ + dCote;
-
-    cCube->tPoint[6].x = dX + dCote;
-    cCube->tPoint[6].y = dY + dCote;
-    cCube->tPoint[6].z = dZ + dCote;
-
-    cCube->tPoint[7].x = dX;
-    cCube->tPoint[7].y = dY + dCote;
-    cCube->tPoint[7].z = dZ + dCote;
-
-    cCube->estSelectionne = FALSE;
-
-}
-
 
 GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 {
@@ -153,6 +116,45 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 	}
 	return gtTabFaceOrder;
 }
+
+void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote )
+{
+    cCube->tPoint[0].x = dX;
+    cCube->tPoint[0].y = dY;
+    cCube->tPoint[0].z = dZ;
+
+    cCube->tPoint[1].x = dX + dCote;
+    cCube->tPoint[1].y = dY;
+    cCube->tPoint[1].z = dZ;
+
+    cCube->tPoint[2].x = dX + dCote;
+    cCube->tPoint[2].y = dY + dCote;
+    cCube->tPoint[2].z = dZ;
+
+    cCube->tPoint[3].x = dX;
+    cCube->tPoint[3].y = dY + dCote;
+    cCube->tPoint[3].z = dZ;
+
+    cCube->tPoint[4].x = dX;
+    cCube->tPoint[4].y = dY;
+    cCube->tPoint[4].z = dZ + dCote;
+
+    cCube->tPoint[5].x = dX + dCote;
+    cCube->tPoint[5].y = dY;
+    cCube->tPoint[5].z = dZ + dCote;
+
+    cCube->tPoint[6].x = dX + dCote;
+    cCube->tPoint[6].y = dY + dCote;
+    cCube->tPoint[6].z = dZ + dCote;
+
+    cCube->tPoint[7].x = dX;
+    cCube->tPoint[7].y = dY + dCote;
+    cCube->tPoint[7].z = dZ + dCote;
+
+    cCube->estSelectionne = FALSE;
+
+}
+
 
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 {

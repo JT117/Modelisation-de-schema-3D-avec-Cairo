@@ -1,5 +1,9 @@
 #include "Objet.h"
 
+/** Fonction qui libère un objet selon son type
+ * @param objet, l'objet à liberer
+ * @warning pour certain type d'objet rien n'est à liberer
+ **/
 void Objet_detruire( Objet* objet )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
@@ -8,6 +12,11 @@ void Objet_detruire( Objet* objet )
     }
 }
 
+/** Fonction qui initialise un objet de type Cube
+ * @param objet, un pointeur sur l'objet à initialiser
+ * @param cube, le cube avec lequel initialiser l'objet
+ * @warning l'utilisateur doit liberer la memoire allouer
+ **/
 void Objet_est_un_Cube( Objet* objet, Cube* cube )
 {
     objet->typeObjet = (char*)malloc( 5 * sizeof(char) );
@@ -24,19 +33,30 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     pObj->doitEtreDeselectionner = TRUE;
 }
 
+
+/** Fonction qui dessine l'objet
+ * @param objet, un pointeur sur l'objet à dessiner
+ * @param cr, un pointeur sur le contexte cairo servant à dessiner sur la zoneDeDessin
+ **/
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-    	Cube_drawCube(objet->type.cube, cr, cam);
         //dessiner_Cube( objet->type.cube, cr, cam);
+        Cube_drawCube( objet->type.cube, cr, cam );
     }
     else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
 	{
-    	Rectangle_drawRectangle(objet->type.cube, cr, cam);
+		Rectangle_drawRectangle( objet->type.rectangle, cr, cam);
 	}
 }
 
+
+/** Fonction qui indique si un point est contenu par un objet
+ * @param objet, l'objet que l'on cherche à tester
+ * @param x, la coordonnées x du point à tester
+ * @param y, la coordonnées y du point à tester
+ **/
 gboolean Objet_contient_point( Objet* objet, double x, double y )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
@@ -50,6 +70,9 @@ gboolean Objet_contient_point( Objet* objet, double x, double y )
     return TRUE;
 }
 
+/** Fonction qui mets le flag de selection de l'objet à TRUE
+ * @param objet, l'objet à selectionner
+ **/
 void Objet_selection( Objet* objet )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
@@ -58,6 +81,9 @@ void Objet_selection( Objet* objet )
     }
 }
 
+/** Fonction qui mets le flag de selection de l'objet à FALSE
+ * @param scene, un pointeur sur une scene initialisée
+ **/
 void Objet_deselection( Objet* objet )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )

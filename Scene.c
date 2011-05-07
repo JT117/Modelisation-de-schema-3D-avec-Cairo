@@ -21,6 +21,12 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->modification = (Modification*)malloc( 1 * sizeof( Modification ) );
     Modification_initialiser( scene->modification );
 
+    Groupe* groupeDeBase = (Groupe*)malloc( 1 * sizeof( Groupe ) );
+    Groupe_initialiser( groupeDeBase, NULL, 0 );
+    scene->tGroupe = g_array_new( FALSE, TRUE, sizeof( Groupe* ) ); //coucou =)
+    g_array_append_val( scene->tGroupe, groupeDeBase );
+    scene->nbGroupe = 1;
+
     scene->tailleCreation = 50.0;
     scene->creation = (Point*)malloc( 1* sizeof( Point ) );
     scene->creation->x = 0.0;
@@ -70,16 +76,11 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube )
     scene->nbObjet++;
 }
 
-/** Fonction qui ajoute un objet de type Rectangle à la scene
- * @param pScene Pointeur sur une scene initialisée
- * @param pRect Pointeur sur le rectangle à ajouter
- **/
-void Scene_ajouter_rectangle( Scene* scene, Rectangle* pRect )
+
+void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect )
 {
-	/* Création d'un nouvel objet*/
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
-    /* L'objet est un rectangle, on initialise les infos nécessaire de notre nouvelle structure objet*/
-    Objet_est_un_Rectangle( objet, pRect );
+    Objet_est_un_Rectangle( objet, rect );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
 }
@@ -112,7 +113,7 @@ void Scene_clear_scene( Scene* scene, cairo_t* cr )
  * @param scene, un pointeur sur une scene initialisée
  * @return TRUE si une selection multiple est en cours
  **/
-gboolean Scene_selection_Multiple( Scene* scene )
+/*gboolean Scene_selection_Multiple( Scene* scene )
 {
     int i = 0;
 
@@ -126,7 +127,7 @@ gboolean Scene_selection_Multiple( Scene* scene )
     }
 
     return FALSE;
-}
+}*/
 
 void Scene_creation_objet( Scene* scene, double x, double y )
 {
@@ -146,4 +147,30 @@ void Scene_reset( Scene* scene, GtkWidget* window )
     free( scene->selection );
     Scene_reconstruire( scene, window );
 }
+
+/** Fonction qui supprime un objet de la scene
+  * @param scene, un pointeur sur la scene initialisée
+  * @param objet, un pointeur sur l'objet à enlever de la scene
+  **/
+void Scene_enlever_objet( Scene* scene, Objet* objet )
+{
+    int i = 0;
+
+    for( i = 0; i < scene->nbObjet; i++ )
+    {
+        Objet* objetDuTableau = g_array_index( scene->tObjet, Objet*, i );
+
+        if( objet == objetDuTableau )
+        {
+            g_array_remove_index_fast( scene->tObjet, i );
+            scene->nbObjet--;
+
+            Objet_detruire( objet );
+            free( objet );
+        }
+    }
+}
+
+
+
 

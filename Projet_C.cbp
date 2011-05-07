@@ -37,10 +37,15 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Camera.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Camera.h" />
 		<Unit filename="Clavier.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Clavier.h" />
+		<Unit filename="Color.h" />
 		<Unit filename="Config.h" />
 		<Unit filename="Cube.c">
 			<Option compilerVar="CC" />
@@ -50,6 +55,18 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FenetreAjoutCube.h" />
+		<Unit filename="FenetrePropriete.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="FenetrePropriete.h" />
+		<Unit filename="Groupe.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Groupe.h" />
+		<Unit filename="MatrixTools.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="MatrixTools.h" />
 		<Unit filename="Modification.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -58,7 +75,18 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Objet.h" />
+		<Unit filename="Point.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="Point.h" />
+		<Unit filename="ProjectionTools.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ProjectionTools.h" />
+		<Unit filename="Rectangle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Rectangle.h" />
 		<Unit filename="Scene.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -67,6 +95,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Selection.h" />
+		<Unit filename="TransfoTools.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="TransfoTools.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

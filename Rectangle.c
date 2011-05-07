@@ -31,7 +31,8 @@ Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
 			pNewRect->tColor[3]=1.0;
 		}
 		else
-			printf("Coordonnees passees en parametre non valides\n");
+			printf("Coordonnees passees en parametre non valides %d | %d \n", tdCorner1[1], tdCorner2[1] );
+
 	}
 	else
 	{

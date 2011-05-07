@@ -8,6 +8,7 @@
 #include "Objet.h"
 #include "Scene.h"
 #include "Config.h"
+#include "FenetrePropriete.h"
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
@@ -21,6 +22,8 @@ static gboolean main_annuler( GtkWidget *menuItem, gpointer data );
 static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
 static gboolean main_quitter( GtkWidget *menuItem, gpointer data );
 static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
+static gboolean main_supprimer( GtkWidget *menuItem, gpointer data );
+static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
 
 
  int main (int argc, char *argv[])
@@ -41,6 +44,7 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
     GtkWidget* menuBarre = gtk_menu_bar_new();
     gtk_widget_set_size_request( menuBarre, -1, -1 );
 
+//******************Creation de la barre de menu ********************************************
     GtkWidget* menu = gtk_menu_new();
     GtkWidget* fichier = gtk_menu_item_new_with_label( "Fichier" );
     GtkWidget* nouveau = gtk_menu_item_new_with_label( "Nouveau" );
@@ -65,20 +69,50 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), fichier);
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), edition);
 
-    gtk_container_add( GTK_CONTAINER( main_box ), menuBarre );
-    gtk_container_add( GTK_CONTAINER( main_box ), zoneDeDessin );
-
+//***********************************Ajusteùent de la Zone de dessin************************************
     GdkScreen* screen = NULL;
     screen = gtk_window_get_screen(GTK_WINDOW(mainWindow));
     double width = gdk_screen_get_width(screen);
     double height = gdk_screen_get_height(screen);
 
-    /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
-    scene->camera = Camera_createCam(width-10,height-75);
+       /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
+    scene->camera = Camera_createCam(width-200,height-75);
 
-    gtk_widget_set_size_request( zoneDeDessin, width-10, height-75 );        //taille minimum de la zone de dessin
-    gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );             // Ajout de la zone de dessin dans le mainWindow
+    gtk_widget_set_size_request( zoneDeDessin, width-200, height-75 );
+    gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );
+//*******************************************************************************************************
+    enum{ GROUPE };
 
+    GtkTreeStore *store = gtk_tree_store_new( 1, G_TYPE_STRING );
+
+    GtkTreeIter iter1;
+    gtk_tree_store_append (store, &iter1, NULL);
+    gtk_tree_store_set (store, &iter1, GROUPE, "Groupe 0", -1);
+
+    GtkTreeIter iter2;
+    gtk_tree_store_append (store, &iter2, &iter1 );
+    gtk_tree_store_set (store, &iter2, GROUPE, "Groupe 1", -1);
+
+    GtkWidget *tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
+
+    renderer = gtk_cell_renderer_text_new ();
+    column = gtk_tree_view_column_new_with_attributes ("Groupe", renderer, "text", GROUPE, NULL );
+    gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+    gtk_widget_set_size_request( tree, 200, height-75 );
+
+//*******************************Layout****************************************************************
+
+    GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
+    gtk_container_add( GTK_CONTAINER( hbox ), zoneDeDessin );
+    gtk_container_add( GTK_CONTAINER( hbox ), tree );
+    gtk_container_add( GTK_CONTAINER( main_box ), menuBarre );
+    gtk_container_add( GTK_CONTAINER( main_box ), hbox );
+
+//*****************************************************************************************************
     gtk_widget_show_all( mainWindow );
 
     gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );          // Nom totalement provisiore ^^ (mais qui envoie quand même du bois !)
@@ -172,6 +206,10 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
             // Fonction de rotation scene/objet
             gtk_widget_queue_draw( window );
         }
+        else if( strcmp( gdk_keyval_name(event->keyval), "Shift_L") == 0 )
+        {
+            scene->selection->selection_multiple = TRUE;
+        }
         else if( strcmp( gdk_keyval_name(event->keyval), "a") == 0 )
         {
             if( Clavier_est_appuyer( scene, "Control_L" ) )
@@ -180,16 +218,34 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
             }
             gtk_widget_queue_draw( window );
         }
+        else if( strcmp( gdk_keyval_name(event->keyval), "o") == 0 )
+        {
+            if( Clavier_est_appuyer( scene, "Control_L" ) )
+            {
+                main_ouvrir( NULL, scene );
+            }
+        }
+        else if( strcmp( gdk_keyval_name(event->keyval), "s") == 0 )
+        {
+            if( Clavier_est_appuyer( scene, "Control_L" ) )
+            {
+                main_sauvegarder( NULL, scene );
+            }
+        }
         else if( strcmp( gdk_keyval_name(event->keyval), "Escape") == 0 )
         {
             Selection_deselectionner_tout( scene->selection );                                  //Echap = Tout deselectionner
             gtk_widget_queue_draw( window );
         }
-        else if( strcmp( gdk_keyval_name( event->keyval), "z" ) == 0 )
+        else if( strcmp( gdk_keyval_name( event->keyval), "z" ) == 0 || strcmp( gdk_keyval_name( event->keyval), "Z" ) == 0 )
         {
-            if( Clavier_est_appuyer( scene, "Control_L" ) && gtk_widget_get_sensitive( scene->modification->annuler ) )
+            if( Clavier_est_appuyer( scene, "Control_L" ) && !Clavier_est_appuyer( scene, "Shift_L") && gtk_widget_get_sensitive( scene->modification->annuler ) )
             {
                 Modification_annuler( scene );                                                  //Ctrl_L + z = annuler si annuler disponible
+            }
+            else if( Clavier_est_appuyer( scene, "Control_L") && Clavier_est_appuyer( scene, "Shift_L") && gtk_widget_get_sensitive( scene->modification->refaire ) )
+            {
+                Modification_refaire( scene );
             }
             gtk_widget_queue_draw( window );
         }
@@ -197,6 +253,11 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
     else if( event->type == GDK_KEY_RELEASE )
     {
         Clavier_touche_relacher( scene, gdk_keyval_name(event->keyval) );                       //On eneleve les touches relachées
+
+        if( strcmp( gdk_keyval_name(event->keyval), "Shift_L") == 0 )
+        {
+            scene->selection->selection_multiple = FALSE;
+        }
     }
     return TRUE;
 }
@@ -223,6 +284,7 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     {
         GtkWidget *menu = gtk_menu_new();
         GtkWidget *pItem = gtk_menu_item_new_with_label("Nouvel objet");
+        /*
         GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriété");
 
         GtkWidget *sousMenu1 = gtk_menu_new();
@@ -232,17 +294,30 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         gtk_menu_attach( GTK_MENU(sousMenu1), pItem4, 0, 1, 1, 2 );
 
         gtk_menu_item_set_submenu( GTK_MENU_ITEM(pItem), sousMenu1 );
+        */
+        GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriete");
+        GtkWidget *pItem3 = gtk_menu_item_new_with_label("Supprimer");
 
         gtk_menu_attach( GTK_MENU(menu), pItem, 0, 1, 0, 1 );
         gtk_menu_attach( GTK_MENU(menu), pItem2, 0, 1, 1, 2 );
+        gtk_menu_attach( GTK_MENU(menu), pItem3, 0, 1, 2, 3 );
 
         gtk_widget_show_all(menu);
 
         Scene_creation_objet( scene, event->x, event->y );
 
         gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
-        g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(nouveau_cube), scene);
-        g_signal_connect( G_OBJECT( pItem4 ), "activate", G_CALLBACK(nouveau_rectangle), scene);
+
+        g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_cube), scene);
+        g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(main_supprimer), scene);
+        g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK(nouveau_propriete), scene);
+
+        gboolean temp = scene->selection->selection_multiple;
+        scene->selection->selection_multiple = TRUE;
+        Selection_selectionner_objet( scene, event->x, event->y );
+        scene->selection->selection_multiple = temp;
+        gtk_widget_queue_draw( widget );
+
     }
     else if( event->type == GDK_MOTION_NOTIFY )                                                 //Prob lag normalement resolu grace à GDK_POINTER_MOTION_HINT_MASK
     {
@@ -437,7 +512,6 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
-
 /** Fonction gérant le click sur l'element annuler
  * @param menuItem, l'element du menu ayant ete cliqué
  * @param data, pointeur générique sur la scene, qui contient un pointeur sur le module Modification
@@ -509,6 +583,48 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data )
     else
     {
         gtk_widget_destroy( avertissement );
+    }
+    return TRUE;
+}
+
+
+/** Fonction gérant l'appel à la suppression d'éléments
+ *  @param menuItem, le menu ayant ete cliqué
+ *  @param data, la scene contenant le/les elements à supprimer
+ *  @return TRUE pour propager les evenements dans l'application
+ **/
+static gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
+{
+    Scene* scene = (Scene*)data;
+
+    int i = 0;
+    int nb = scene->selection->nbSelection;
+
+    for( i = 0; i < nb; i++ )
+    {
+        Objet* objet = g_array_index( scene->selection->tSelection, Objet*, 0 );
+
+        Selection_deselectionner( scene->selection, objet );
+        Scene_enlever_objet( scene, objet );
+    }
+
+    Modification_modification_effectuer( scene );
+
+    gtk_widget_queue_draw( scene->zoneDeDessin );
+}
+
+/** Fonction qui créer une nouvelle fenetre de propriete pour un objet
+  * @param menuItem, l'element du menu ayant ete cliqué
+  * @param data, la scene
+  */
+static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data )
+{
+    Scene* scene = (Scene*)data;
+
+    if( scene->selection->nbSelection == 1 )
+    {
+        FenetrePropriete* fp = (FenetrePropriete*)malloc( 1 * sizeof( FenetrePropriete ) );
+        FenetrePropriete_initialiser( fp, scene );
     }
     return TRUE;
 }

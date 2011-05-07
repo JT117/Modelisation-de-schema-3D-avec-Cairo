@@ -35,5 +35,8 @@ void Point_init(Point* pPoint,double dX, double dY, double dZ);
  */
 void Point_initCoord(tdCoord pCoord,double dX, double dY, double dZ);
 
+void Point_middlePoint(Point* pRes, Point* pP1, Point* pP2);
+
+double Point_euclideanDistance(Point* pP1, Point* pP2);
 
 #endif // POINT_H

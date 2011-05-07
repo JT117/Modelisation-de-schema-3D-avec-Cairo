@@ -36,7 +36,6 @@ void Clavier_touche_appuyer( Scene* scene, char* nomTouche )
 {
     if( !Clavier_est_appuyer( scene, nomTouche ) )
     {
-        //printf(" %s \n", nomTouche );
         g_array_append_val( scene->clavier->tTouche, nomTouche );
         scene->clavier->nbTouche++;
     }

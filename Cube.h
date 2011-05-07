@@ -19,9 +19,9 @@ struct Cube
     // 3-----2
     Point tPoint[8];
 
+    gboolean estSelectionne;
     Point Center; /* Coordonées du repere de l'objet, utilisé pour les transformations */
 	Color tColor; /* Couleur de l'objet */
-    gboolean estSelectionne;
 };
 
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam);
@@ -72,5 +72,7 @@ int scalaire_result( Point a, Point b, int x, int y );
  * @param dRatio Le ratio d'agrandissement/rétrecissement
  */
 void Cube_modSize(Cube* pRectangle, double dRatio);
+
+GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam);
 
 #endif //CUBE_H

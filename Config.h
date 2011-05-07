@@ -10,6 +10,7 @@
 #include "Scene.h"
 #include "Modification.h"
 #include "Clavier.h"
+#include "Rectangle.h"
 
 
 // **************** Selection ***************************************
