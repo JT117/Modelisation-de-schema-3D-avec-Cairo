@@ -12,8 +12,18 @@ Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
 
 	if( (pNewRect = (Rectangle*)malloc(sizeof(Rectangle))) != NULL )
 	{
+	    printf("Dans create :\n x = %f | x1 = %f\n y = %f | y1 = %f\n z = %f | z1 = %f\n ", tdCorner1[0], tdCorner2[0], tdCorner1[1], tdCorner2[1], tdCorner1[2], tdCorner2[2] );
+	   /* tdCorner1[0] = 50;
+	    tdCorner1[1] = 50;
+	    tdCorner1[2] = 0;
+	    tdCorner1[3] = 1;
+
+	    tdCorner2[0] = 100;
+	    tdCorner2[1] = 100;
+	    tdCorner2[2] = 0;
+	    tdCorner2[3] = 1;*/
 		/* Vérification : est ce que tdCorner1 correspond bien au sommet haut gauche ? */
-		if(tdCorner1[1]>tdCorner2[1]) /* Verif effectuée sur l'axe des Y (arbitrairement axe vertical)*/
+		if( 1 )//tdCorner1[1]>tdCorner2[1]) /* Verif effectuée sur l'axe des Y (arbitrairement axe vertical)*/
 		{
 			/*Sauvegarde des infos sur les points dans notre structure */
 			Point_init( &((pNewRect->tPoint)[0]), tdCorner1[0], tdCorner1[1], tdCorner1[2]);

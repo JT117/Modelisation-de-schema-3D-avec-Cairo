@@ -216,7 +216,8 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
             tdCoord coord;
             Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
-            Cube_createCube( coord, fao->scene->tailleCreation, fao->scene->tailleCreation, 10 );
+            printf("%f |%f | %f\n", coord[0], coord[1], coord[2] );
+            Cube_createCube( coord, fao->scene->tailleCreation, fao->scene->tailleCreation, 5 );
             Scene_ajouter_cube( fao->scene, cube );
         }
         else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
@@ -225,8 +226,9 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             tdCoord coord;
             tdCoord coord1;
             Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
+            // Largeur non prise en compte pour le test
             Point_initCoord( coord1, fao->scene->creation->x + fao->scene->tailleCreation , fao->scene->creation->y + fao->scene->tailleCreation, fao->scene->creation->z );
-            printf("%f | %f\n", coord[1], coord1[1] );
+            printf("Apres init :\n x = %f | x1 = %f\n y = %f | y1 = %f\n", coord[0], coord1[0], coord[1], coord1[1] );
             Rectangle_createRectangle( coord, coord1 );
             Scene_ajouter_rectangle( fao->scene, &rect );
         }

@@ -53,7 +53,7 @@ void Point_middlePoint(Point* pRes, Point* pP1, Point* pP2)
 
 double Point_euclideanDistance(Point* pP1, Point* pP2)
 {
-	return sqrt(pow(pP2->tdCoordWorld[0]-pP2->tdCoordWorld[0],2.0) + pow(pP2->tdCoordWorld[1]-pP2->tdCoordWorld[1],2.0)
-							+ pow(pP2->tdCoordWorld[2]-pP2->tdCoordWorld[2],2.0));
+	return sqrt(pow(pP2->tdCoordWorld[0]-pP1->tdCoordWorld[0],2.0) + pow(pP2->tdCoordWorld[1]-pP1->tdCoordWorld[1],2.0)
+							+ pow(pP2->tdCoordWorld[2]-pP1->tdCoordWorld[2],2.0));
 }
 

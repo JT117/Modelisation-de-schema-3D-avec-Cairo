@@ -11,6 +11,7 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 
 	if( (pNewCube = (Cube*)malloc(sizeof(Cube))) != NULL )
 	{
+	    printf("%f |%f | %f\n", tCenter[0], tCenter[1], tCenter[2] );
 		dHalfH = dHeight/2;
 		dHalfW = dWidth/2;
 		dHalfD = dDepth/2;

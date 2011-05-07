@@ -2,7 +2,7 @@
 1299146539 source:/home/julien/Documents/Projet_C/main.c
 	<cairo.h>
 
-1304611437 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
+1304759268 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
 	"Cube.h"
 	"ProjectionTools.h"
 	<math.h>
@@ -15,7 +15,7 @@
 	"Camera.h"
 	<gtk/gtk.h>
 
-1304685846 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Point.h
+1304686955 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Point.h
 	<stdlib.h>
 	<gtk/gtk.h>
 
@@ -2228,7 +2228,7 @@
 1302804820 /usr/include/gtk-2.0/gtk/gtktipsquery.h
 	<gtk/gtk.h>
 
-1304685821 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
+1304759773 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
 	"FenetreAjoutCube.h"
 	"Config.h"
 
@@ -2411,7 +2411,7 @@
 	<stdlib.h>
 	"MatrixTools.h"
 
-1304685689 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Point.c
+1304758493 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Point.c
 	<math.h>
 	"Point.h"
 	"MatrixTools.h"
@@ -2422,7 +2422,7 @@
 	<math.h>
 	"ProjectionTools.h"
 
-1304685296 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Rectangle.c
+1304760036 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Rectangle.c
 	<stdio.h>
 	<stdlib.h>
 	"Rectangle.h"
