@@ -8,6 +8,7 @@
 #include "Rectangle.h"
 #include "Cube.h"
 #include "Rectangle.h"
+#include "Segment.h"
 
 /** Structure representant un objet dans l'interface graphique, servant à masquer l'implementation des differents objets à la GUI */
 typedef struct Objet Objet;
@@ -23,6 +24,7 @@ struct Objet
     union{
             Cube* cube;
             Rectangle* rectangle;
+            Segment* segment;
          }type;
 };
 
@@ -33,11 +35,9 @@ void Objet_detruire( Objet* objet );
 /** Initialise un Objet Cube */
 void Objet_est_un_Cube( Objet* objet, Cube* cube );
 
-void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect );
-
-
 /** Initialise un Objet Rectangle */
 void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect );
+void Objet_est_un_Segment( Objet* pObj, Segment* pSeg );
 
 /** Fonction capable de dessiner n'importe quel objet */
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam);

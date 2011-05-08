@@ -33,6 +33,14 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     pObj->doitEtreDeselectionner = TRUE;
 }
 
+void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
+{
+	pObj->typeObjet = (char*)malloc( 8 * sizeof(char) ); /* allocation chaine de type */
+	pObj->type.segment = pRect; /* sauvegarde pointeur sur objet */
+	strcpy( pObj->typeObjet, "Segment" );
+	pObj->doitEtreDeselectionner = TRUE;
+
+}
 
 /** Fonction qui dessine l'objet
  * @param objet, un pointeur sur l'objet à dessiner
@@ -48,6 +56,10 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
     else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
 	{
 		Rectangle_drawRectangle( objet->type.rectangle, cr, cam);
+	}
+    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+	{
+		Segment_drawSegment( objet->type.segment, cr, cam);
 	}
 }
 

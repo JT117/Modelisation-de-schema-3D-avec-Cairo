@@ -75,7 +75,7 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
     double width = gdk_screen_get_width(screen);
     double height = gdk_screen_get_height(screen);
 
-       /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
+    /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
     scene->camera = Camera_createCam(width-200,height-75);
 
     gtk_widget_set_size_request( zoneDeDessin, width-200, height-75 );
@@ -304,10 +304,12 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 
         gtk_widget_show_all(menu);
 
+        /* Modif des coordonnées du pixel sur lequel l'utilisateur a cliqué pour créer son objet*/
         Scene_creation_objet( scene, event->x, event->y );
 
         gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
 
+        /*Mise en place des signaux*/
         g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_cube), scene);
         g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(main_supprimer), scene);
         g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK(nouveau_propriete), scene);
@@ -345,9 +347,9 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
  **/
 static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 {
-    Scene* scene = (Scene*)data;
+    Scene* scene = (Scene*)data; /*recupération de la scene courante*/
     FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube) );
-    initialiser_FenetreAjoutCube( fao, scene );
+    initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
 
     return TRUE;
 }

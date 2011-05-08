@@ -51,14 +51,14 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     fao->barrePosition = gtk_hbutton_box_new();
 
     char buf[255];
-    sprintf( buf, "%.3f", fao->scene->creation->x );
-    fao->x = fao->scene->creation->x;
+    sprintf( buf, "%.3f", fao->scene->creation->tdCoordWorld[0] );
+    fao->x = fao->scene->creation->tdCoordWorld[0];
     char buf1[255];
-    sprintf( buf1, "%.3f", fao->scene->creation->y );
-    fao->y = fao->scene->creation->y;
+    sprintf( buf1, "%.3f", fao->scene->creation->tdCoordWorld[1]);
+    fao->y = fao->scene->creation->tdCoordWorld[1];
     char buf2[255];
-    sprintf( buf2, "%.3f", fao->scene->creation->z );
-    fao->z = fao->scene->creation->z;
+    sprintf( buf2, "%.3f", fao->scene->creation->tdCoordWorld[2] );
+    fao->z = fao->scene->creation->tdCoordWorld[2];
 
     gtk_container_add( GTK_CONTAINER( fao->barrePosition ), text1 );
     gtk_container_add( GTK_CONTAINER( fao->barrePosition ), fao->entry1 );
@@ -205,40 +205,25 @@ void FenetreAjoutCube_enlever_layout( FenetreAjoutCube* fao )
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 {
-	double longueur, largeur; /* TODO : modifier les noms pour avoir hauteur + profondeur */
+	double dWidth;//, largeur; /* TODO : modifier les noms pour avoir hauteur + profondeur */
+	double dX, dY,dZ; /*Coordonnées du centre de gravité du nouvel objet*/
 	tdCoord tdCenter;
     FenetreAjoutCube* fao = (FenetreAjoutCube*)data;
     Scene* scene = (Scene*)fao->scene;
     Cube* pNewCube = NULL;
 
-	//scene->tailleCreation = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) );
-	longueur = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) );
-	largeur = atof( gtk_entry_get_text( GTK_ENTRY( fao->largeur ) ) );
+	dX = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry1) ) );
+	dY = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry2) ) );
+	dZ = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry3) ) );
 
     if( fao->scene->tailleCreation > 0 )
     {
-
-    	/* TODO : récupérer valeur combobox pour pouvoir adapter l'init */
-    	//if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Rectangle" ) == 0 )
-        //Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
-    	/*
-		tdCenter[0] = fao->scene->creation->x;
-    	tdCenter[1] = fao->scene->creation->y;
-    	tdCenter[2] = fao->scene->creation->z;
-    	tdCenter[3] = 1;
-
-    	pNewCube = Cube_createCube(tdCenter, largeur, longueur, 40); /* TODO : récup aussi profondeur */
-    	/*
-        Scene_ajouter_cube( fao->scene, pNewCube);
-        */
         if( strcmp( fao->dernierLayout, "Cube" ) == 0 )
         {
-            Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
-            tdCoord coord;
-            Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
-            printf("%f |%f | %f\n", coord[0], coord[1], coord[2] );
-            Cube_createCube( coord, fao->scene->tailleCreation, fao->scene->tailleCreation, 5 );
-            Scene_ajouter_cube( fao->scene, cube );
+        	dWidth = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) ); /*Récupération de la longueur du cube*/
+            Point_initCoord( tdCenter, dX, dY, dZ);
+            pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
+            Scene_ajouter_cube( fao->scene, pNewCube );
         }
         else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
         {
