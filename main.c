@@ -2,9 +2,10 @@
 #include <gtk/gtk.h>
 #include <math.h>
 
+#include "FenetreAjoutCube.h" /* TODO : réflechir à un moyen de ne faire qu'un seule module FenetreAjout */
+#include "FenetreAjoutRectangle.h"
 #include "Cube.h"
 #include "Objet.h"
-#include "FenetreAjoutCube.h"
 #include "Scene.h"
 #include "Config.h"
 #include "FenetrePropriete.h"
@@ -14,6 +15,7 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
 static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data);
 static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event, gpointer data);
 static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data );
+static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data );
 static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data );
 static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data );
 static gboolean main_annuler( GtkWidget *menuItem, gpointer data );
@@ -73,7 +75,7 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
     double width = gdk_screen_get_width(screen);
     double height = gdk_screen_get_height(screen);
 
-       /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
+    /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
     scene->camera = Camera_createCam(width-200,height-75);
 
     gtk_widget_set_size_request( zoneDeDessin, width-200, height-75 );
@@ -113,7 +115,7 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
 //*****************************************************************************************************
     gtk_widget_show_all( mainWindow );
 
-    gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );          // Nom totalement provisiore ^^
+    gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );          // Nom totalement provisiore ^^ (mais qui envoie quand même du bois !)
 
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_PRESS_MASK );
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK );   //active la detection de la souris
@@ -170,7 +172,7 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
 
     Scene_clear_scene( scene , cr );                                 //Nettoyage de la scene
 
-    Scene_dessiner_scene( scene, cr );                               //On dessine tout les objets
+    Scene_dessiner_scene( scene, cr );                               //On dessine tous les objets
 
     Selection_dessiner_rectangle( scene->selection, cr );            //Si selection de zone en cours, on dessine le rectangle de selection
 
@@ -282,6 +284,17 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     {
         GtkWidget *menu = gtk_menu_new();
         GtkWidget *pItem = gtk_menu_item_new_with_label("Nouvel objet");
+        /*
+        GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriété");
+
+        GtkWidget *sousMenu1 = gtk_menu_new();
+        GtkWidget *pItem3 = gtk_menu_item_new_with_label("Cube");
+        GtkWidget *pItem4 = gtk_menu_item_new_with_label("Rectangle");
+        gtk_menu_attach( GTK_MENU(sousMenu1), pItem3, 0, 1, 0, 1 );
+        gtk_menu_attach( GTK_MENU(sousMenu1), pItem4, 0, 1, 1, 2 );
+
+        gtk_menu_item_set_submenu( GTK_MENU_ITEM(pItem), sousMenu1 );
+        */
         GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriete");
         GtkWidget *pItem3 = gtk_menu_item_new_with_label("Supprimer");
 
@@ -291,9 +304,12 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 
         gtk_widget_show_all(menu);
 
+        /* Modif des coordonnées du pixel sur lequel l'utilisateur a cliqué pour créer son objet*/
         Scene_creation_objet( scene, event->x, event->y );
 
         gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
+
+        /*Mise en place des signaux*/
         g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_cube), scene);
         g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(main_supprimer), scene);
         g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK(nouveau_propriete), scene);
@@ -331,10 +347,18 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
  **/
 static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 {
-    Scene* scene = (Scene*)data;
+    Scene* scene = (Scene*)data; /*recupération de la scene courante*/
+    FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube) );
+    initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
 
-    FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube ) );
-    initialier_FenetreAjoutCube( fao, scene );
+    return TRUE;
+}
+
+static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data )
+{
+    Scene* scene = (Scene*)data;
+    FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutRectangle ) );
+    initialiser_FenetreAjoutCube( fao, scene );
 
     return TRUE;
 }
@@ -565,6 +589,7 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
+
 /** Fonction gérant l'appel à la suppression d'éléments
  *  @param menuItem, le menu ayant ete cliqué
  *  @param data, la scene contenant le/les elements à supprimer
@@ -605,7 +630,3 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data )
     }
     return TRUE;
 }
-
-
-
-

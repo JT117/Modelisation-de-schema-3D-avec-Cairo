@@ -1,3 +1,4 @@
+#include <gtk/gtk.h>
 #include "Cube.h"
 #include "ProjectionTools.h"
 #include <math.h>
@@ -11,7 +12,6 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 
 	if( (pNewCube = (Cube*)malloc(sizeof(Cube))) != NULL )
 	{
-	    printf("%f |%f | %f\n", tCenter[0], tCenter[1], tCenter[2] );
 		dHalfH = dHeight/2;
 		dHalfW = dWidth/2;
 		dHalfD = dDepth/2;
@@ -31,10 +31,11 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 		Point_init( &(pNewCube->Center), tCenter[0], tCenter[1], tCenter[2]);
 
 		/*Couleur par défaut, pas de transparence*/
-		pNewCube->tColor[0]=255.0;
-		pNewCube->tColor[1]=0.0;
-		pNewCube->tColor[2]=0.0;
-		pNewCube->tColor[3]=0.0;
+		pNewCube->tColor[0]=0.4;
+		pNewCube->tColor[1]=0.4;
+		pNewCube->tColor[2]=0.8;
+		pNewCube->tColor[3]=0.8;
+
 	}
 	else
 	{
@@ -42,7 +43,6 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 	}
 	return pNewCube;
 }
-
 
 GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 {
@@ -117,6 +117,45 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 	return gtTabFaceOrder;
 }
 
+void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote )
+{
+    cCube->tPoint[0].x = dX;
+    cCube->tPoint[0].y = dY;
+    cCube->tPoint[0].z = dZ;
+
+    cCube->tPoint[1].x = dX + dCote;
+    cCube->tPoint[1].y = dY;
+    cCube->tPoint[1].z = dZ;
+
+    cCube->tPoint[2].x = dX + dCote;
+    cCube->tPoint[2].y = dY + dCote;
+    cCube->tPoint[2].z = dZ;
+
+    cCube->tPoint[3].x = dX;
+    cCube->tPoint[3].y = dY + dCote;
+    cCube->tPoint[3].z = dZ;
+
+    cCube->tPoint[4].x = dX;
+    cCube->tPoint[4].y = dY;
+    cCube->tPoint[4].z = dZ + dCote;
+
+    cCube->tPoint[5].x = dX + dCote;
+    cCube->tPoint[5].y = dY;
+    cCube->tPoint[5].z = dZ + dCote;
+
+    cCube->tPoint[6].x = dX + dCote;
+    cCube->tPoint[6].y = dY + dCote;
+    cCube->tPoint[6].z = dZ + dCote;
+
+    cCube->tPoint[7].x = dX;
+    cCube->tPoint[7].y = dY + dCote;
+    cCube->tPoint[7].z = dZ + dCote;
+
+    cCube->estSelectionne = FALSE;
+
+}
+
+
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 {
 	int iFaceIndex;
@@ -144,8 +183,6 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 	for(iFaceIndex=0;iFaceIndex<7;iFaceIndex++)
 	{
 		iFace = g_array_index(gtTabFacesOrder,int,iFaceIndex); /* Recup de la face à récupérer */
-
-		cairo_save( cr );
 
 		/* Adpatation des points à dessiner en fonction de la face */
 		switch(iFace)
@@ -208,240 +245,222 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 
 			}
 		}
-		cairo_restore( cr );
-
-		cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] ,0.0/*pCube->tColor[3]*/); /*Couleur */
+		cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] , pCube->tColor[3]); /*Couleur */
 		cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
-		cairo_set_line_width(cr,1.0);/* réglage taille de la ligne*/
+		cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
 		cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
 		cairo_stroke(cr); /* dessin contour, perte du path */
-
-		cairo_save( cr );
 	}
 
+	/* Libération mémoire */
+	g_array_free(gtTabFacesOrder, TRUE);
 	free(pPointProj0);	free(pPointProj4);
 	free(pPointProj1);	free(pPointProj5);
 	free(pPointProj2);	free(pPointProj6);
 	free(pPointProj3);	free(pPointProj7);
 }
 
-
-void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote )
+void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ)
 {
-    cCube->tPoint[0].x = dX;
-    cCube->tPoint[0].y = dY;
-    cCube->tPoint[0].z = dZ;
+	int iLoop;
+	tdMatrix tdMatTransfo, tdMatPassRepObj; /* MAtrice de rotation, matrice de passage dans le repère objet*/
+	tdCoord tdCoordRepObj, tdCoordApTransfo;
 
-    cCube->tPoint[1].x = dX + dCote;
-    cCube->tPoint[1].y = dY;
-    cCube->tPoint[1].z = dZ;
+	/* Initialisation des coordonées*/
+	Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+	Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 
-    cCube->tPoint[2].x = dX + dCote;
-    cCube->tPoint[2].y = dY + dCote;
-    cCube->tPoint[2].z = dZ;
+	/* Construction de la matrice de passage World -> Repere objet */
+	Matrix_initMatrix(tdMatPassRepObj); /* initialisation de la matrice de passage dans repere objet*/
+	tdMatPassRepObj[0][3] = -pCube->Center.tdCoordWorld[0];
+	tdMatPassRepObj[1][3] = -pCube->Center.tdCoordWorld[1];
+	tdMatPassRepObj[2][3] = -pCube->Center.tdCoordWorld[2];
 
-    cCube->tPoint[3].x = dX;
-    cCube->tPoint[3].y = dY + dCote;
-    cCube->tPoint[3].z = dZ;
+	if(dAngleX != 0)
+	{
+		/*Récupération de la matrice de rotation qui va bien */
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
 
-    cCube->tPoint[4].x = dX;
-    cCube->tPoint[4].y = dY;
-    cCube->tPoint[4].z = dZ + dCote;
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<8 ;iLoop++)
+		{
+			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
+			Matrix_multiMatrixVect(tdMatPassRepObj, pCube->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
+			/*Puis transformation, toujours dans le repere objet*/
+			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pCube->tPoint[iLoop].tdCoordWorld[0] = pCube->tPoint[iLoop].tdCoordWorld[0]
+																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
+			pCube->tPoint[iLoop].tdCoordWorld[1] = pCube->tPoint[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
+			pCube->tPoint[iLoop].tdCoordWorld[2] = pCube->tPoint[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
-    cCube->tPoint[5].x = dX + dCote;
-    cCube->tPoint[5].y = dY;
-    cCube->tPoint[5].z = dZ + dCote;
+			/* on réinitialise les vecteurs contenant les infos sur la transformation */
+			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
+	}
 
-    cCube->tPoint[6].x = dX + dCote;
-    cCube->tPoint[6].y = dY + dCote;
-    cCube->tPoint[6].z = dZ + dCote;
+	if(dAngleY != 0)
+	{
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
 
-    cCube->tPoint[7].x = dX;
-    cCube->tPoint[7].y = dY + dCote;
-    cCube->tPoint[7].z = dZ + dCote;
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<8 ;iLoop++)
+		{
+			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
+			Matrix_multiMatrixVect(tdMatPassRepObj, pCube->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
+			/*Puis transformation, toujours dans le repere objet*/
+			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pCube->tPoint[iLoop].tdCoordWorld[0] = pCube->tPoint[iLoop].tdCoordWorld[0]
+																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
+			pCube->tPoint[iLoop].tdCoordWorld[1] = pCube->tPoint[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
+			pCube->tPoint[iLoop].tdCoordWorld[2] = pCube->tPoint[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
-    cCube->estSelectionne = FALSE;
+			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
 
+	}
+
+	if(dAngleZ != 0)
+	{
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
+
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<8 ;iLoop++)
+		{
+			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
+			Matrix_multiMatrixVect(tdMatPassRepObj, pCube->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
+			/*Puis transformation, toujours dans le repere objet*/
+			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pCube->tPoint[iLoop].tdCoordWorld[0] = pCube->tPoint[iLoop].tdCoordWorld[0]
+																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
+			pCube->tPoint[iLoop].tdCoordWorld[1] = pCube->tPoint[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
+			pCube->tPoint[iLoop].tdCoordWorld[2] = pCube->tPoint[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
+
+			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
+	}
 }
 
-void dessiner_Cube(Cube* cCube, cairo_t* cr, InfoCamera* cam )
+void Cube_rotateCubeWorld(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ)
 {
-   if( !cCube->estSelectionne )
-   {
-        cairo_set_source_rgb ( cr, 0, 0, 0);   // On definie la couleur du trait
-        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 1 dessinée
+	int iLoop;
+	tdMatrix tdMatTransfo;
+	tdCoord tdCoordApTransfo;
 
-        cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0.255, 0, 0);
+	Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 
-        cairo_move_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );// Face 2 dessinée
+	if(dAngleX != 0)
+	{
+		/*Récupération de la matrice de rotation qui va bien */
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
 
-        cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0.196, 0.804, 0.196);
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<8 ;iLoop++)
+		{
+			/*Transformation dans le repere du monde*/
+			Matrix_multiMatrixVect(tdMatTransfo, pCube->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pCube->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
+			pCube->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
+			pCube->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
 
-        cairo_move_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y ); // Face 3 dessinée
+			/* réinitialisation coord après transformation pour le  point suivant */
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
+	}
 
-        cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0, 0, 0.9);
+	if(dAngleY != 0)
+	{
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
 
-        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 4 dessinée
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<8 ;iLoop++)
+		{
+			/*Transformation dans le repere du monde*/
+			Matrix_multiMatrixVect(tdMatTransfo, pCube->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pCube->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
+			pCube->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
+			pCube->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
 
-        cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 0.255, 0.9, 0);
+			/* réinitialisation coord après transformation pour le  point suivant */
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
 
-        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 5 dessinée
+	}
 
-        cairo_fill( cr );
-        cairo_set_source_rgb ( cr, 255, 0, 255);
+	if(dAngleZ != 0)
+	{
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
 
-        cairo_move_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y ); // Face 6 dessinée
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<8 ;iLoop++)
+		{
+			/*Transformation dans le repere du monde*/
+			Matrix_multiMatrixVect(tdMatTransfo, pCube->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pCube->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
+			pCube->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
+			pCube->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
 
-        cairo_fill( cr );
-    }
-    else if( cCube->estSelectionne )
-    {
-        cairo_set_source_rgb ( cr, 255, 0, 0);
-
-        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 1 dessinée
-
-        cairo_move_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );// Face 2 dessinée
-
-        cairo_move_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y ); // Face 3 dessinée
-
-        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 4 dessinée
-
-        cairo_move_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y );
-        cairo_line_to( cr, cCube->tPoint[1].x, cCube->tPoint[1].y );
-        cairo_line_to( cr, cCube->tPoint[5].x, cCube->tPoint[5].y );
-        cairo_line_to( cr, cCube->tPoint[4].x, cCube->tPoint[4].y );
-        cairo_line_to( cr, cCube->tPoint[0].x, cCube->tPoint[0].y ); // Face 5 dessinée
-
-        cairo_move_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y );
-        cairo_line_to( cr, cCube->tPoint[7].x, cCube->tPoint[7].y );
-        cairo_line_to( cr, cCube->tPoint[6].x, cCube->tPoint[6].y );
-        cairo_line_to( cr, cCube->tPoint[2].x, cCube->tPoint[2].y );
-        cairo_line_to( cr, cCube->tPoint[3].x, cCube->tPoint[3].y ); // Face 6 dessinée
-
-        cairo_set_source_rgb ( cr, 0, 255, 0);
-        cairo_fill_preserve( cr );
-
-        cairo_set_source_rgb ( cr, 255, 0, 0);
-        cairo_stroke( cr );
-    }
+			/* réinitialisation coord après transformation pour le  point suivant */
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
+	}
 }
 
-void rotation_Cube( Cube* cCube, double dAngle, int iAxe )
+void Cube_modSize(Cube* pCube, double dRatio)
 {
-    double dDecallage_X = cCube->tPoint[0].x + ( cCube->tPoint[1].x - cCube->tPoint[0].x ) / 2;
-    double dDecallage_Y = cCube->tPoint[0].y + ( cCube->tPoint[1].y - cCube->tPoint[0].y ) / 2;
-    double dDecallage_Z = cCube->tPoint[0].z + ( cCube->tPoint[1].z - cCube->tPoint[0].z ) / 2;
+	int iLoop;
+	tdMatrix tdMatTransfo, tdMatPassRepObj;
+	tdCoord tdCoordRepObj, tdCoordApTransfo;
 
-    if( iAxe == 1 ) // X
-    {
-        int i = 0;
+	/* Initialisation des coordonées*/
+	Point_initCoord(tdCoordRepObj, 0, 0, 0);
+	Point_initCoord(tdCoordApTransfo, 0, 0, 0);
 
-        for( i = 0; i < 8; i++ )
-        {
-            rotation_X( &cCube->tPoint[i], dDecallage_Y, dDecallage_Z, dAngle );
-        }
-    }
-    else if( iAxe == 2 ) // Y
-    {
-        int i = 0;
+	/* Construction de la matrice de passage World -> Repere objet */
+	Matrix_initMatrix(tdMatPassRepObj); /* initialisation de la matrice de passage dans repere objet*/
+	tdMatPassRepObj[0][3] = -pCube->Center.tdCoordWorld[0];
+	tdMatPassRepObj[1][3] = -pCube->Center.tdCoordWorld[1];
+	tdMatPassRepObj[2][3] = -pCube->Center.tdCoordWorld[2];
 
-        for( i = 0; i < 8; i++ )
-        {
-            rotation_Y( &cCube->tPoint[i], dDecallage_X, dDecallage_Z, dAngle );
-        }
-    }
-    else if( iAxe == 3 ) // Z
-    {
-        int i = 0;
+	if(dRatio != 1)
+	{
+		/*Récupération de la matrice d'homothétie*/
+		TransfoTools_getMatrixHomothety(tdMatTransfo, dRatio);
 
-        for( i = 0; i < 8; i++ )
-        {
-            rotation_Z( &cCube->tPoint[i], dDecallage_X, dDecallage_Y, dAngle );
-        }
-    }
-}
+		/* On effectue la transformation pour tous  les points du Cube */
+		for(iLoop=0 ; iLoop<8 ;iLoop++)
+		{
+			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
+			Matrix_multiMatrixVect(tdMatPassRepObj, pCube->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
+			/*Puis transformation, toujours dans le repere objet*/
+			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pCube->tPoint[iLoop].tdCoordWorld[0] = pCube->tPoint[iLoop].tdCoordWorld[0]
+																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
+			pCube->tPoint[iLoop].tdCoordWorld[1] = pCube->tPoint[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
+			pCube->tPoint[iLoop].tdCoordWorld[2] = pCube->tPoint[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
-void rotation_X( Point* pPoint, double dDecallage_Y, double dDecallage_Z, double dAngle )
-{
-    pPoint->y -= dDecallage_Y;
-    pPoint->z -= dDecallage_Z;
-
-    pPoint->y = cos( dAngle ) * pPoint->y + sin( dAngle ) * pPoint->z;
-    pPoint->z = -sin( dAngle ) * pPoint->y + cos( dAngle ) * pPoint->z;
-
-    pPoint->y += dDecallage_Y;
-    pPoint->z += dDecallage_Z;
-
-}
-
-void rotation_Y( Point* pPoint, double dDecallage_X, double dDecallage_Z, double dAngle )
-{
-    pPoint->x -= dDecallage_X;
-    pPoint->z -= dDecallage_Z;
-
-    pPoint->x = cos( dAngle ) * pPoint->x - sin( dAngle ) * pPoint->z;
-    pPoint->z = sin( dAngle ) * pPoint->x + cos( dAngle ) * pPoint->z;
-
-    pPoint->x += dDecallage_X;
-    pPoint->z += dDecallage_Z;
-
-}
-
-void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double dAngle )
-{
-    pPoint->x -= dDecallage_X;
-    pPoint->y -= dDecallage_Y;
-
-    pPoint->x = cos( dAngle ) * pPoint->x + sin( dAngle ) * pPoint->y;
-    pPoint->y = -sin( dAngle ) * pPoint->x + cos( dAngle ) * pPoint->y;
-
-    pPoint->x += dDecallage_X;
-    pPoint->y += dDecallage_Y;
-
+			/* on réinitialise les vecteurs contenant les infos sur la transformation */
+			Point_initCoord(tdCoordRepObj, 0, 0, 0);
+			Point_initCoord(tdCoordApTransfo, 0, 0, 0);
+		}
+	}
 }
 
 gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
@@ -497,10 +516,3 @@ int scalaire_result( Point a, Point b, int x, int y )
     }
     else return 0;
 }
-
-
-
-
-
-
-

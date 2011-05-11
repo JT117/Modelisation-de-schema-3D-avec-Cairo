@@ -9,10 +9,7 @@ tdCoord2D* ProjectionTools_getPictureCoord(Point* pPoint, InfoCamera* pCam)
 	tdCoord2D* tdPictureCoord = NULL;
 	tdCoord tdCamCoord; /* Coordonnées dans le repère caméra */
 
-	tdCamCoord[0]=0;
-	tdCamCoord[1]=0;
-	tdCamCoord[2]=0;
-	tdCamCoord[3]=0;
+	Point_initCoord(tdCamCoord, 0,0,0);
 
 	if( (tdPictureCoord = (tdCoord2D*)malloc(sizeof(tdCoord2D))) != NULL )
 	{

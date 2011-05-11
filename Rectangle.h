@@ -19,7 +19,7 @@ typedef struct Rectangle
 	 */
 	Point tPoint[4];
 
-	Point sCenter; /* Coordonées du repere de l'objet, utilisé pour les transformations */
+	Point Center; /* Coordonées du repere de l'objet, utilisé pour les transformations */
 	Color tColor; /* Couleur de l'objet */
 } Rectangle;
 
@@ -49,15 +49,29 @@ void Rectangle_destroyRectangle(Rectangle* pRect);
 
 /**
  * Rotation de l'objet en fonction des angles passés en paramètre, la rotation se fait par rapport au repere de l'objet.
- *
  * @param  pRectangle L'objet rectangle à considérer
  * @param dAngleX Angle de rotation suivant l'axe X
  * @param dAngleY Angle de rotation suivant l'axe Y
  * @param dAngleZ Angle de rotation suivant l'axe Z
  */
-void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAngleY, double dAngleZ);
+void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, double dAngleZ);
+
+/**
+ * Rotation de l'objet rectangle par rapport au centre de l'univers
+ * @param  pRectangle L'objet rectangle à considérer
+ * @param dAngleX Angle de rotation suivant l'axe X
+ * @param dAngleY Angle de rotation suivant l'axe Y
+ * @param dAngleZ Angle de rotation suivant l'axe Z
+ */
+void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY, double dAngleZ);
+
+/**
+ * Agrandit/retrécit un objet de type rectangle suivant le ratio fourni en param.
+ * @param pRectangle Le rectangle en question
+ * @param dRatio Le ratio d'agrandissement/rétrecissement
+ */
+void Rectangle_modSize(Rectangle* pRectangle, double dRatio);
 
 gboolean Rectangle_Contient_Point(Rectangle* pRect, double x, double y );
 
 #endif
-

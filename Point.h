@@ -39,5 +39,4 @@ void Point_middlePoint(Point* pRes, Point* pP1, Point* pP2);
 
 double Point_euclideanDistance(Point* pP1, Point* pP2);
 
-
 #endif // POINT_H

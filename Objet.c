@@ -33,6 +33,15 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     pObj->doitEtreDeselectionner = TRUE;
 }
 
+void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
+{
+	pObj->typeObjet = (char*)malloc( 8 * sizeof(char) ); /* allocation chaine de type */
+//	pObj->type.segment = pRect; /* sauvegarde pointeur sur objet */
+	strcpy( pObj->typeObjet, "Segment" );
+	pObj->doitEtreDeselectionner = TRUE;
+
+}
+
 /** Fonction qui dessine l'objet
  * @param objet, un pointeur sur l'objet à dessiner
  * @param cr, un pointeur sur le contexte cairo servant à dessiner sur la zoneDeDessin
@@ -48,6 +57,10 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 	{
 		Rectangle_drawRectangle( objet->type.rectangle, cr, cam);
 	}
+    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+	{
+		Segment_drawSegment( objet->type.segment, cr, cam);
+	}
 }
 
 
@@ -61,6 +74,10 @@ gboolean Objet_contient_point( Objet* objet, double x, double y )
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
         return Cube_Contient_Point( objet->type.cube, x, y );
+    }
+    else if(strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+    	return Rectangle_Contient_Point( objet->type.rectangle, x, y );
     }
     return TRUE;
 }

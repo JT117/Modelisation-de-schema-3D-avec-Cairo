@@ -91,6 +91,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Scene.h" />
+		<Unit filename="Segment.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Segment.h" />
 		<Unit filename="Selection.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -38,7 +38,6 @@ void Point_init(Point* pPoint, double dX, double dY, double dZ)
 
 void Point_initCoord(tdCoord pCoord,double dX, double dY, double dZ)
 {
-    printf(" %f  | %f | %f\n", dX, dY, dZ );
 	pCoord[0] = dX;
 	pCoord[1] = dY;
 	pCoord[2] = dZ;
@@ -56,4 +55,3 @@ double Point_euclideanDistance(Point* pP1, Point* pP2)
 	return sqrt(pow(pP2->tdCoordWorld[0]-pP1->tdCoordWorld[0],2.0) + pow(pP2->tdCoordWorld[1]-pP1->tdCoordWorld[1],2.0)
 							+ pow(pP2->tdCoordWorld[2]-pP1->tdCoordWorld[2],2.0));
 }
-

@@ -12,18 +12,8 @@ Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
 
 	if( (pNewRect = (Rectangle*)malloc(sizeof(Rectangle))) != NULL )
 	{
-	    printf("Dans create :\n x = %f | x1 = %f\n y = %f | y1 = %f\n z = %f | z1 = %f\n ", tdCorner1[0], tdCorner2[0], tdCorner1[1], tdCorner2[1], tdCorner1[2], tdCorner2[2] );
-	   /* tdCorner1[0] = 50;
-	    tdCorner1[1] = 50;
-	    tdCorner1[2] = 0;
-	    tdCorner1[3] = 1;
-
-	    tdCorner2[0] = 100;
-	    tdCorner2[1] = 100;
-	    tdCorner2[2] = 0;
-	    tdCorner2[3] = 1;*/
 		/* Vérification : est ce que tdCorner1 correspond bien au sommet haut gauche ? */
-		if( 1 )//tdCorner1[1]>tdCorner2[1]) /* Verif effectuée sur l'axe des Y (arbitrairement axe vertical)*/
+		if(tdCorner1[1]>tdCorner2[1]) /* Verif effectuée sur l'axe des Y (arbitrairement axe vertical)*/
 		{
 			/*Sauvegarde des infos sur les points dans notre structure */
 			Point_init( &((pNewRect->tPoint)[0]), tdCorner1[0], tdCorner1[1], tdCorner1[2]);
@@ -32,16 +22,16 @@ Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
 			Point_init( &((pNewRect->tPoint)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
 
 			/* Init du centre du repere de la figure (centre de gravité du rectangle) */
-			Point_init( &(pNewRect->sCenter), tdCorner1[0]+((tdCorner2[0]-tdCorner1[0])/2),tdCorner1[1]+((tdCorner2[1]-tdCorner1[1])/2), tdCorner1[2]+((tdCorner2[2]-tdCorner1[2])/2));
+			Point_init( &(pNewRect->Center), tdCorner1[0]+((tdCorner2[0]-tdCorner1[0])/2),tdCorner1[1]+((tdCorner2[1]-tdCorner1[1])/2), tdCorner1[2]+((tdCorner2[2]-tdCorner1[2])/2));
 
 			/*Couleur par défaut, pas de transparence*/
-			pNewRect->tColor[0]=153.0;
-			pNewRect->tColor[1]=153.0;
-			pNewRect->tColor[2]=255.0;
-			pNewRect->tColor[3]=1.0;
+			pNewRect->tColor[0]=1.0;
+			pNewRect->tColor[1]=0.39;
+			pNewRect->tColor[2]=0.13;
+			pNewRect->tColor[3]=0.7;
 		}
 		else
-			printf("Coordonnees passees en parametre non valides %d | %d \n", tdCorner1[1], tdCorner2[1] );
+			printf("Coordonnees passees en parametre non valides\n");
 	}
 	else
 	{
@@ -84,7 +74,7 @@ void Rectangle_drawRectangle(Rectangle* pRectangle, cairo_t* cr, InfoCamera* pCa
 	free(pPointProj2);
 }
 
-void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAngleY, double dAngleZ)
+void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, double dAngleZ)
 {
 	int iLoop;
 	tdMatrix tdMatTransfo, tdMatPassRepObj;
@@ -98,9 +88,9 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 
 	/* Construction de la matrice de passage World -> Repere objet */
 	Matrix_initMatrix(tdMatPassRepObj); /* initialisation de la matrice de passage dans repere objet*/
-	tdMatPassRepObj[0][3] = -pRectangle->sCenter.tdCoordWorld[0];
-	tdMatPassRepObj[1][3] = -pRectangle->sCenter.tdCoordWorld[1];
-	tdMatPassRepObj[2][3] = -pRectangle->sCenter.tdCoordWorld[2];
+	tdMatPassRepObj[0][3] = -pRectangle->Center.tdCoordWorld[0];
+	tdMatPassRepObj[1][3] = -pRectangle->Center.tdCoordWorld[1];
+	tdMatPassRepObj[2][3] = -pRectangle->Center.tdCoordWorld[2];
 
 	if(dAngleX != 0)
 	{
@@ -108,7 +98,7 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
-		for(iLoop=1 ; iLoop<4 ;iLoop++)
+		for(iLoop=0 ; iLoop<4 ;iLoop++)
 		{
 			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
 			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
@@ -162,7 +152,7 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
-		for(iLoop=1 ; iLoop<4 ;iLoop++)
+		for(iLoop=0 ; iLoop<4 ;iLoop++)
 		{
 			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
 			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
@@ -184,23 +174,89 @@ void Rectangle_rotateRectangle(Rectangle* pRectangle, double dAngleX, double dAn
 	}
 }
 
-void Rectangle_ModSizeRectangle(Rectangle* pRectangle, double dRatio)
+void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY, double dAngleZ)
+{
+	int iLoop;
+	tdMatrix tdMatTransfo;
+	tdCoord tdCoordApTransfo;
+
+	Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+
+	if(dAngleX != 0)
+	{
+		/*Récupération de la matrice de rotation qui va bien */
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
+
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<4 ;iLoop++)
+		{
+			/*Transformation dans le repere du monde*/
+			Matrix_multiMatrixVect(tdMatTransfo, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pRectangle->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
+			pRectangle->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
+			pRectangle->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
+
+			/* réinitialisation coord après transformation pour le  point suivant */
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
+	}
+
+	if(dAngleY != 0)
+	{
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
+
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<4 ;iLoop++)
+		{
+			/*Transformation dans le repere du monde*/
+			Matrix_multiMatrixVect(tdMatTransfo, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pRectangle->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
+			pRectangle->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
+			pRectangle->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
+
+			/* réinitialisation coord après transformation pour le  point suivant */
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
+
+	}
+
+	if(dAngleZ != 0)
+	{
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
+
+		/* On effectue la transformation pour tous  les points du rectangle */
+		for(iLoop=0 ; iLoop<4 ;iLoop++)
+		{
+			/*Transformation dans le repere du monde*/
+			Matrix_multiMatrixVect(tdMatTransfo, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
+			/* Modification des coordonnées dans le repere du monde !*/
+			pRectangle->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
+			pRectangle->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
+			pRectangle->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
+
+			/* réinitialisation coord après transformation pour le  point suivant */
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		}
+	}
+}
+
+void Rectangle_modSize(Rectangle* pRectangle, double dRatio)
 {
 	int iLoop;
 	tdMatrix tdMatTransfo, tdMatPassRepObj;
 	tdCoord tdCoordRepObj, tdCoordApTransfo;
 
 	/* Initialisation des coordonées*/
-	tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
-	tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
-	tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
-	tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+	Point_initCoord(tdCoordRepObj, 0, 0, 0);
+	Point_initCoord(tdCoordApTransfo, 0, 0, 0);
 
 	/* Construction de la matrice de passage World -> Repere objet */
 	Matrix_initMatrix(tdMatPassRepObj); /* initialisation de la matrice de passage dans repere objet*/
-	tdMatPassRepObj[0][3] = -pRectangle->sCenter.tdCoordWorld[0];
-	tdMatPassRepObj[1][3] = -pRectangle->sCenter.tdCoordWorld[1];
-	tdMatPassRepObj[2][3] = -pRectangle->sCenter.tdCoordWorld[2];
+	tdMatPassRepObj[0][3] = -pRectangle->Center.tdCoordWorld[0];
+	tdMatPassRepObj[1][3] = -pRectangle->Center.tdCoordWorld[1];
+	tdMatPassRepObj[2][3] = -pRectangle->Center.tdCoordWorld[2];
 
 	if(dRatio != 1)
 	{
@@ -208,7 +264,7 @@ void Rectangle_ModSizeRectangle(Rectangle* pRectangle, double dRatio)
 		TransfoTools_getMatrixHomothety(tdMatTransfo, dRatio);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
-		for(iLoop=1 ; iLoop<4 ;iLoop++)
+		for(iLoop=0 ; iLoop<4 ;iLoop++)
 		{
 			/* Tout d'abord recherche des coordonnées dans le repere de l'objet*/
 			Matrix_multiMatrixVect(tdMatPassRepObj, pRectangle->tPoint[iLoop].tdCoordWorld, tdCoordRepObj);
@@ -223,10 +279,8 @@ void Rectangle_ModSizeRectangle(Rectangle* pRectangle, double dRatio)
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
 			/* on réinitialise les vecteurs contenant les infos sur la transformation */
-			tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
-			tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
-			tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
-			tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+			Point_initCoord(tdCoordRepObj, 0, 0, 0);
+			Point_initCoord(tdCoordApTransfo, 0, 0, 0);
 		}
 	}
 }
