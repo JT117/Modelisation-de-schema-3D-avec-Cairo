@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string.h>
 
+#include "Segment.h"
 #include "Objet.h"
 #include "Cube.h"
 #include "Rectangle.h"
@@ -54,6 +55,9 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube );
 
 void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect );
 
+void Scene_ajouter_segment( Scene* scene, Segment* pSeg );
+
+
 /** Fonction qui eneleve un objet de la scene */
 void Scene_enlever_objet( Scene* scene, Objet* objet );
 
@@ -75,6 +79,6 @@ void Scene_reset( Scene* scene, GtkWidget* window );
 /** Fonction qui recostruit la scene apres un reset */
 void Scene_reconstruire( Scene* scene, GtkWidget* window );
 
-void Scene_ajouter_rectangle( Scene* scene, Rectangle* pRect );
+
 
 #endif // SCENE_H

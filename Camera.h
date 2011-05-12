@@ -17,7 +17,7 @@ typedef struct InfoCamera
 	/* Definition des informatiosn relatives au frustum de la caméra*/
 	double dUmin,dUmax,dRmin,dRmax;
 
-	/* Matrice de projection prenant en compte de toutes les informations renseignées dans cette structure*/
+	/* Matrice de passage pour passer en coordonées caméra*/
 	tdMatrix tdMatPassage;
 	/* Matrice de projection prenant en compte de toutes les informations renseignées dans cette structure*/
 	tdMatrix tdMatProj;

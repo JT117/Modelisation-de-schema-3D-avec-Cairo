@@ -76,6 +76,14 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube )
     scene->nbObjet++;
 }
 
+void Scene_ajouter_segment( Scene* scene, Segment* pSeg )
+{
+    Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
+    Objet_est_un_Segment( objet, pSeg );
+    g_array_append_val( scene->tObjet, objet );
+    scene->nbObjet++;
+}
+
 
 void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect )
 {
@@ -131,12 +139,14 @@ void Scene_clear_scene( Scene* scene, cairo_t* cr )
 
 void Scene_creation_objet( Scene* scene, double x, double y )
 {
+	double dX, dY;
 	InfoCamera* pCam = scene->camera;
 	/* Creation définit les coordonnées du pixel sur lequel l'utilisateur a cliqué lors de la creation de son objet*/
+	dX = (x - pCam->dRmax) * 2*pCam->dDMin/ pCam->dDMin;
+	dY = (-y + pCam->dUmax) * 2*pCam->dDMin/ pCam->dDMin;
 
 	/* On fait correspondre les coordonnées du curseur ave cles coordonées du modèle 3D */
-	Point_init(scene->creation, x - pCam->dRmax, -(y - pCam->dUmax+75), 0); /*+75 permet de rééquilibrer l'ordonné (barre des taches de 75 px)*/
-
+	Point_init(scene->creation,dX, dY/*-(y - pCam->dUmax)*/, 0); /*+75 permet de rééquilibrer l'ordonné (barre des taches de 75 px)*/
 }
 
 /** Fonction qui remets la scene en etat d'initialisation

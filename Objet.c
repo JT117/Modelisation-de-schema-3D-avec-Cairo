@@ -36,7 +36,7 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
 void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
 {
 	pObj->typeObjet = (char*)malloc( 8 * sizeof(char) ); /* allocation chaine de type */
-	pObj->type.segment = pRect; /* sauvegarde pointeur sur objet */
+	pObj->type.segment = pSeg; /* sauvegarde pointeur sur objet */
 	strcpy( pObj->typeObjet, "Segment" );
 	pObj->doitEtreDeselectionner = TRUE;
 

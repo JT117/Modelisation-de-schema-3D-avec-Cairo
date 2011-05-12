@@ -34,7 +34,7 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 		pNewCube->tColor[0]=0.4;
 		pNewCube->tColor[1]=0.4;
 		pNewCube->tColor[2]=0.8;
-		pNewCube->tColor[3]=0.8;
+		pNewCube->tColor[3]=1.0;
 
 	}
 	else
@@ -109,9 +109,15 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 		else
 		{
 			if(dDistance > dPrevDistance)
-				g_array_append_val(gtTabFaceOrder, iFaceIndex);
-			else
+			{
 				g_array_prepend_val(gtTabFaceOrder, iFaceIndex);
+				dPrevDistance = dDistance;
+			}
+			else
+			{
+				g_array_append_val(gtTabFaceOrder, iFaceIndex);
+				dPrevDistance = dDistance;
+			}
 		}
 	}
 	return gtTabFaceOrder;

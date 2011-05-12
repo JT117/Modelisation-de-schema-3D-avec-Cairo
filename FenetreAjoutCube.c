@@ -224,6 +224,28 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             Point_initCoord( tdCenter, dX, dY, dZ);
             pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
             Scene_ajouter_cube( fao->scene, pNewCube );
+
+            //TODO : temporaire
+            //creation de segment pour test
+            tdCoord coordSeg1, coordSeg2;
+            Segment* seg = NULL;
+            Point_initCoord(coordSeg1,0,0,0);
+            Point_initCoord(coordSeg2,683,0,0);
+            seg = Segment_createSegment(coordSeg1, coordSeg2);
+            Segment_setColor(seg,0.0,1.0,0.0);
+            Scene_ajouter_segment(fao->scene,seg);
+
+            Point_initCoord(coordSeg1,0,0,0);
+			Point_initCoord(coordSeg2,0,50,0);
+			seg = Segment_createSegment(coordSeg1, coordSeg2);
+			Segment_setColor(seg,1.0,0.0,0.0);
+            Scene_ajouter_segment(fao->scene,seg);
+
+            Point_initCoord(coordSeg1,0,0,0);
+			Point_initCoord(coordSeg2,0,0,50);
+			seg = Segment_createSegment(coordSeg1, coordSeg2);
+			Segment_setColor(seg,0.0,0.0,1.0);
+			Scene_ajouter_segment(fao->scene,seg);
         }
         else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
         {
