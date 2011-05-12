@@ -12,7 +12,6 @@
 #include "Clavier.h"
 #include "Rectangle.h"
 
-
 // **************** Selection ***************************************
 void Selection_initialiser( Selection* selection );
 

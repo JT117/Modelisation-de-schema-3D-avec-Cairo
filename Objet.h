@@ -20,6 +20,8 @@ struct Objet
     gboolean doitEtreDeselectionner;
     /** Un int indiquant l'id du dernier groupe dont l'objet fait partie */
     int numeroGroupe;
+    /** iteration de l'arbre pour placement dans l'arbre d'objet */
+    GtkTreeIter* iter;
     /** Union contenant le pointeur sur le bon type de l'objet */
     union{
             Cube* cube;

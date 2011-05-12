@@ -19,7 +19,6 @@ void FenetrePropriete_initialiser( FenetrePropriete* fp, Scene* scene )
     gtk_widget_set_size_request(fp->entry2, 70, -1 );
     gtk_widget_set_size_request(fp->entry3, 70, -1 );
 
-    GtkWidget* text0 = gtk_label_new("Taille des cotés en pixel : ");
     GtkWidget* text1 = gtk_label_new("Position X : ");
     GtkWidget* text2 = gtk_label_new("Position Y : ");
     GtkWidget* text3 = gtk_label_new("Position Z : ");

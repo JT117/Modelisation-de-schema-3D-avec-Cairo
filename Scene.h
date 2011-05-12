@@ -15,7 +15,11 @@
 #include "Modification.h"
 #include "Clavier.h"
 #include "Groupe.h"
+<<<<<<< HEAD
 
+=======
+#include "Enum.h"
+>>>>>>> 693c0b24913269f2026b8972604d8d9741fbc967
 #include "Camera.h"
 
 /** Structure representant la scene */
@@ -45,13 +49,18 @@ struct Scene
 
     /** Caméra de notre scéne 3D **/
     InfoCamera* camera;
+    /** Pointeur sur la base de l'arbre **/
+    GtkTreeStore* store;
+    /** Gere la selection dans le treeView */
+    GtkTreeSelection* treeSelection;
+
 };
 
 /** Fonction qui initialise une scene */
 void Scene_initialiser_scene( Scene* scene, GtkWidget* window );
 
 /** Fonction qui ajoute un cube à la scene */
-void Scene_ajouter_cube( Scene* scene, Cube* cCube );
+void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe );
 
 void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect );
 
@@ -79,6 +88,7 @@ void Scene_reset( Scene* scene, GtkWidget* window );
 /** Fonction qui recostruit la scene apres un reset */
 void Scene_reconstruire( Scene* scene, GtkWidget* window );
 
+void Scene_ajouter_rectangle( Scene* scene, Rectangle* pRect );
 
 
 #endif // SCENE_H
