@@ -9,6 +9,7 @@
 #include "Scene.h"
 #include "Config.h"
 #include "FenetrePropriete.h"
+#include "Enum.h"
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
@@ -24,9 +25,9 @@ static gboolean main_quitter( GtkWidget *menuItem, gpointer data );
 static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
 static gboolean main_supprimer( GtkWidget *menuItem, gpointer data );
 static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
+static gboolean clickZoneGroupe(GtkWidget *widget, GdkEventButton* event, gpointer data);
 
-
- int main (int argc, char *argv[])
+int main (int argc, char *argv[])
  {
     GtkWidget* mainWindow = NULL;                                               // Instantation de la fenetre principal
     GtkWidget* zoneDeDessin = NULL;
@@ -81,19 +82,15 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
     gtk_widget_set_size_request( zoneDeDessin, width-200, height-75 );
     gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );
 //*******************************************************************************************************
-    enum{ GROUPE };
 
-    GtkTreeStore *store = gtk_tree_store_new( 1, G_TYPE_STRING );
+    scene->store = gtk_tree_store_new( 1, G_TYPE_STRING );
+    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, 0 );
 
-    GtkTreeIter iter1;
-    gtk_tree_store_append (store, &iter1, NULL);
-    gtk_tree_store_set (store, &iter1, GROUPE, "Groupe 0", -1);
+    //groupe->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    gtk_tree_store_append (scene->store, groupe->iter, NULL);
+    gtk_tree_store_set (scene->store, groupe->iter, GROUPE, "Groupe 0", -1);
 
-    GtkTreeIter iter2;
-    gtk_tree_store_append (store, &iter2, &iter1 );
-    gtk_tree_store_set (store, &iter2, GROUPE, "Groupe 1", -1);
-
-    GtkWidget *tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+    GtkWidget *tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (scene->store));
 
     GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
@@ -101,6 +98,10 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
     renderer = gtk_cell_renderer_text_new ();
     column = gtk_tree_view_column_new_with_attributes ("Groupe", renderer, "text", GROUPE, NULL );
     gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+    gtk_tree_selection_set_mode( scene->treeSelection, GTK_SELECTION_MULTIPLE );
+    scene->treeSelection = gtk_tree_view_get_selection(GTK_TREE_VIEW( tree ));
+    //(GtkTreeSelection*)malloc( 1 * sizeof( GtkTreeSelection) );
 
     gtk_widget_set_size_request( tree, 200, height-75 );
 
@@ -121,6 +122,10 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK );   //active la detection de la souris
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON1_MOTION_MASK );
     gtk_widget_add_events( zoneDeDessin, GDK_POINTER_MOTION_HINT_MASK );
+
+    gtk_widget_add_events( tree, GDK_BUTTON_PRESS_MASK );
+
+    g_signal_connect( G_OBJECT( tree ), "button-press-event", G_CALLBACK(clickZoneGroupe), scene );
 
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
@@ -284,17 +289,7 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     {
         GtkWidget *menu = gtk_menu_new();
         GtkWidget *pItem = gtk_menu_item_new_with_label("Nouvel objet");
-        /*
-        GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriété");
 
-        GtkWidget *sousMenu1 = gtk_menu_new();
-        GtkWidget *pItem3 = gtk_menu_item_new_with_label("Cube");
-        GtkWidget *pItem4 = gtk_menu_item_new_with_label("Rectangle");
-        gtk_menu_attach( GTK_MENU(sousMenu1), pItem3, 0, 1, 0, 1 );
-        gtk_menu_attach( GTK_MENU(sousMenu1), pItem4, 0, 1, 1, 2 );
-
-        gtk_menu_item_set_submenu( GTK_MENU_ITEM(pItem), sousMenu1 );
-        */
         GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriete");
         GtkWidget *pItem3 = gtk_menu_item_new_with_label("Supprimer");
 
@@ -411,7 +406,7 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
 
                     Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
                     initialiser_Cube( cube, x, y, z, taille );
-                    Scene_ajouter_cube( scene, cube );
+                    Scene_ajouter_cube( scene, cube, 0 );
                     Modification_modification_effectuer( scene );
 
                     fscanf( fichier, "%s", typeObjet );
@@ -630,3 +625,40 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data )
     }
     return TRUE;
 }
+
+static gboolean clickZoneGroupe(GtkWidget *widget, GdkEventButton* event, gpointer data)
+{
+    Scene* scene = (Scene*)data;
+
+    int i = 0;
+
+    for( i = 0; i < scene->nbGroupe; i++ )                                  // Test si un groupe est selectionner
+    {
+        Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+        if( gtk_tree_selection_iter_is_selected( scene->treeSelection, groupe->iter ) )
+        {
+            int j = 0;
+
+            for( j = 0; j < groupe->nbObjet; j++ )
+            {
+                Objet* objet = g_array_index( groupe->tObjet, Objet*, j );
+                Selection_selectionner( scene->selection, objet );
+                gtk_tree_selection_select_iter( scene->treeSelection, objet->iter );
+            }
+        }
+    }
+
+    for( i = 0; i < scene->nbObjet; i++ )
+    {
+        Objet* objet = g_array_index( scene->tObjet, Objet*, i );
+
+        if( gtk_tree_selection_iter_is_selected( scene->treeSelection, objet->iter ) )
+        {
+            Selection_selectionner( scene->selection, objet );
+        }
+    }
+    return FALSE;
+}
+
+

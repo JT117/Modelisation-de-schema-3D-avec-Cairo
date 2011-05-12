@@ -23,6 +23,7 @@ void Objet_est_un_Cube( Objet* objet, Cube* cube )
     objet->type.cube = cube;
     strcpy( objet->typeObjet, "Cube" );
     objet->doitEtreDeselectionner = TRUE;
+    objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
 void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )

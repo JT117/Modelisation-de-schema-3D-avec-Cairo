@@ -120,7 +120,7 @@ void Modification_annuler( Scene* scene )
 
                     Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
                     initialiser_Cube( cube, x, y, z, taille );
-                    Scene_ajouter_cube( scene, cube );
+                    Scene_ajouter_cube( scene, cube, 0 );
 
                     fscanf( fichier, "%s", typeObjet );
                 }
@@ -194,7 +194,7 @@ void Modification_refaire( Scene* scene )
 
                     Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
                     initialiser_Cube( cube, x, y, z, taille );
-                    Scene_ajouter_cube( scene, cube );
+                    Scene_ajouter_cube( scene, cube, 0 );
 
                     fscanf( fichier, "%s", typeObjet );
                 }

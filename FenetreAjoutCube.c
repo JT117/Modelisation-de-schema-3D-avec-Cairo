@@ -22,13 +22,36 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Cube" );
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Parallélépipède rectangle" );
-
-    gtk_widget_set_size_request( comboBox, 100, -1 );
+    gtk_widget_set_size_request( GTK_WIDGET( comboBox ), 250, -1 );
 
     GtkWidget* text = gtk_label_new("Type d'objet : ");
 
-    gtk_container_add( GTK_CONTAINER( fao->barreSelection ), text );
-    gtk_container_add( GTK_CONTAINER( fao->barreSelection ), comboBox );
+    fao->comboBoxGroupe = gtk_combo_box_text_new();
+
+    int i = 0;
+    for( i = 0; i < fao->scene->nbGroupe; i++ )
+    {
+        char buff0[255];
+        sprintf( buff0, "Groupe %d", g_array_index( scene->tGroupe, Groupe*, i )->id );
+        gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( fao->comboBoxGroupe ), buff0 );
+    }
+    gtk_widget_set_size_request( GTK_WIDGET( fao->comboBoxGroupe ), 100, -1 );
+
+    GtkWidget* hbox11 = gtk_hbutton_box_new();
+    GtkWidget* hbox13 = gtk_hbutton_box_new();
+    GtkWidget* vbox12 = gtk_vbutton_box_new();
+
+    gtk_container_add( GTK_CONTAINER( hbox11 ), text );
+    gtk_container_add( GTK_CONTAINER( hbox11 ), comboBox );
+    gtk_container_add( GTK_CONTAINER( vbox12 ), hbox11 );
+    gtk_container_add( GTK_CONTAINER( hbox13 ), fao->comboBoxGroupe );
+    gtk_container_add( GTK_CONTAINER( vbox12 ), hbox13 );
+
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( hbox13 ), GTK_BUTTONBOX_END );
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( hbox11 ), GTK_BUTTONBOX_END );
+
+    gtk_container_add( GTK_CONTAINER( fao->barreSelection ), vbox12);
+
     gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barreSelection ), GTK_BUTTONBOX_START );
 
     g_object_ref( fao->barreSelection );
@@ -43,10 +66,9 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_widget_set_size_request(fao->entry2, 70, -1 );
     gtk_widget_set_size_request(fao->entry3, 70, -1 );
 
-//    GtkWidget* text0 = gtk_label_new("Taille des cotés en pixel : ");
-    GtkWidget* text1 = gtk_label_new("Position X : ");
-    GtkWidget* text2 = gtk_label_new("Position Y : ");
-    GtkWidget* text3 = gtk_label_new("Position Z : ");
+    GtkWidget* text1 = gtk_label_new("X : ");
+    GtkWidget* text2 = gtk_label_new("Y : ");
+    GtkWidget* text3 = gtk_label_new("Z : ");
 
     fao->barrePosition = gtk_hbutton_box_new();
 
@@ -72,7 +94,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_container_add( GTK_CONTAINER( fao->barrePosition ), fao->entry3 );
     gtk_entry_set_text( GTK_ENTRY( fao->entry3 ), buf2 );
 
-    gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barrePosition ), GTK_BUTTONBOX_START );
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barrePosition ), GTK_BUTTONBOX_END );
 
     g_object_ref( fao->barrePosition );
 
@@ -105,7 +127,9 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_container_add( GTK_CONTAINER( fao->fenetre ), fao->layout );
 
     gtk_combo_box_set_active( GTK_COMBO_BOX( comboBox ), 0 );
+    gtk_combo_box_set_active( GTK_COMBO_BOX( fao->comboBoxGroupe ), 0 );
     g_signal_emit_by_name( GTK_OBJECT( comboBox ), "changed", NULL );
+    g_signal_emit_by_name( GTK_OBJECT( fao->comboBoxGroupe ), "changed", NULL );
 
     gtk_widget_show_all(fao->fenetre);
 }
@@ -216,14 +240,16 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 	dY = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry2) ) );
 	dZ = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry3) ) );
 
-    if( fao->scene->tailleCreation > 0 )
+    if( fao->scene->tailleCreation > 0 && strcmp( gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ), "" ) != 0 )
     {
         if( strcmp( fao->dernierLayout, "Cube" ) == 0 )
         {
         	dWidth = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) ); /*Récupération de la longueur du cube*/
             Point_initCoord( tdCenter, dX, dY, dZ);
             pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
-            Scene_ajouter_cube( fao->scene, pNewCube );
+            int a = 0;
+            sscanf( gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ), "Groupe %d", &a );
+            Scene_ajouter_cube( fao->scene, pNewCube, a );
         }
         else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
         {

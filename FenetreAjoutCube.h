@@ -23,6 +23,7 @@ struct FenetreAjoutCube
     GtkWidget* hbox_cube;
     GtkWidget* hbox_rect;
     char* dernierLayout;
+    GtkWidget* comboBoxGroupe;
 
     double x, y, z;
     double L;
