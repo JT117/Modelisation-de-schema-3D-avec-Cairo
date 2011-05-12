@@ -3,7 +3,6 @@
 #include <math.h>
 
 #include "FenetreAjoutCube.h" /* TODO : réflechir à un moyen de ne faire qu'un seule module FenetreAjout */
-#include "FenetreAjoutRectangle.h"
 #include "Cube.h"
 #include "Objet.h"
 #include "Scene.h"
@@ -357,8 +356,10 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
-    FenetreAjoutRectangle* fao = (FenetreAjoutRectangle*)malloc( 1 *sizeof( FenetreAjoutRectangle ) );
-    initialiser_FenetreAjoutRectangle( fao, scene );
+    //FenetreAjoutRectangle* fao = (FenetreAjoutRectangle*)malloc( 1 *sizeof( FenetreAjoutRectangle ) );
+    FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube) );
+    initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
+    //initialiser_FenetreAjoutRectangle( fao, scene );
 
     return TRUE;
 }
