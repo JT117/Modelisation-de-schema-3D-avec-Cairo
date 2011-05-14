@@ -15,11 +15,7 @@
 #include "Modification.h"
 #include "Clavier.h"
 #include "Groupe.h"
-<<<<<<< HEAD
-
-=======
 #include "Enum.h"
->>>>>>> 693c0b24913269f2026b8972604d8d9741fbc967
 #include "Camera.h"
 
 /** Structure representant la scene */

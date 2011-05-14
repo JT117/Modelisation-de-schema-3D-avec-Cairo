@@ -17,6 +17,7 @@ O_SRCS += \
 ../obj/Debug/ProjectionTools.o \
 ../obj/Debug/Rectangle.o \
 ../obj/Debug/Scene.o \
+../obj/Debug/Segment.o \
 ../obj/Debug/Selection.o \
 ../obj/Debug/TransfoTools.o \
 ../obj/Debug/main.o 

@@ -65,7 +65,7 @@ C_DEPS += \
 %.o: ../%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -I/usr/include/cairo -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<" `pkg-config --libs --cflags gtk+-2.0`
+	gcc -I/usr/include/cairo -I/usr/include/gtk-2.0 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<" `pkg-config --libs --cflags gtk-3.0`
 	@echo 'Finished building: $<'
 	@echo ' '
 

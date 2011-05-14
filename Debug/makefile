@@ -29,7 +29,7 @@ all: projet3D
 projet3D: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/usr/lib -lcairo" -o"projet3D" $(OBJS) $(USER_OBJS) $(LIBS) `pkg-config --libs --cflags gtk+-2.0`
+	gcc -L"/usr/lib -lcairo" -o"projet3D" $(OBJS) $(USER_OBJS) $(LIBS) `pkg-config --libs --cflags gtk-3.0`
 	@echo 'Finished building target: $@'
 	@echo ' '
 

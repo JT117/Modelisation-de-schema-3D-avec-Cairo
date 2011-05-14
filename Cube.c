@@ -34,12 +34,7 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 		pNewCube->tColor[0]=0.4;
 		pNewCube->tColor[1]=0.4;
 		pNewCube->tColor[2]=0.8;
-<<<<<<< HEAD
 		pNewCube->tColor[3]=1.0;
-=======
-		pNewCube->tColor[3]=0.8;
->>>>>>> 693c0b24913269f2026b8972604d8d9741fbc967
-
 	}
 	else
 	{

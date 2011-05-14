@@ -344,7 +344,6 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
     Scene* scene = (Scene*)data; /*recupération de la scene courante*/
     FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube) );
     initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
-<<<<<<< HEAD
 
     return TRUE;
 }
