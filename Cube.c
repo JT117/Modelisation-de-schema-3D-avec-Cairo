@@ -35,6 +35,7 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 		pNewCube->tColor[1]=0.4;
 		pNewCube->tColor[2]=0.8;
 		pNewCube->tColor[3]=0.8;
+		pNewCube->estSelectionne = FALSE;
 
 	}
 	else
@@ -116,45 +117,6 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 	}
 	return gtTabFaceOrder;
 }
-
-void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote )
-{
-    cCube->tPoint[0].x = dX;
-    cCube->tPoint[0].y = dY;
-    cCube->tPoint[0].z = dZ;
-
-    cCube->tPoint[1].x = dX + dCote;
-    cCube->tPoint[1].y = dY;
-    cCube->tPoint[1].z = dZ;
-
-    cCube->tPoint[2].x = dX + dCote;
-    cCube->tPoint[2].y = dY + dCote;
-    cCube->tPoint[2].z = dZ;
-
-    cCube->tPoint[3].x = dX;
-    cCube->tPoint[3].y = dY + dCote;
-    cCube->tPoint[3].z = dZ;
-
-    cCube->tPoint[4].x = dX;
-    cCube->tPoint[4].y = dY;
-    cCube->tPoint[4].z = dZ + dCote;
-
-    cCube->tPoint[5].x = dX + dCote;
-    cCube->tPoint[5].y = dY;
-    cCube->tPoint[5].z = dZ + dCote;
-
-    cCube->tPoint[6].x = dX + dCote;
-    cCube->tPoint[6].y = dY + dCote;
-    cCube->tPoint[6].z = dZ + dCote;
-
-    cCube->tPoint[7].x = dX;
-    cCube->tPoint[7].y = dY + dCote;
-    cCube->tPoint[7].z = dZ + dCote;
-
-    cCube->estSelectionne = FALSE;
-
-}
-
 
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 {
@@ -245,10 +207,20 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 
 			}
 		}
-		cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] , pCube->tColor[3]); /*Couleur */
+        cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] , pCube->tColor[3]); /*Couleur */
+
 		cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
 		cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
-		cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+
+		if( pCube->estSelectionne )
+		{
+            cairo_set_source_rgb ( cr, 0.9, 0, 0); /* couleur contour */
+		}
+		else
+		{
+		    cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+		}
+
 		cairo_stroke(cr); /* dessin contour, perte du path */
 	}
 
@@ -463,20 +435,40 @@ void Cube_modSize(Cube* pCube, double dRatio)
 	}
 }
 
-gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
+gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam )
 {
     gboolean est_contenu = FALSE;
 
-    est_contenu = est_contenu || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[2], cCube->tPoint[3], x, y )
-                              || est_dans_face( cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[2], x, y )
-                              || est_dans_face( cCube->tPoint[4], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[7], x, y )
-                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[4], cCube->tPoint[7], cCube->tPoint[3], x, y )
-                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[4], x, y )
-                              || est_dans_face( cCube->tPoint[3], cCube->tPoint[2], cCube->tPoint[6], cCube->tPoint[7], x, y );
+    tdCoord2D* pPointProj0 = NULL;tdCoord2D* pPointProj4 = NULL;
+	tdCoord2D* pPointProj1 = NULL;tdCoord2D* pPointProj5 = NULL;
+	tdCoord2D* pPointProj2 = NULL;tdCoord2D* pPointProj6 = NULL;
+	tdCoord2D* pPointProj3 = NULL;tdCoord2D* pPointProj7 = NULL;
+
+    pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[2]),pCam);
+	pPointProj3 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[3]),pCam);
+	pPointProj4 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[4]),pCam);
+	pPointProj5 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[5]),pCam);
+	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
+	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
+
+    est_contenu = est_contenu || est_dans_face( pPointProj0, pPointProj1, pPointProj2, pPointProj3, x, y )
+                              || est_dans_face( pPointProj1, pPointProj5, pPointProj6, pPointProj2, x, y )
+                              || est_dans_face( pPointProj4, pPointProj5, pPointProj6, pPointProj7, x, y )
+                              || est_dans_face( pPointProj0, pPointProj4, pPointProj7, pPointProj3, x, y )
+                              || est_dans_face( pPointProj0, pPointProj1, pPointProj5, pPointProj4, x, y )
+                              || est_dans_face( pPointProj3, pPointProj2, pPointProj6, pPointProj7, x, y );
+
+    free(pPointProj0);	free(pPointProj4);
+	free(pPointProj1);	free(pPointProj5);
+	free(pPointProj2);	free(pPointProj6);
+	free(pPointProj3);	free(pPointProj7);
+
     return est_contenu;
 }
 
-gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
+gboolean est_dans_face( tdCoord2D* a, tdCoord2D* b, tdCoord2D* c, tdCoord2D* d, double x, double y )
 {
     int nb = 0;
 
@@ -492,17 +484,17 @@ gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
     else return FALSE;
 }
 
-int scalaire_result( Point a, Point b, int x, int y )
+int scalaire_result( tdCoord2D* a, tdCoord2D* b, int x, int y )
 {
     Point ab;
     Point ap;
     double produitScalaire = 0.0;
 
-    ab.x = b.x - a.x;
-    ab.y = b.y - a.y;
+    ab.x = (*b)[0] - (*a)[0];
+    ab.y = (*b)[1] - (*b)[1];
 
-    ap.x = x - a.x;
-    ap.y = y - a.y;
+    ap.x = x - (*a)[0];
+    ap.y = y - (*a)[1];
 
     produitScalaire = ab.x * ap.x + ab.y * ap.y;
 

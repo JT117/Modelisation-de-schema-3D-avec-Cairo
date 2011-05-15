@@ -17,7 +17,7 @@ void Selection_initialiser( Selection* selection );
 
 void Selection_selectionner_objet( Scene* scene, double x, double y );
 
-void Selection_deselectionner_tout( Selection* selection );
+void Selection_deselectionner_tout( Scene* scene );
 
 void Selection_selectionner_tout( Scene* scene );
 
@@ -29,9 +29,9 @@ void Selection_detruire( Selection* selection );
 
 gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet );
 
-void Selection_deselectionner( Selection* selection, Objet* objet );
+void Selection_deselectionner( Scene* scene, Objet* objet );
 
-void Selection_selectionner( Selection* selection, Objet* objet );
+void Selection_selectionner( Scene* scene, Objet* objet );
 
 //*******************Modification************************************
 void Modification_modification_effectuer( Scene* scene );

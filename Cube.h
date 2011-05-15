@@ -60,11 +60,11 @@ void rotation_Y( Point* pPoint, double dDecallage_X, double dDecallage_Z, double
 
 void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double angle );
 
-gboolean Cube_Contient_Point( Cube* cCube, double x, double y );
+gboolean Cube_Contient_Point( Cube* cCube, double x, double y, InfoCamera* pCam );
 
-gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
+gboolean est_dans_face( tdCoord2D* a, tdCoord2D* b, tdCoord2D* c, tdCoord2D* d, double x, double y );
 
-int scalaire_result( Point a, Point b, int x, int y );
+int scalaire_result( tdCoord2D* a, tdCoord2D* b, int x, int y );
 
 /**
  * Agrandit/retrécit un objet de type cube suivant le ratio fourni en param.

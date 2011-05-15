@@ -47,7 +47,10 @@ struct Scene
     GtkTreeStore* store;
     /** Gere la selection dans le treeView */
     GtkTreeSelection* treeSelection;
+    /** La vue de l'arbre */
+    GtkWidget* tree;
 
+    GtkWidget* CBajoutGroupe;
 };
 
 /** Fonction qui initialise une scene */

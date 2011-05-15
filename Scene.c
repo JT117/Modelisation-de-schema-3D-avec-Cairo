@@ -27,8 +27,6 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     g_array_append_val( scene->tGroupe, groupeDeBase );
     scene->nbGroupe = 1;
 
-    printf("Groupe fini \n");
-
     scene->tailleCreation = 50.0;
     scene->creation = (Point*)malloc( 1* sizeof( Point ) );
     scene->creation->x = 0.0;

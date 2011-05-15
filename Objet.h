@@ -44,7 +44,7 @@ void Objet_est_un_Segment( Objet* pObj, Segment* pSeg );
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam);
 
 /** Fonction indiquand si un point est contenu dans l'objet */
-gboolean Objet_contient_point( Objet* objet, double x, double y );
+gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCam );
 
 /** Selectionne l'objet */
 void Objet_selection( Objet* objet );

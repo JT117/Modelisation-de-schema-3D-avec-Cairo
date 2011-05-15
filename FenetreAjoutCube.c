@@ -119,7 +119,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     g_signal_connect( G_OBJECT( fao->fenetre ), "delete-event", G_CALLBACK( gtk_widget_destroy ), NULL );
 
     //Layout temporaire
-    fao->layout = gtk_vbox_new( FALSE, 10 );
+    fao->layout = gtk_vbox_new( TRUE, 5 );
 
     gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreSelection );
     gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreBouton );

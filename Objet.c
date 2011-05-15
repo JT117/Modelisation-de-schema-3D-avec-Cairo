@@ -70,11 +70,11 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
  * @param x, la coordonnées x du point à tester
  * @param y, la coordonnées y du point à tester
  **/
-gboolean Objet_contient_point( Objet* objet, double x, double y )
+gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCam )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        return Cube_Contient_Point( objet->type.cube, x, y );
+        return Cube_Contient_Point( objet->type.cube, x, y, pCam );
     }
     else if(strcmp( objet->typeObjet, "Rectangle" ) == 0 )
     {

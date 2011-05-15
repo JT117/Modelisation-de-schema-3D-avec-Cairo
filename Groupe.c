@@ -5,6 +5,8 @@ void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb )
     groupe->pere = pere;
     groupe->id = nb;
     groupe->tObjet = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+    groupe->nbObjet = 0;
+    groupe->nbFils = 0;
     groupe->tFils = g_array_new( FALSE, FALSE, sizeof( Groupe* ) );
     groupe->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter) );
 }

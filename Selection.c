@@ -46,7 +46,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
     for( i = 0; i < scene->nbObjet; i++ )
     {
         Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-        gboolean estContenu = Objet_contient_point( objet, x, y );
+        gboolean estContenu = Objet_contient_point( objet, x, y, scene->camera );
 
         if( estContenu  )
         {
@@ -69,7 +69,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
             }
             else if( !estDejaSelectionner )
             {
-                Selection_deselectionner_tout( scene->selection );
+                Selection_deselectionner_tout( scene );
                 g_array_free( scene->selection->tSelection, FALSE );
                 scene->selection->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
                 g_array_append_val( scene->selection->tSelection, objet );
@@ -78,7 +78,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
             }
             else if( !scene->selection->selection_multiple )
             {
-              Selection_deselectionner( scene->selection, objet );
+              Selection_deselectionner( scene, objet );
             }
         }
         else if( !estContenu )
@@ -89,7 +89,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
 
     if( nbNonSelectionner == scene->nbObjet )
     {
-        Selection_deselectionner_tout( scene->selection );
+        Selection_deselectionner_tout( scene );
         g_array_free( scene->selection->tSelection, FALSE );
         scene->selection->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
         scene->selection->nbSelection = 0;
@@ -134,7 +134,7 @@ void Selection_selectionner_click_drag( Scene* scene )
         {
             for( j = y1; j < y2; j += 15 )
             {
-                 estContenu = estContenu || Objet_contient_point( objet, k, j );
+                 estContenu = estContenu || Objet_contient_point( objet, k, j, scene->camera );
                  if( estContenu )
                  {
                      k = x2;
@@ -145,11 +145,11 @@ void Selection_selectionner_click_drag( Scene* scene )
 
         if( estContenu )
         {
-            Selection_selectionner( scene->selection, objet );
+            Selection_selectionner( scene, objet );
         }
         else
         {
-            Selection_deselectionner( scene->selection, objet );
+            Selection_deselectionner( scene, objet );
         }
     }
 }
@@ -158,17 +158,19 @@ void Selection_selectionner_click_drag( Scene* scene )
  * @param selection , un pointeur sur une selection initialisée
  * @param objet, un pointeur sur l'objet à deselectionner
  **/
-void Selection_deselectionner( Selection* selection, Objet* objet )
+void Selection_deselectionner( Scene* scene, Objet* objet )
 {
     int i = 0;
 
-    for( i = 0; i < selection->nbSelection; i++ )
+    for( i = 0; i < scene->selection->nbSelection; i++ )
     {
-        if( objet == g_array_index( selection->tSelection, Objet*, i ) )
+        if( objet == g_array_index( scene->selection->tSelection, Objet*, i ) )
         {
-            g_array_remove_index( selection->tSelection, i );
-            selection->nbSelection--;
+            g_array_remove_index( scene->selection->tSelection, i );
+            scene->selection->nbSelection--;
             Objet_deselection( objet );
+            gtk_tree_selection_unselect_iter( scene->treeSelection,objet->iter );
+            gtk_widget_queue_draw( scene->tree );
         }
     }
 }
@@ -177,14 +179,14 @@ void Selection_deselectionner( Selection* selection, Objet* objet )
  * @param selection, un pointeur sur une selection initialisée
  * @param objet, un pointeur sur l'objet à selectionner
  **/
-void Selection_selectionner( Selection* selection, Objet* objet )
+void Selection_selectionner( Scene* scene, Objet* objet )
 {
     int i = 0;
     gboolean estDejaSelectionner = FALSE;
 
-    for( i = 0; i < selection->nbSelection; i++ )
+    for( i = 0; i < scene->selection->nbSelection; i++ )
     {
-        if( objet == g_array_index( selection->tSelection, Objet*, i ) )
+        if( objet == g_array_index( scene->selection->tSelection, Objet*, i ) )
         {
             estDejaSelectionner = TRUE;
         }
@@ -192,9 +194,11 @@ void Selection_selectionner( Selection* selection, Objet* objet )
 
     if( !estDejaSelectionner )
     {
-        g_array_append_val( selection->tSelection, objet );
-        selection->nbSelection++;
+        g_array_append_val( scene->selection->tSelection, objet );
+        scene->selection->nbSelection++;
         Objet_selection( objet );
+        gtk_tree_selection_select_iter( scene->treeSelection,objet->iter );
+        gtk_widget_queue_draw( scene->tree );
     }
 }
 
@@ -219,13 +223,13 @@ gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet )
 /** Fonction qui deselectionne tout les objets
  * @param selection, un pointeur sur une selection initialisée
  **/
-void Selection_deselectionner_tout( Selection* selection )
+void Selection_deselectionner_tout( Scene* scene )
 {
     int i = 0;
 
-    for( i = 0; i < selection->nbSelection; i++ )
+    for( i = 0; i < scene->selection->nbSelection; i++ )
     {
-        Objet* objet = (Objet*)g_array_index( selection->tSelection, Objet*, i );
+        Objet* objet = (Objet*)g_array_index( scene->selection->tSelection, Objet*, i );
         Objet_deselection( objet );
     }
 }
@@ -244,6 +248,7 @@ void Selection_selectionner_tout( Scene* scene )
         scene->selection->nbSelection++;
         Objet_selection( objet );
     }
+    gtk_tree_selection_select_all( scene->treeSelection );
 }
 
 /** Fonction qui dessine le rectangle de selection dynamique à l'ecran
