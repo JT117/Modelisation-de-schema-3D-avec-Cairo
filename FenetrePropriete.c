@@ -1,4 +1,5 @@
 #include "FenetrePropriete.h"
+#include "Selection.h"
 
 void FenetrePropriete_initialiser( FenetrePropriete* fp, Scene* scene )
 {

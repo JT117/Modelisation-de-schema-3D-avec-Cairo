@@ -5,6 +5,8 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+struct Scene;
+
 #include "Objet.h"
 #include "Point.h"
 
@@ -26,6 +28,25 @@ struct Selection
     Point finSelection;
 };
 
+void Selection_initialiser( Selection* selection );
+
+void Selection_selectionner_objet( struct Scene* scene, double x, double y );
+
+void Selection_deselectionner_tout( struct Scene* scene );
+
+void Selection_selectionner_tout( struct Scene* scene );
+
+void Selection_selectionner_click_drag( struct Scene* scene );
+
+void Selection_dessiner_rectangle( Selection* selection, cairo_t* cr );
+
+void Selection_detruire( Selection* selection );
+
+gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet );
+
+void Selection_deselectionner( struct Scene* scene, Objet* objet );
+
+void Selection_selectionner( struct Scene* scene, Objet* objet );
 
 #endif  //SELECTION_H
 

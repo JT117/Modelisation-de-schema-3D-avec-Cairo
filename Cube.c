@@ -110,14 +110,19 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 		else
 		{
 			if(dDistance > dPrevDistance)
-				g_array_append_val(gtTabFaceOrder, iFaceIndex);
-			else
+			{
 				g_array_prepend_val(gtTabFaceOrder, iFaceIndex);
+				dPrevDistance = dDistance;
+			}
+			else
+			{
+				g_array_append_val(gtTabFaceOrder, iFaceIndex);
+				dPrevDistance = dDistance;
+			}
 		}
 	}
 	return gtTabFaceOrder;
 }
-
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 {
 	int iFaceIndex;
@@ -207,20 +212,17 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 
 			}
 		}
-        cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] , pCube->tColor[3]); /*Couleur */
-
+		cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] , pCube->tColor[3]); /*Couleur */
 		cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
 		cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
-
 		if( pCube->estSelectionne )
 		{
-            cairo_set_source_rgb ( cr, 0.9, 0, 0); /* couleur contour */
+		    cairo_set_source_rgb ( cr, 0.9, 0, 0);
 		}
 		else
 		{
-		    cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+            cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
 		}
-
 		cairo_stroke(cr); /* dessin contour, perte du path */
 	}
 

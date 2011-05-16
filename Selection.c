@@ -232,6 +232,7 @@ void Selection_deselectionner_tout( Scene* scene )
         Objet* objet = (Objet*)g_array_index( scene->selection->tSelection, Objet*, i );
         Objet_deselection( objet );
     }
+    gtk_tree_selection_unselect_all( scene->treeSelection );
 }
 
 /** Fonction qui selectionne tous les objets de la scene

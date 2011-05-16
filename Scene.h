@@ -6,11 +6,12 @@
 #include <math.h>
 #include <string.h>
 
+struct Selection;
+
 #include "Objet.h"
 #include "Cube.h"
 #include "Rectangle.h"
 #include "Point.h"
-#include "Selection.h"
 #include "Modification.h"
 #include "Clavier.h"
 #include "Groupe.h"
@@ -24,7 +25,7 @@ struct Scene
     /** Pointeur sur le module des modifications */
     Modification* modification;
     /** Pointeur sur le module de selection */
-    Selection* selection;
+    struct Selection* selection;
     /** Tableau contenant tous les objets de la scene */
     GArray* tObjet;
     /** Int contenant le nombre d'objet dans le tableau tObjet */
@@ -51,6 +52,8 @@ struct Scene
     GtkWidget* tree;
 
     GtkWidget* CBajoutGroupe;
+    GtkWidget* fenetre;
+    GtkWidget* entryNom;
 };
 
 /** Fonction qui initialise une scene */

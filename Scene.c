@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Selection.h"
 
 /** Fonction qui initialise une scene vierge
  * @param scene, un pointeur sur une scene vierge
@@ -32,6 +33,10 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->creation->x = 0.0;
     scene->creation->y = 0.0;
     scene->creation->z = 0.0;
+
+    scene->fenetre = NULL;
+    scene->CBajoutGroupe = NULL;
+    scene->entryNom = NULL;
 }
 
 void Scene_reconstruire( Scene* scene, GtkWidget* window )
@@ -143,9 +148,11 @@ void Scene_creation_objet( Scene* scene, double x, double y )
 {
 	InfoCamera* pCam = scene->camera;
 	/* Creation définit les coordonnées du pixel sur lequel l'utilisateur a cliqué lors de la creation de son objet*/
+    double dX = (x - pCam->dRmax ) * 2*pCam->dDMin / pCam->dDMin ;
+    double dY = (-y + pCam->dUmax) * 2*pCam->dDMin / pCam->dDMin ;
 
 	/* On fait correspondre les coordonnées du curseur ave cles coordonées du modèle 3D */
-	Point_init(scene->creation, x - pCam->dRmax, -(y - pCam->dUmax+75), 0); /*+75 permet de rééquilibrer l'ordonné (barre des taches de 75 px)*/
+	Point_init(scene->creation, dX, dY, 0 ); /*+75 permet de rééquilibrer l'ordonné (barre des taches de 75 px)*/
 
 }
 

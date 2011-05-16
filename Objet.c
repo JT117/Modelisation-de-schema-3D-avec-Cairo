@@ -8,8 +8,9 @@ void Objet_detruire( Objet* objet )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        // pas d'allocation dynamique pour le cube de base
+        // Pas d'alloc dynamique
     }
+    free( objet->iter );
 }
 
 /** Fonction qui initialise un objet de type Cube
