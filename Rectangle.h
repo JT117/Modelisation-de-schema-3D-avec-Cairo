@@ -72,6 +72,6 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
  */
 void Rectangle_modSize(Rectangle* pRectangle, double dRatio);
 
-gboolean Rectangle_Contient_Point(Rectangle* pRect, double x, double y );
+gboolean Rectangle_Contient_Point(Rectangle* pRect, double x, double y, InfoCamera* pCam);
 
 #endif

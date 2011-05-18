@@ -158,7 +158,7 @@ void Scene_creation_objet( Scene* scene, double x, double y )
 	dY = (-y + pCam->dUmax) * 2*pCam->dDMin/ pCam->dDMin;
 
 	/* On fait correspondre les coordonnées du curseur ave cles coordonées du modèle 3D */
-	Point_init(scene->creation,dX, dY/*-(y - pCam->dUmax)*/, 0); /*+75 permet de rééquilibrer l'ordonné (barre des taches de 75 px)*/
+	Point_init(scene->creation,dX, dY, 0);
 }
 
 /** Fonction qui remets la scene en etat d'initialisation

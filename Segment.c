@@ -7,7 +7,6 @@ Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2)
 
 		if( (pNewSeg = (Segment*)malloc(sizeof(Segment))) != NULL )
 		{
-
 			/*Sauvegarde des infos sur les points dans notre structure */
 			Point_init( &((pNewSeg->tPoint)[0]), tdCoord1[0], tdCoord1[1], tdCoord1[2]);
 			Point_init( &((pNewSeg->tPoint)[1]), tdCoord2[0], tdCoord2[1], tdCoord2[2]);
@@ -20,6 +19,8 @@ Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2)
 			pNewSeg->tColor[1]=0.0;
 			pNewSeg->tColor[2]=0.0;
 			pNewSeg->tColor[3]=1.0;
+
+			pNewSeg->bDashed = FALSE;
 		}
 		else
 		{
@@ -30,6 +31,7 @@ Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2)
 
 void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 {
+	double dDashLength = 10.0;
 	tdCoord2D* pPointProj1 = NULL;
 	tdCoord2D* pPointProj2 = NULL;
 
@@ -41,6 +43,12 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 
 	/* On dessine */
 	cairo_set_source_rgba (cr, pSeg->tColor[0], pSeg->tColor[1], pSeg->tColor[2] ,pSeg->tColor[3]);
+
+	if(pSeg->bDashed == TRUE)
+	{
+		cairo_set_dash(cr,&dDashLength,1,0);
+	}
+	cairo_set_line_width(cr, 0.8);
 	cairo_stroke(cr); /* dessin contour, perte du path */
 }
 

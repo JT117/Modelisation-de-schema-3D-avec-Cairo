@@ -172,7 +172,7 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
 {
     Scene* scene = (Scene*)data;                                     //Cast du pointeur generique en Scene*
 
-    cairo_t* cr = gdk_cairo_create ( widget->window );               //Creation du contexte pour pouvoir dessiner
+    cairo_t* cr = gdk_cairo_create( widget->window );               //Creation du contexte pour pouvoir dessiner
 
     Scene_clear_scene( scene , cr );                                 //Nettoyage de la scene
 

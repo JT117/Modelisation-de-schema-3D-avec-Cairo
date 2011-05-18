@@ -15,7 +15,7 @@ struct Cube
 {
     // 0-----1
     // |     |
-    // |     |
+    // |
     // 3-----2
     Point tPoint[8];
 
@@ -60,7 +60,7 @@ void rotation_Y( Point* pPoint, double dDecallage_X, double dDecallage_Z, double
 
 void rotation_Z( Point* pPoint, double dDecallage_X, double dDecallage_Y, double angle );
 
-gboolean Cube_Contient_Point( Cube* cCube, double x, double y );
+gboolean Cube_Contient_Point( Cube* cCube, double x, double y, InfoCamera* pCam);
 
 gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
 

@@ -46,7 +46,7 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
     for( i = 0; i < scene->nbObjet; i++ )
     {
         Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-        gboolean estContenu = Objet_contient_point( objet, x, y );
+        gboolean estContenu = Objet_contient_point( objet, x, y, scene->camera );
 
         if( estContenu  )
         {
@@ -134,7 +134,7 @@ void Selection_selectionner_click_drag( Scene* scene )
         {
             for( j = y1; j < y2; j += 15 )
             {
-                 estContenu = estContenu || Objet_contient_point( objet, k, j );
+                 estContenu = estContenu || Objet_contient_point( objet, k, j, scene->camera );
                  if( estContenu )
                  {
                      k = x2;

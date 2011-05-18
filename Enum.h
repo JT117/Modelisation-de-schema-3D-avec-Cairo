@@ -3,5 +3,4 @@
 
 enum{ GROUPE };
 
-
 #endif //ENUM_H

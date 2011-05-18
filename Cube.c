@@ -4,7 +4,6 @@
 #include <math.h>
 #include "Point.h"
 
-
 Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth)
 {
 	double dHalfH, dHalfW, dHalfD;
@@ -35,6 +34,8 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 		pNewCube->tColor[1]=0.4;
 		pNewCube->tColor[2]=0.8;
 		pNewCube->tColor[3]=1.0;
+
+		pNewCube->estSelectionne=FALSE;
 	}
 	else
 	{
@@ -160,7 +161,6 @@ void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCot
 
 }
 
-
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 {
 	int iFaceIndex;
@@ -253,7 +253,12 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 		cairo_set_source_rgba (cr, pCube->tColor[0], pCube->tColor[1], pCube->tColor[2] , pCube->tColor[3]); /*Couleur */
 		cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
 		cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
-		cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+
+		if(pCube->estSelectionne == TRUE)
+			cairo_set_source_rgb ( cr, 1.0, 0, 0); /* couleur contour */
+		else
+			cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+
 		cairo_stroke(cr); /* dessin contour, perte du path */
 	}
 
@@ -468,35 +473,102 @@ void Cube_modSize(Cube* pCube, double dRatio)
 	}
 }
 
-gboolean Cube_Contient_Point( Cube* cCube, double x, double y )
+gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam)
 {
     gboolean est_contenu = FALSE;
+    double iNbFaces = 0;
+	tdCoord2D* pPointProj0 = NULL;tdCoord2D* pPointProj4 = NULL;
+	tdCoord2D* pPointProj1 = NULL;tdCoord2D* pPointProj5 = NULL;
+	tdCoord2D* pPointProj2 = NULL;tdCoord2D* pPointProj6 = NULL;
+	tdCoord2D* pPointProj3 = NULL;tdCoord2D* pPointProj7 = NULL;
 
-    est_contenu = est_contenu || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[2], cCube->tPoint[3], x, y )
-                              || est_dans_face( cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[2], x, y )
-                              || est_dans_face( cCube->tPoint[4], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[7], x, y )
-                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[4], cCube->tPoint[7], cCube->tPoint[3], x, y )
-                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[4], x, y )
-                              || est_dans_face( cCube->tPoint[3], cCube->tPoint[2], cCube->tPoint[6], cCube->tPoint[7], x, y );
+	/* Projection de tous les point du cube */
+	pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[2]),pCam);
+	pPointProj3 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[3]),pCam);
+	pPointProj4 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[4]),pCam);
+	pPointProj5 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[5]),pCam);
+	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
+	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
+
+    est_contenu = est_contenu || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj2), (*pPointProj3), x, y )
+                              || Cube_inFace( (*pPointProj1), (*pPointProj5), (*pPointProj6), (*pPointProj2), x, y )
+                              || Cube_inFace( (*pPointProj4), (*pPointProj5), (*pPointProj6), (*pPointProj7), x, y )
+                              || Cube_inFace( (*pPointProj0), (*pPointProj4), (*pPointProj7), (*pPointProj3), x, y )
+                              || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj5), (*pPointProj4), x, y )
+                              || Cube_inFace( (*pPointProj3), (*pPointProj2), (*pPointProj6), (*pPointProj7), x, y );
+
+    free(pPointProj0);	free(pPointProj4);
+	free(pPointProj1);	free(pPointProj5);
+	free(pPointProj2);	free(pPointProj6);
+	free(pPointProj3);	free(pPointProj7);
     return est_contenu;
 }
 
-gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
+gboolean Cube_inFace(tdCoord2D tP1,tdCoord2D tP2,tdCoord2D tP3, tdCoord2D tP4, double dXClick, double dYClick )
 {
-    int nb = 0;
+	int iNb = 0, iLoop = 0;
+	double tDistanceClick[2]; /* Distance (sur x et y) entre la position du curseur et chaque point  */
+	double tDistancePoints[2]; /* Distance entre deux points d'une arrête*/
+	double dDet = 0;
+	tdCoord2D tCoordClick;
 
-    nb += scalaire_result( a, b, x, y );
-    nb += scalaire_result( b, c, x, y );
-    nb += scalaire_result( c, d, x, y );
-    nb += scalaire_result( d, a, x, y );
+	Point_initCoord2D(tCoordClick, dXClick, dYClick); /* Coordonnées du clique */
 
-    if( nb == 4 || nb == -4 )
-    {
+	/* On passe chaque arrête en revue */
+	for(iLoop=0; iLoop<4; iLoop++)
+	{
+		switch(iLoop)
+		{
+			case 0:
+			{
+				tDistanceClick[0] =tCoordClick[0]-tP1[0];
+				tDistanceClick[1] = tCoordClick[1]-tP1[1];
+				tDistancePoints[0] = tP2[0]-tP1[0];
+				tDistancePoints[1] = tP2[1]-tP1[1];
+				break;
+			}
+			case 1:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP2[0];
+				tDistanceClick[1] = tCoordClick[1]-tP2[1];
+				tDistancePoints[0] = tP3[0]-tP2[0];
+				tDistancePoints[1] = tP3[1]-tP2[1];
+				break;
+			}
+			case 2:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP3[0];
+				tDistanceClick[1] = tCoordClick[1]-tP3[1];
+				tDistancePoints[0] = tP4[0]-tP3[0];
+				tDistancePoints[1] = tP4[1]-tP3[1];
+				break;
+			}
+			case 3:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP4[0];
+				tDistanceClick[1] = tCoordClick[1]-tP4[1];
+				tDistancePoints[0] = tP1[0]-tP4[0];
+				tDistancePoints[1] = tP1[1]-tP4[1];
+				break;
+			}
+		}
+		dDet = Point_determinant(tDistancePoints,tDistanceClick );
+
+		if( dDet > 0)
+				iNb++;
+		else if( dDet < 0)
+				iNb--;
+	}
+
+    if( iNb == 4 || iNb == -4 )
         return TRUE;
-    }
-    else return FALSE;
+    else
+    	return FALSE;
 }
 
+/*
 int scalaire_result( Point a, Point b, int x, int y )
 {
     Point ab;
@@ -521,3 +593,4 @@ int scalaire_result( Point a, Point b, int x, int y )
     }
     else return 0;
 }
+*/

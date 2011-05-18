@@ -18,7 +18,6 @@ typedef struct Point
 	tdCoord tdCoordWorld;
 }Point;
 
-
 /**
  * Initialise le point avec des coordonnées particulières.
  *
@@ -35,8 +34,17 @@ void Point_init(Point* pPoint,double dX, double dY, double dZ);
  */
 void Point_initCoord(tdCoord pCoord,double dX, double dY, double dZ);
 
+/**
+ * Initialisation des coordonées 2D.
+ */
+void Point_initCoord2D(tdCoord pCoord,double dX, double dY);
+
 void Point_middlePoint(Point* pRes, Point* pP1, Point* pP2);
 
 double Point_euclideanDistance(Point* pP1, Point* pP2);
+
+double Point_euclideanDistance2D(tdCoord2D pP1, tdCoord2D pP2);
+
+double Point_determinant(tdCoord2D tP1, tdCoord2D tP2);
 
 #endif // POINT_H

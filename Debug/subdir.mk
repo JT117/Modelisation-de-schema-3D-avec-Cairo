@@ -19,6 +19,8 @@ C_SRCS += \
 ../Scene.c \
 ../Segment.c \
 ../Selection.c \
+../Sphere.c \
+../Text.c \
 ../TransfoTools.c \
 ../main.c 
 
@@ -38,6 +40,8 @@ OBJS += \
 ./Scene.o \
 ./Segment.o \
 ./Selection.o \
+./Sphere.o \
+./Text.o \
 ./TransfoTools.o \
 ./main.o 
 
@@ -57,6 +61,8 @@ C_DEPS += \
 ./Scene.d \
 ./Segment.d \
 ./Selection.d \
+./Sphere.d \
+./Text.d \
 ./TransfoTools.d \
 ./main.d 
 
@@ -65,7 +71,7 @@ C_DEPS += \
 %.o: ../%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -I/usr/include/cairo -I/usr/include/gtk-2.0 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<" `pkg-config --libs --cflags gtk-3.0`
+	gcc -I/usr/include/cairo -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<" `pkg-config --cflags --libs gtk+-2.0`
 	@echo 'Finished building: $<'
 	@echo ' '
 

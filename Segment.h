@@ -18,6 +18,8 @@ typedef struct Segment
 
 	Point Center; /* Coordonées du repere de l'objet, utilisé pour les transformations */
 	Color tColor; /* Couleur de l'objet */
+
+	gboolean bDashed;
 }Segment;
 
 
