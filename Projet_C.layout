@@ -5,40 +5,40 @@
 		<Cursor position="986" topLine="22" />
 	</File>
 	<File name="Camera.h" open="0" top="0" tabpos="0">
-		<Cursor position="78" topLine="0" />
+		<Cursor position="298" topLine="0" />
 	</File>
 	<File name="Config.h" open="0" top="0" tabpos="0">
-		<Cursor position="247" topLine="6" />
+		<Cursor position="136" topLine="0" />
 	</File>
-	<File name="Cube.c" open="1" top="1" tabpos="7">
-		<Cursor position="17278" topLine="476" />
+	<File name="Cube.c" open="1" top="1" tabpos="3">
+		<Cursor position="7608" topLine="206" />
 	</File>
-	<File name="Cube.h" open="1" top="0" tabpos="9">
-		<Cursor position="2074" topLine="29" />
+	<File name="Cube.h" open="0" top="0" tabpos="9">
+		<Cursor position="1513" topLine="23" />
 	</File>
-	<File name="FenetreAjoutCube.c" open="0" top="0" tabpos="2">
-		<Cursor position="2991" topLine="60" />
+	<File name="FenetreAjoutCube.c" open="0" top="0" tabpos="7">
+		<Cursor position="11689" topLine="225" />
 	</File>
 	<File name="FenetreAjoutCube.h" open="0" top="0" tabpos="1">
 		<Cursor position="648" topLine="0" />
 	</File>
 	<File name="FenetrePropriete.c" open="0" top="0" tabpos="0">
-		<Cursor position="2421" topLine="32" />
+		<Cursor position="52" topLine="0" />
 	</File>
-	<File name="Groupe.c" open="1" top="0" tabpos="6">
-		<Cursor position="337" topLine="0" />
+	<File name="Groupe.c" open="0" top="0" tabpos="3">
+		<Cursor position="1789" topLine="32" />
 	</File>
-	<File name="Groupe.h" open="1" top="0" tabpos="5">
-		<Cursor position="245" topLine="0" />
+	<File name="Groupe.h" open="0" top="0" tabpos="2">
+		<Cursor position="759" topLine="0" />
 	</File>
 	<File name="MatrixTools.h" open="0" top="0" tabpos="0">
 		<Cursor position="691" topLine="0" />
 	</File>
-	<File name="Objet.c" open="1" top="0" tabpos="4">
-		<Cursor position="2340" topLine="48" />
+	<File name="Objet.c" open="1" top="0" tabpos="2">
+		<Cursor position="3418" topLine="66" />
 	</File>
-	<File name="Objet.h" open="1" top="0" tabpos="10">
-		<Cursor position="1513" topLine="7" />
+	<File name="Objet.h" open="0" top="0" tabpos="10">
+		<Cursor position="1513" topLine="5" />
 	</File>
 	<File name="Point.c" open="0" top="0" tabpos="7">
 		<Cursor position="454" topLine="7" />
@@ -52,16 +52,19 @@
 	<File name="Rectangle.h" open="0" top="0" tabpos="4">
 		<Cursor position="261" topLine="10" />
 	</File>
-	<File name="Scene.c" open="1" top="0" tabpos="3">
-		<Cursor position="1235" topLine="15" />
+	<File name="Scene.c" open="0" top="0" tabpos="5">
+		<Cursor position="1315" topLine="0" />
 	</File>
-	<File name="Scene.h" open="1" top="0" tabpos="2">
-		<Cursor position="1388" topLine="18" />
+	<File name="Scene.h" open="0" top="0" tabpos="4">
+		<Cursor position="1521" topLine="0" />
 	</File>
-	<File name="Selection.c" open="1" top="0" tabpos="8">
-		<Cursor position="1724" topLine="29" />
+	<File name="Selection.c" open="0" top="0" tabpos="8">
+		<Cursor position="6859" topLine="192" />
+	</File>
+	<File name="Selection.h" open="0" top="0" tabpos="0">
+		<Cursor position="1166" topLine="7" />
 	</File>
 	<File name="main.c" open="1" top="0" tabpos="1">
-		<Cursor position="28884" topLine="629" />
+		<Cursor position="17381" topLine="348" />
 	</File>
 </CodeBlocks_layout_file>

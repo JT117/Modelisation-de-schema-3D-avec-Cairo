@@ -17,7 +17,6 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
 static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data);
 static gboolean gestion_souris_callback(GtkWidget *window, GdkEventButton* event, gpointer data);
 static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data );
-static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data );
 static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data );
 static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data );
 static gboolean main_annuler( GtkWidget *menuItem, gpointer data );
@@ -32,6 +31,7 @@ static gboolean nouveau_groupe(GtkWidget *menuItem, gpointer data );
 static gboolean ajout_Groupe( GtkButton* button, gpointer data );
 static gboolean supprimer_Groupe( GtkWidget* button, gpointer data );
 static gboolean suppression_Groupe( GtkButton* button, gpointer data );
+static gboolean changementCurseur( GtkButton* button, gpointer data );
 
 int main (int argc, char *argv[])
  {
@@ -108,13 +108,27 @@ int main (int argc, char *argv[])
     scene->treeSelection = gtk_tree_view_get_selection(GTK_TREE_VIEW( scene->tree ));
     gtk_tree_selection_set_mode( GTK_TREE_SELECTION(scene->treeSelection), GTK_SELECTION_MULTIPLE );
 
-    gtk_widget_set_size_request( scene->tree, 200, height-75 );
+    gtk_widget_set_size_request( scene->tree, 200, height - (height/1.3 ));
+//************************** Barre d'outils ***********************************************************
+    GtkWidget* hbarre = gtk_hbutton_box_new( );
+
+    GtkWidget* boutonMain = gtk_button_new_with_label("Main");
+    GtkWidget* boutonZomm = gtk_button_new_with_label("Zoom");
+
+    gtk_container_add( GTK_CONTAINER( hbarre ), boutonMain );
+    gtk_container_add( GTK_CONTAINER( hbarre ), boutonZomm );
+
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( hbarre ), GTK_BUTTONBOX_CENTER );
 
 //*******************************Layout****************************************************************
 
     GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
+    GtkWidget* vbox = gtk_vbox_new( FALSE, 0 );
+    gtk_container_add( GTK_CONTAINER( vbox ), scene->tree );
+    gtk_container_add( GTK_CONTAINER( vbox ), hbarre );
+
     gtk_container_add( GTK_CONTAINER( hbox ), zoneDeDessin );
-    gtk_container_add( GTK_CONTAINER( hbox ), scene->tree );
+    gtk_container_add( GTK_CONTAINER( hbox ), vbox );
     gtk_container_add( GTK_CONTAINER( main_box ), menuBarre );
     gtk_container_add( GTK_CONTAINER( main_box ), hbox );
 
@@ -126,11 +140,14 @@ int main (int argc, char *argv[])
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_PRESS_MASK );
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON_RELEASE_MASK );   //active la detection de la souris
     gtk_widget_add_events( zoneDeDessin, GDK_BUTTON1_MOTION_MASK );
+    gtk_widget_add_events( zoneDeDessin, GDK_BUTTON3_MOTION_MASK );
     gtk_widget_add_events( zoneDeDessin, GDK_POINTER_MOTION_HINT_MASK );
 
     gtk_widget_add_events( scene->tree, GDK_BUTTON_PRESS_MASK );
     g_signal_connect( G_OBJECT( scene->treeSelection ), "changed", G_CALLBACK(selectionChanged), scene );
     g_signal_connect( G_OBJECT( scene->tree ), "button-press-event", G_CALLBACK(clickDroitGroupe), scene );
+
+    g_signal_connect( G_OBJECT( boutonMain ), "clicked", G_CALLBACK( changementCurseur ), scene);
 
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
@@ -293,61 +310,89 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 {
     Scene* scene = (Scene*)data;
 
-    if( event->type == GDK_BUTTON_PRESS && event->button == 1 )
+    if( scene->souris == NORMAL )
     {
-        scene->selection->departSelection.x = event->x;                                       //Click gauche, on stocke le point clické au cas ou l'evenement soit suivi d'un motion-notify-event
-        scene->selection->departSelection.y = event->y;
-        Selection_selectionner_objet( scene, event->x, event->y );                            //On regarde si le click ne dois pas selectionner un objet
+        if( event->type == GDK_BUTTON_PRESS && event->button == 1 )
+        {
+            scene->selection->departSelection.x = event->x;                                       //Click gauche, on stocke le point clické au cas ou l'evenement soit suivi d'un motion-notify-event
+            scene->selection->departSelection.y = event->y;
+            Selection_selectionner_objet( scene, event->x, event->y );                            //On regarde si le click ne dois pas selectionner un objet
 
-        gtk_widget_queue_draw( widget );
+            gtk_widget_queue_draw( widget );
+        }
+        else if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel
+        {
+            GtkWidget *menu = gtk_menu_new();
+            GtkWidget *pItem = gtk_menu_item_new_with_label("Nouvel objet");
+
+            GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriete");
+            GtkWidget *pItem3 = gtk_menu_item_new_with_label("Supprimer");
+
+            gtk_menu_attach( GTK_MENU(menu), pItem, 0, 1, 0, 1 );
+            gtk_menu_attach( GTK_MENU(menu), pItem2, 0, 1, 1, 2 );
+            gtk_menu_attach( GTK_MENU(menu), pItem3, 0, 1, 2, 3 );
+
+            gtk_widget_show_all(menu);
+
+            /* Modif des coordonnées du pixel sur lequel l'utilisateur a cliqué pour créer son objet*/
+            Scene_creation_objet( scene, event->x, event->y );
+
+            gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
+
+            /*Mise en place des signaux*/
+            g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_cube), scene);
+            g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(main_supprimer), scene);
+            g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK(nouveau_propriete), scene);
+
+            gboolean temp = scene->selection->selection_multiple;
+            scene->selection->selection_multiple = TRUE;
+            Selection_selectionner_objet( scene, event->x, event->y );
+            scene->selection->selection_multiple = temp;
+            gtk_widget_queue_draw( widget );
+
+        }
+        else if( event->type == GDK_MOTION_NOTIFY && event->button == 1)                                                 //Prob lag normalement resolu grace à GDK_POINTER_MOTION_HINT_MASK
+        {
+            scene->selection->finSelection.x = event->x;                                            //Motion-notify-event on stocke le point d'arrive pour dessiner le rectangle
+            scene->selection->finSelection.y = event->y;
+            Selection_selectionner_click_drag( scene );
+            scene->selection->selection_en_cours = TRUE;
+
+            gtk_widget_queue_draw( widget );
+        }
+        else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
+        {
+            scene->selection->selection_en_cours = FALSE;
+
+            gtk_widget_queue_draw( widget );
+        }
     }
-    else if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel
+    else if( scene->souris == MAIN )
     {
-        GtkWidget *menu = gtk_menu_new();
-        GtkWidget *pItem = gtk_menu_item_new_with_label("Nouvel objet");
+        if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
+        {
+            int i = 0;
 
-        GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriete");
-        GtkWidget *pItem3 = gtk_menu_item_new_with_label("Supprimer");
+            for( i = 0; i < scene->selection->nbSelection; i++ )
+            {
+                Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
+                Point diff;
+                diff.x = scene->rotation.x - event->x;
+                diff.y = scene->rotation.y - event->y;
+                Objet_rotation( objet, diff.x, diff.y );
 
-        gtk_menu_attach( GTK_MENU(menu), pItem, 0, 1, 0, 1 );
-        gtk_menu_attach( GTK_MENU(menu), pItem2, 0, 1, 1, 2 );
-        gtk_menu_attach( GTK_MENU(menu), pItem3, 0, 1, 2, 3 );
+                scene->rotation.x = event->x;
+                scene->rotation.y = event->y;
 
-        gtk_widget_show_all(menu);
-
-        /* Modif des coordonnées du pixel sur lequel l'utilisateur a cliqué pour créer son objet*/
-        Scene_creation_objet( scene, event->x, event->y );
-
-        gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
-
-        /*Mise en place des signaux*/
-        g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_cube), scene);
-        g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(main_supprimer), scene);
-        g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK(nouveau_propriete), scene);
-
-        gboolean temp = scene->selection->selection_multiple;
-        scene->selection->selection_multiple = TRUE;
-        Selection_selectionner_objet( scene, event->x, event->y );
-        scene->selection->selection_multiple = temp;
-        gtk_widget_queue_draw( widget );
-
+                gtk_widget_queue_draw( widget );
+            }
+        }
+        else if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
+        {
+            scene->rotation.x = event->x;
+            scene->rotation.y = event->y;
+        }
     }
-    else if( event->type == GDK_MOTION_NOTIFY )                                                 //Prob lag normalement resolu grace à GDK_POINTER_MOTION_HINT_MASK
-    {
-        scene->selection->finSelection.x = event->x;                                            //Motion-notify-event on stocke le point d'arrive pour dessiner le rectangle
-        scene->selection->finSelection.y = event->y;
-        Selection_selectionner_click_drag( scene );
-        scene->selection->selection_en_cours = TRUE;
-
-        gtk_widget_queue_draw( widget );
-    }
-    else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
-    {
-        scene->selection->selection_en_cours = FALSE;
-
-        gtk_widget_queue_draw( widget );
-    }
-
     return TRUE;
 }
 
@@ -902,4 +947,10 @@ static gboolean suppression_Groupe( GtkButton* button, gpointer data )
     return TRUE;
 }
 
+static gboolean changementCurseur( GtkButton* bouton, gpointer data )
+{
+    Scene* scene = (Scene*)data;
 
+    scene->souris = MAIN;
+
+}

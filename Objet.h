@@ -52,5 +52,6 @@ void Objet_selection( Objet* objet );
 /** Deselection l'objet */
 void Objet_deselection( Objet* objet );
 
+void Objet_rotation( Objet* objet, double x, double y );
 
 #endif  // OBJET_H

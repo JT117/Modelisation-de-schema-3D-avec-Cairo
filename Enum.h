@@ -3,5 +3,6 @@
 
 enum{ GROUPE };
 
+enum{ MAIN, LOUPE, NORMAL};
 
 #endif //ENUM_H

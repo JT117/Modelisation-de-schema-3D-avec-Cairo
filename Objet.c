@@ -105,3 +105,13 @@ void Objet_deselection( Objet* objet )
         objet->type.cube->estSelectionne = FALSE;
     }
 }
+
+void Objet_rotation( Objet* objet, double x, double y )
+{
+    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    {
+        Cube_rotateCube( objet->type.cube, 0, 1.57 , 0 );
+    }
+}
+
+

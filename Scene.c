@@ -37,6 +37,7 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->fenetre = NULL;
     scene->CBajoutGroupe = NULL;
     scene->entryNom = NULL;
+    scene->souris = NORMAL;
 }
 
 void Scene_reconstruire( Scene* scene, GtkWidget* window )
@@ -49,6 +50,10 @@ void Scene_reconstruire( Scene* scene, GtkWidget* window )
     scene->selection = (Selection*)malloc( 1 * sizeof(Selection) );
     Selection_initialiser( scene->selection );
 
+    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, 0 );
+
+    gtk_tree_store_append (scene->store, groupe->iter, NULL);
+    gtk_tree_store_set (scene->store, groupe->iter, GROUPE, "Groupe 0", -1);
 }
 
 /** Fonction qui libère une scene initialisée
@@ -66,6 +71,9 @@ void Scene_detruire( Scene* scene )
     g_array_free( scene->tObjet, TRUE );
 
     Selection_detruire( scene->selection );
+
+    gtk_tree_selection_unselect_all( scene->treeSelection );
+    gtk_tree_store_clear( scene->store  );
     //Clavier_detruire( scene->clavier );
 }
 
@@ -86,11 +94,7 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe )
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
 
-   /* GtkTreeIter iter2;
-    gtk_tree_store_append (scene->store, &iter2, groupe->iter );
-    gtk_tree_store_set (scene->store, &iter2, GROUPE, "Cube", -1);*/
 }
-
 
 void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect )
 {
