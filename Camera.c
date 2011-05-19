@@ -94,8 +94,6 @@ void Camera_setDistancePlan(InfoCamera* pCam, double dDMin, double dDmax)
 
 void Camera_projectionCalculation(InfoCamera *pCam)
 {
-	/* TODO : des boucles */
-
     pCam->tdMatProj[0][0] = -pCam->dDMin;
     pCam->tdMatProj[1][0] = 0;
     pCam->tdMatProj[2][0] = 0;

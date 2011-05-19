@@ -57,6 +57,9 @@ struct Scene
     GtkWidget* CBajoutGroupe;
     GtkWidget* fenetre;
     GtkWidget* entryNom;
+
+    int souris;
+    Point rotation;
 };
 
 /** Fonction qui initialise une scene */

@@ -59,8 +59,8 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 
 	/*Allocation de GArray */
 	//gtTabFaceOrder =  g_array_new(FALSE,FALSE,sizeof(int));
-	gtIndexFaces =  g_array_sized_new(FALSE,TRUE,sizeof(int),6);
-	gtDistances =  g_array_sized_new(FALSE,TRUE,sizeof(double),6);
+	gtIndexFaces = g_array_sized_new(FALSE,TRUE,sizeof(int),6);
+	gtDistances = g_array_sized_new(FALSE,TRUE,sizeof(double),6);
 
 	/* Création d'un point ayant pour coordonées le centre du repere de la caméra*/
 	Point_init(&sCamPoint, pCam->CoordCam[0], pCam->CoordCam[1], pCam->CoordCam[2]);
@@ -126,11 +126,6 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 	return gtIndexFaces;
 }
 
-void Cube_insertFaceArray()
-{
-
-}
-
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 {
 	int iFaceIndex;
@@ -155,7 +150,7 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 	gtTabFacesOrder = Cube_facesOrder(pCube,pCam);
 
 	/* Dessin face par face dans l'ordre*/
-	for(iFaceIndex=0;iFaceIndex<7;iFaceIndex++)
+	for(iFaceIndex=0;iFaceIndex<6;iFaceIndex++)
 	{
 		iFace = g_array_index(gtTabFacesOrder,int,iFaceIndex); /* Recup de la face à dessiner*/
 
@@ -252,6 +247,11 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 
 	/* Construction de la matrice de passage World -> Repere objet */
 	Matrix_initMatrix(tdMatPassRepObj); /* initialisation de la matrice de passage dans repere objet*/
+	tdMatPassRepObj[0][0] = 1;
+	tdMatPassRepObj[1][1] = 1;
+	tdMatPassRepObj[2][2] = 1;
+	tdMatPassRepObj[3][3] = 1;
+
 	tdMatPassRepObj[0][3] = -pCube->Center.tdCoordWorld[0];
 	tdMatPassRepObj[1][3] = -pCube->Center.tdCoordWorld[1];
 	tdMatPassRepObj[2][3] = -pCube->Center.tdCoordWorld[2];
@@ -269,12 +269,12 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 			/*Puis transformation, toujours dans le repere objet*/
 			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
 			/* Modification des coordonnées dans le repere du monde !*/
-			pCube->tPoint[iLoop].tdCoordWorld[0] = pCube->tPoint[iLoop].tdCoordWorld[0]
-																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
-			pCube->tPoint[iLoop].tdCoordWorld[1] = pCube->tPoint[iLoop].tdCoordWorld[1]
-																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
-			pCube->tPoint[iLoop].tdCoordWorld[2] = pCube->tPoint[iLoop].tdCoordWorld[2]
-																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
+			pCube->tPoint[iLoop].tdCoordWorld[0] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[0]
+			               																+ (tdCoordApTransfo[0]-tdCoordRepObj[0])) ;
+			pCube->tPoint[iLoop].tdCoordWorld[1] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]));
+			pCube->tPoint[iLoop].tdCoordWorld[2] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]));
 
 			/* on réinitialise les vecteurs contenant les infos sur la transformation */
 			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
@@ -294,12 +294,12 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 			/*Puis transformation, toujours dans le repere objet*/
 			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
 			/* Modification des coordonnées dans le repere du monde !*/
-			pCube->tPoint[iLoop].tdCoordWorld[0] = pCube->tPoint[iLoop].tdCoordWorld[0]
-																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
-			pCube->tPoint[iLoop].tdCoordWorld[1] = pCube->tPoint[iLoop].tdCoordWorld[1]
-																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
-			pCube->tPoint[iLoop].tdCoordWorld[2] = pCube->tPoint[iLoop].tdCoordWorld[2]
-																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
+			pCube->tPoint[iLoop].tdCoordWorld[0] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[0]
+																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]));
+			pCube->tPoint[iLoop].tdCoordWorld[1] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]));
+			pCube->tPoint[iLoop].tdCoordWorld[2] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]));
 
 			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
 			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
@@ -319,12 +319,12 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 			/*Puis transformation, toujours dans le repere objet*/
 			Matrix_multiMatrixVect(tdMatTransfo, tdCoordRepObj, tdCoordApTransfo);
 			/* Modification des coordonnées dans le repere du monde !*/
-			pCube->tPoint[iLoop].tdCoordWorld[0] = pCube->tPoint[iLoop].tdCoordWorld[0]
-																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]);
-			pCube->tPoint[iLoop].tdCoordWorld[1] = pCube->tPoint[iLoop].tdCoordWorld[1]
-																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]);
-			pCube->tPoint[iLoop].tdCoordWorld[2] = pCube->tPoint[iLoop].tdCoordWorld[2]
-																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
+			pCube->tPoint[iLoop].tdCoordWorld[0] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[0]
+																+ (tdCoordApTransfo[0]-tdCoordRepObj[0]));
+			pCube->tPoint[iLoop].tdCoordWorld[1] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[1]
+																			+ (tdCoordApTransfo[1]-tdCoordRepObj[1]));
+			pCube->tPoint[iLoop].tdCoordWorld[2] = (double)round(pCube->tPoint[iLoop].tdCoordWorld[2]
+																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]));
 
 			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
 			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);

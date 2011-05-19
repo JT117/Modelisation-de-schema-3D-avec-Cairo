@@ -81,7 +81,6 @@ InfoCamera* Camera_createDefaultCam();
  *
  * @param dLength Longueur
  * @param dWidth Largeur
- * TODO : mettre des unsigned ? (pixel plus petite unité, pas de demi pixel
  */
 InfoCamera* Camera_createCam(double dLength, double dWidth);
 

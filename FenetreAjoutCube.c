@@ -64,12 +64,10 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     fao->entry3 = gtk_entry_new();
 
     gtk_widget_set_size_request(fao->entry1, 50, -1 );
-    gtk_widget_set_size_request(fao->entry2, 70, -1 );
-    gtk_widget_set_size_request(fao->entry3, 70, -1 );
+    gtk_widget_set_size_request(fao->entry2, 50, -1 );
+    gtk_widget_set_size_request(fao->entry3, 50, -1 );
 
-    GtkWidget* text1 = gtk_label_new("X : ");
-    GtkWidget* text2 = gtk_label_new("Y : ");
-    GtkWidget* text3 = gtk_label_new("Z : ");
+    GtkWidget* text1 = gtk_label_new("Position X Y Z :");
 
     fao->barrePosition = gtk_hbutton_box_new();
 
@@ -87,17 +85,44 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_container_add( GTK_CONTAINER( fao->barrePosition ), fao->entry1 );
     gtk_entry_set_text( GTK_ENTRY( fao->entry1 ), buf );
 
-    gtk_container_add( GTK_CONTAINER( fao->barrePosition ), text2 );
     gtk_container_add( GTK_CONTAINER( fao->barrePosition ), fao->entry2 );
     gtk_entry_set_text( GTK_ENTRY( fao->entry2 ), buf1 );
 
-    gtk_container_add( GTK_CONTAINER( fao->barrePosition ), text3 );
     gtk_container_add( GTK_CONTAINER( fao->barrePosition ), fao->entry3 );
     gtk_entry_set_text( GTK_ENTRY( fao->entry3 ), buf2 );
 
     gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barrePosition ), GTK_BUTTONBOX_END );
 
     g_object_ref( fao->barrePosition );
+
+    //*************** Barre de couleur *******************************
+    fao->entryR = gtk_entry_new();
+    fao->entryG = gtk_entry_new();
+    fao->entryB = gtk_entry_new();
+    fao->entryA = gtk_entry_new();
+
+    GtkWidget* lab = gtk_label_new("Couleur RGBA [0-255]:");
+
+    gtk_widget_set_size_request( fao->entryR, 30, -1 );
+    gtk_widget_set_size_request( fao->entryG, 30, -1 );
+    gtk_widget_set_size_request( fao->entryB, 30, -1 );
+    gtk_widget_set_size_request( fao->entryA, 30, -1 );
+
+    gtk_entry_set_text( GTK_ENTRY( fao->entryR ), "0" );
+    gtk_entry_set_text( GTK_ENTRY( fao->entryG ), "0" );
+    gtk_entry_set_text( GTK_ENTRY( fao->entryB ), "0" );
+    gtk_entry_set_text( GTK_ENTRY( fao->entryA ), "255" );
+
+    fao->barreCouleur = gtk_hbutton_box_new();
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barreCouleur ), GTK_BUTTONBOX_END );
+
+    gtk_container_add( GTK_CONTAINER( fao->barreCouleur ), lab );
+    gtk_container_add( GTK_CONTAINER( fao->barreCouleur ), fao->entryR );
+    gtk_container_add( GTK_CONTAINER( fao->barreCouleur ), fao->entryG );
+    gtk_container_add( GTK_CONTAINER( fao->barreCouleur ), fao->entryB );
+    gtk_container_add( GTK_CONTAINER( fao->barreCouleur ), fao->entryA );
+
+    g_object_ref( fao->barreCouleur );
 
     //*************** Barre Bouton ***********************************
 
@@ -159,6 +184,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
 
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreSelection );
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barrePosition );
+        gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->hbox_cube );
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreBouton );
 
@@ -189,6 +215,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
 
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreSelection );
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barrePosition );
+        gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->hbox_rect );
         gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreBouton );
 
@@ -215,6 +242,7 @@ void FenetreAjoutCube_enlever_layout( FenetreAjoutCube* fao )
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreSelection );
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreBouton );
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barrePosition );
+        gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->hbox_cube );
         gtk_container_remove( GTK_CONTAINER( fao->fenetre ), fao->layout );
     }
@@ -223,8 +251,9 @@ void FenetreAjoutCube_enlever_layout( FenetreAjoutCube* fao )
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreSelection );
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreBouton );
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barrePosition );
+        gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->hbox_rect );
-        gtk_container_remove( GTK_CONTAINER( fao->fenetre ), fao->layout );
+        gtk_container_remove( GTK_CONTAINER( fao->fenetre ),fao->layout );
     }
 }
 
@@ -241,11 +270,13 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 	dY = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry2) ) );
 	dZ = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry3) ) );
 
-    if( fao->scene->tailleCreation > 0 && strcmp( gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ), "" ) != 0 )
+
+    if( strcmp( fao->dernierLayout, "Cube" ) == 0 )
     {
-        if( strcmp( fao->dernierLayout, "Cube" ) == 0 )
+        dWidth = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) ); /*Récupération de la longueur du cube*/
+
+        if( dWidth > 0 )
         {
-        	dWidth = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) ); /*Récupération de la longueur du cube*/
             Point_initCoord( tdCenter, dX, dY, dZ);
             pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
 
@@ -255,34 +286,62 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             Scene_ajouter_cube( fao->scene, pNewCube, a );
             */
             Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
+
             Scene_ajouter_cube( fao->scene, pNewCube, groupe->id );
+
+            double r,g,b,a = 0;
+            r = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryR ) ) );
+            g = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryG ) ) );
+            b = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryB ) ) );
+            a = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryA ) ) );
+
+            pNewCube->tColor[0] = r/255;
+            pNewCube->tColor[1] = g/255;
+            pNewCube->tColor[2] = b/255;
+            pNewCube->tColor[3] = a/255;
+
+            gtk_widget_queue_draw( scene->zoneDeDessin );
+            Modification_modification_effectuer( scene );
+            g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
         }
-        else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
+        else
+        {
+            GtkWidget* avertissement =
+            gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer une taille !" );
+
+            if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+            {
+                gtk_widget_destroy( avertissement );
+
+            }
+        }
+    }
+    else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
+    {
+        dWidth = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) ); /*Récupération de la longueur du cube*/
+        double dHeight = atof( gtk_entry_get_text( GTK_ENTRY( fao->largeur ) ) );
+
+        if( dWidth > 0 && dHeight > 0 )
         {
             Rectangle rect;
             tdCoord coord;
             tdCoord coord1;
             Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
             // Largeur non prise en compte pour le test
-            Point_initCoord( coord1, fao->scene->creation->x + fao->scene->tailleCreation , fao->scene->creation->y + fao->scene->tailleCreation, fao->scene->creation->z );
+            Point_initCoord( coord1, fao->scene->creation->x + dWidth, fao->scene->creation->y + dHeight, fao->scene->creation->z );
             Rectangle_createRectangle( coord, coord1 );
             Scene_ajouter_rectangle( fao->scene, &rect );
         }
-
-        gtk_widget_queue_draw( scene->zoneDeDessin );
-        Modification_modification_effectuer( scene );
-        g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
-
-    }
-    else
-    {
-        GtkWidget* avertissement =
-        gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer une taille !" );
-
-        if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+        else
         {
-            gtk_widget_destroy( avertissement );
+            GtkWidget* avertissement =
+            gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer une taille !" );
 
+            if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+            {
+                gtk_widget_destroy( avertissement );
+
+            }
         }
     }
 

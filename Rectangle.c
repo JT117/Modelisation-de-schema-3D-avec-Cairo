@@ -287,15 +287,86 @@ void Rectangle_modSize(Rectangle* pRectangle, double dRatio)
 
 gboolean Rectangle_Contient_Point( Rectangle* pRect, double x, double y,InfoCamera* pCam)
 {
-    gboolean est_contenu = FALSE;
+	gboolean est_contenu = FALSE;
+	tdCoord2D* pPointProj0 = NULL;
+	tdCoord2D* pPointProj1 = NULL;
+	tdCoord2D* pPointProj2 = NULL;
+	tdCoord2D* pPointProj3 = NULL;
 
-	/* TODO TODO : MODIF ! */
-    /*est_contenu = est_contenu || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[2], cCube->tPoint[3], x, y )
-                              || est_dans_face( cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[2], x, y )
-                              || est_dans_face( cCube->tPoint[4], cCube->tPoint[5], cCube->tPoint[6], cCube->tPoint[7], x, y )
-                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[4], cCube->tPoint[7], cCube->tPoint[3], x, y )
-                              || est_dans_face( cCube->tPoint[0], cCube->tPoint[1], cCube->tPoint[5], cCube->tPoint[4], x, y )
-                              || est_dans_face( cCube->tPoint[3], cCube->tPoint[2], cCube->tPoint[6], cCube->tPoint[7], x, y );
-                              */
-    return est_contenu;
+		/* Projection de tous les point du cube */
+	pPointProj0 = ProjectionTools_getPictureCoord(&((pRect->tPoint)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pRect->tPoint)[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&((pRect->tPoint)[2]),pCam);
+	pPointProj3 = ProjectionTools_getPictureCoord(&((pRect->tPoint)[3]),pCam);
+
+	est_contenu = est_contenu || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj2), (*pPointProj3), x, y );
+
+	free(pPointProj0);
+	free(pPointProj1);
+	free(pPointProj2);
+	free(pPointProj3);
+	return est_contenu;
+}
+
+/* TODO : factoriser avec le fonction Cube_inFace à mettre dans le module selection*/
+gboolean Rectangle_inFace(tdCoord2D tP1,tdCoord2D tP2,tdCoord2D tP3, tdCoord2D tP4, double dXClick, double dYClick )
+{
+	int iNb = 0, iLoop = 0;
+	double tDistanceClick[2]; /* Distance (sur x et y) entre la position du curseur et chaque point  */
+	double tDistancePoints[2]; /* Distance entre deux points d'une arrête*/
+	double dDet = 0;
+	tdCoord2D tCoordClick;
+
+	Point_initCoord2D(tCoordClick, dXClick, dYClick); /* Coordonnées du clique */
+
+	/* On passe chaque arrête en revue */
+	for(iLoop=0; iLoop<4; iLoop++)
+	{
+		switch(iLoop)
+		{
+			case 0:
+			{
+				tDistanceClick[0] =tCoordClick[0]-tP1[0];
+				tDistanceClick[1] = tCoordClick[1]-tP1[1];
+				tDistancePoints[0] = tP2[0]-tP1[0];
+				tDistancePoints[1] = tP2[1]-tP1[1];
+				break;
+			}
+			case 1:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP2[0];
+				tDistanceClick[1] = tCoordClick[1]-tP2[1];
+				tDistancePoints[0] = tP3[0]-tP2[0];
+				tDistancePoints[1] = tP3[1]-tP2[1];
+				break;
+			}
+			case 2:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP3[0];
+				tDistanceClick[1] = tCoordClick[1]-tP3[1];
+				tDistancePoints[0] = tP4[0]-tP3[0];
+				tDistancePoints[1] = tP4[1]-tP3[1];
+				break;
+			}
+			case 3:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP4[0];
+				tDistanceClick[1] = tCoordClick[1]-tP4[1];
+				tDistancePoints[0] = tP1[0]-tP4[0];
+				tDistancePoints[1] = tP1[1]-tP4[1];
+				break;
+			}
+		}
+		dDet = Point_determinant(tDistancePoints,tDistanceClick );
+
+		if( dDet > 0)
+				iNb++;
+		else if( dDet < 0)
+				iNb--;
+	}
+
+    if( iNb == 4 || iNb == -4 )
+        return TRUE;
+    else
+    	return FALSE;
 }

@@ -3,6 +3,7 @@
 
 #include <gtk/gtk.h>
 #include "Scene.h"
+#include "Color.h"
 
 typedef struct FenetreAjoutCube FenetreAjoutCube;
 struct FenetreAjoutCube
@@ -14,10 +15,15 @@ struct FenetreAjoutCube
     GtkWidget* entry1; // X
     GtkWidget* entry2; // Y
     GtkWidget* entry3; // Z
+    GtkWidget* entryR; // Z
+    GtkWidget* entryG; // Z
+    GtkWidget* entryB; // Z
+    GtkWidget* entryA; // Z
     GtkWidget* boutonOk;
     GtkWidget* boutonAnnuler;
     GtkWidget* barreSelection;
     GtkWidget* barrePosition;
+    GtkWidget* barreCouleur;
     GtkWidget* barreBouton;
     GtkWidget* layout;
     GtkWidget* hbox_cube;
