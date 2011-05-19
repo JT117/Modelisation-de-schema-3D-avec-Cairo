@@ -2,14 +2,14 @@
 1299146539 source:/home/julien/Documents/Projet_C/main.c
 	<cairo.h>
 
-1304772896 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
+1305547970 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
 	<gtk/gtk.h>
 	"Cube.h"
 	"ProjectionTools.h"
 	<math.h>
 	"Point.h"
 
-1304762686 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.h
+1305547167 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
@@ -2231,7 +2231,7 @@
 1302804820 /usr/include/gtk-2.0/gtk/gtktipsquery.h
 	<gtk/gtk.h>
 
-1305203508 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
+1305559862 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
 	"FenetreAjoutCube.h"
 	"Config.h"
 
@@ -2239,7 +2239,7 @@
 	<gtk/gtk.h>
 	"Scene.h"
 
-1305206504 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
+1305552937 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2248,14 +2248,13 @@
 	"Cube.h"
 	"Rectangle.h"
 	"Point.h"
-	"Selection.h"
 	"Modification.h"
 	"Clavier.h"
 	"Groupe.h"
 	"Enum.h"
 	"Camera.h"
 
-1305201502 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
+1305218009 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
@@ -2264,10 +2263,10 @@
 	"Rectangle.h"
 	"Segment.h"
 
-1305210623 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
+1305547279 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 
-1305210463 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
+1305559986 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2279,22 +2278,24 @@
 	"Config.h"
 	"FenetrePropriete.h"
 	"Enum.h"
+	"Selection.h"
 
-1305209389 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
+1305552949 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
 	"Scene.h"
+	"Selection.h"
 
-1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.h
+1305549667 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
 	"Objet.h"
 	"Point.h"
 
-1304761900 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.c
+1305548616 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.c
 	"Selection.h"
 	"Config.h"
 
-1305194765 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
+1305549550 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
@@ -2302,7 +2303,6 @@
 	"Point.h"
 	"Cube.h"
 	"Objet.h"
-	"Selection.h"
 	"Scene.h"
 	"Modification.h"
 	"Clavier.h"
@@ -2313,7 +2313,7 @@
 	<gtk/gtk.h>
 	<string.h>
 
-1305194579 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
+1305469021 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
 	"Modification.h"
 	"Config.h"
 
@@ -2324,20 +2324,22 @@
 1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.h
 	<gtk/gtk.h>
 
-1305196201 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
+1305549575 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
 	"FenetrePropriete.h"
+	"Selection.h"
 
 1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.h
 	<gtk/gtk.h>
 	"Scene.h"
 
-1305196200 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.h
+1305557821 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"Objet.h"
 
-1305208279 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
+1305558645 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
 	"Groupe.h"
+	"Scene.h"
 
 1303229931 /usr/lib/x86_64-linux-gnu/glib-2.0/include/glibconfig.h
 	<glib/gmacros.h>
@@ -2653,7 +2655,7 @@
 	"Camera.h"
 	"Color.h"
 
-1304773797 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Segment.c
+1305231327 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Segment.c
 	"Segment.h"
 
 1303997532 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutRectangle.h

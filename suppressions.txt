@@ -131,5 +131,40 @@
    ...
    obj:/lib/ld*.so*
 }
-                              
-                              
+ 
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   ...
+   obj:/usr/lib/gtk-2.0/2.10.0/engines/*.so*
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   ...
+   obj:/lib/x86_64-linux-gnu/libglib*.so*
+} 
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   ...
+   obj:/usr/lib/gtk-2.0/2.10.0/engines/*.so*
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr1
+   ...
+   obj:/usr/lib/gtk-2.0/2.10.0/engines/*.so*
+}
+
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libglib*.so*
+}
+                                

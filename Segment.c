@@ -65,6 +65,7 @@ void Segment_rotate(Segment* pSeg, double dAngleX, double dAngleY, double dAngle
 
 gboolean Segment_Contient_Point(Segment* pRect, double x, double y )
 {
+    return FALSE;
 }
 
 void Segment_setColor(Segment* pSeg,double dR, double dG, double dB)

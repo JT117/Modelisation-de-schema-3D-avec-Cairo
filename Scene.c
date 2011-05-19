@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Selection.h"
 
 /** Fonction qui initialise une scene vierge
  * @param scene, un pointeur sur une scene vierge
@@ -27,13 +28,15 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     g_array_append_val( scene->tGroupe, groupeDeBase );
     scene->nbGroupe = 1;
 
-    printf("Groupe fini \n");
-
     scene->tailleCreation = 50.0;
     scene->creation = (Point*)malloc( 1* sizeof( Point ) );
     scene->creation->x = 0.0;
     scene->creation->y = 0.0;
     scene->creation->z = 0.0;
+
+    scene->fenetre = NULL;
+    scene->CBajoutGroupe = NULL;
+    scene->entryNom = NULL;
 }
 
 void Scene_reconstruire( Scene* scene, GtkWidget* window )
@@ -154,6 +157,7 @@ void Scene_creation_objet( Scene* scene, double x, double y )
 	double dX, dY;
 	InfoCamera* pCam = scene->camera;
 	/* Creation définit les coordonnées du pixel sur lequel l'utilisateur a cliqué lors de la creation de son objet*/
+
 	dX = (x - pCam->dRmax) * 2*pCam->dDMin/ pCam->dDMin;
 	dY = (-y + pCam->dUmax) * 2*pCam->dDMin/ pCam->dDMin;
 

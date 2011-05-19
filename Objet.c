@@ -8,8 +8,9 @@ void Objet_detruire( Objet* objet )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        // pas d'allocation dynamique pour le cube de base
+        // Pas d'alloc dynamique
     }
+    free( objet->iter );
 }
 
 /** Fonction qui initialise un objet de type Cube
@@ -74,7 +75,7 @@ gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCa
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        return Cube_Contient_Point( objet->type.cube, x, y,pCam);
+        return Cube_Contient_Point( objet->type.cube, x, y, pCam );
     }
     else if(strcmp( objet->typeObjet, "Rectangle" ) == 0 )
     {

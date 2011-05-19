@@ -28,13 +28,14 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
 
     fao->comboBoxGroupe = gtk_combo_box_text_new();
 
-    int i = 0;
-    for( i = 0; i < fao->scene->nbGroupe; i++ )
-    {
-        char buff0[255];
-        sprintf( buff0, "Groupe %d", g_array_index( scene->tGroupe, Groupe*, i )->id );
-        gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( fao->comboBoxGroupe ), buff0 );
-    }
+   int i = 0;
+
+     for( i = 0; i < scene->nbGroupe; i++ )
+     {
+         Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+         gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( fao->comboBoxGroupe ), groupe->nom );
+     }
+
     gtk_widget_set_size_request( GTK_WIDGET( fao->comboBoxGroupe ), 100, -1 );
 
     GtkWidget* hbox11 = gtk_hbutton_box_new();
@@ -119,7 +120,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     g_signal_connect( G_OBJECT( fao->fenetre ), "delete-event", G_CALLBACK( gtk_widget_destroy ), NULL );
 
     //Layout temporaire
-    fao->layout = gtk_vbox_new( FALSE, 10 );
+    fao->layout = gtk_vbox_new( TRUE, 5 );
 
     gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreSelection );
     gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreBouton );
@@ -248,30 +249,13 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             Point_initCoord( tdCenter, dX, dY, dZ);
             pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
 
-            //TODO : temporaire
-            //creation de segment pour test
-            tdCoord coordSeg1, coordSeg2;
-            Segment* seg = NULL;
-            Point_initCoord(coordSeg1,0,0,0);
-            Point_initCoord(coordSeg2,683,0,0);
-            seg = Segment_createSegment(coordSeg1, coordSeg2);
-            Segment_setColor(seg,0.0,1.0,0.0);
-            Scene_ajouter_segment(fao->scene,seg);
-
-            Point_initCoord(coordSeg1,0,0,0);
-			Point_initCoord(coordSeg2,0,50,0);
-			seg = Segment_createSegment(coordSeg1, coordSeg2);
-			Segment_setColor(seg,1.0,0.0,0.0);
-            Scene_ajouter_segment(fao->scene,seg);
-
-            Point_initCoord(coordSeg1,0,0,0);
-			Point_initCoord(coordSeg2,0,0,50);
-			seg = Segment_createSegment(coordSeg1, coordSeg2);
-			Segment_setColor(seg,0.0,0.0,1.0);
-			Scene_ajouter_segment(fao->scene,seg);
+            /*
             int a = 0;
             sscanf( gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ), "Groupe %d", &a );
             Scene_ajouter_cube( fao->scene, pNewCube, a );
+            */
+            Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
+            Scene_ajouter_cube( fao->scene, pNewCube, groupe->id );
         }
         else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
         {
@@ -281,7 +265,6 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
             // Largeur non prise en compte pour le test
             Point_initCoord( coord1, fao->scene->creation->x + fao->scene->tailleCreation , fao->scene->creation->y + fao->scene->tailleCreation, fao->scene->creation->z );
-            printf("Apres init :\n x = %f | x1 = %f\n y = %f | y1 = %f\n", coord[0], coord1[0], coord[1], coord1[1] );
             Rectangle_createRectangle( coord, coord1 );
             Scene_ajouter_rectangle( fao->scene, &rect );
         }

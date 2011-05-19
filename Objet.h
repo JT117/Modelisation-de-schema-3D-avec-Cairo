@@ -7,7 +7,6 @@
 
 #include "Rectangle.h"
 #include "Cube.h"
-#include "Rectangle.h"
 #include "Segment.h"
 
 /** Structure representant un objet dans l'interface graphique, servant à masquer l'implementation des differents objets à la GUI */
@@ -44,7 +43,7 @@ void Objet_est_un_Segment( Objet* pObj, Segment* pSeg );
 /** Fonction capable de dessiner n'importe quel objet */
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam);
 
-/** Fonction indiquand si un point est contenu dans l'objet */
+
 gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCam);
 
 /** Selectionne l'objet */

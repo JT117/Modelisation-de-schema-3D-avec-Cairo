@@ -1,7 +1,8 @@
 #include <gtk/gtk.h>
+#include <math.h>
+
 #include "Cube.h"
 #include "ProjectionTools.h"
-#include <math.h>
 #include "Point.h"
 
 Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth)
@@ -33,9 +34,9 @@ Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDep
 		pNewCube->tColor[0]=0.4;
 		pNewCube->tColor[1]=0.4;
 		pNewCube->tColor[2]=0.8;
-		pNewCube->tColor[3]=1.0;
 
-		pNewCube->estSelectionne=FALSE;
+		pNewCube->tColor[3]=0.8;
+		pNewCube->estSelectionne = FALSE;
 	}
 	else
 	{
@@ -49,13 +50,20 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 	// sGravCenter -> structure qui va stocker le centre de gravité d'une face
 	// sCamPoint -> point représentant les coordonnées du centre du repère de la caméra TODO : un peu la lose de devoir passer par cette structure, voir si on ne peut pas faire autrement
 	Point sGravCenter, sCamPoint;
-	GArray* gtTabFaceOrder =NULL;
+	GArray* gtIndexFaces=NULL; /* Tableau des index des faces à dessiner, c'est cette structure qui sera retournée*/
+	GArray* gtDistances=NULL; /*Tableau des distance entre la caméra et le centre de gravité de chaque face, servira pour classer les indexs de face*/
 	int iFaceIndex;
+	int iLoopInsert = 0;
 	int iPoint1, iPoint2; //stockage les index des points du cube pour calcul du centre de gravité
-	double dPrevDistance, dDistance;
+	double dDistance, dDistanceArray ;
 
 	/*Allocation de GArray */
-	gtTabFaceOrder =  g_array_new(FALSE,FALSE,sizeof(int));
+	//gtTabFaceOrder =  g_array_new(FALSE,FALSE,sizeof(int));
+	gtIndexFaces =  g_array_sized_new(FALSE,TRUE,sizeof(int),6);
+	gtDistances =  g_array_sized_new(FALSE,TRUE,sizeof(double),6);
+
+	/* Création d'un point ayant pour coordonées le centre du repere de la caméra*/
+	Point_init(&sCamPoint, pCam->CoordCam[0], pCam->CoordCam[1], pCam->CoordCam[2]);
 
 	//On passe en revue les faces du cube, pour chaque face on calcul la distance centre de gravite-centre repère caméra
 	for(iFaceIndex=1;iFaceIndex<=6;iFaceIndex++)
@@ -63,7 +71,7 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 		//calcul du milieu de la diagonale d'une face afin de trouver le centre de gravité de la face
 		switch(iFaceIndex)
 		{
-			case 1://premiere face points 0-1-2-3
+			case 1://premiere face points 0-1-2-3, on prend deux points constituant une diagonale
 			{
 				iPoint1=0; iPoint2=2;
 				break;
@@ -96,68 +104,30 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 
 		//calcul du milieu du segment reliant les points opposés d'une face
 		Point_middlePoint(&sGravCenter, &(pCube->tPoint)[iPoint1], &(pCube->tPoint)[iPoint2]);
-		Point_init(&sCamPoint, pCam->CoordCam[0], pCam->CoordCam[1], pCam->CoordCam[2]);
 
 		/* calcul de la distance entre le centre de la face et le centre du repere de la caméra */
 		dDistance = Point_euclideanDistance(&sGravCenter, &sCamPoint);
 
-		if(iFaceIndex==1) /* premiere face */
+		iLoopInsert=0;
+		dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
+		/* Insertion de l'index de la face là où il faut*/
+		while(dDistanceArray!= 0 && dDistanceArray>dDistance)
 		{
-			g_array_append_val(gtTabFaceOrder,iFaceIndex);
-			dPrevDistance = dDistance;
+			iLoopInsert++;
+			dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
 		}
-		else
-		{
-			if(dDistance > dPrevDistance)
-			{
-				g_array_prepend_val(gtTabFaceOrder, iFaceIndex);
-				dPrevDistance = dDistance;
-			}
-			else
-			{
-				g_array_append_val(gtTabFaceOrder, iFaceIndex);
-				dPrevDistance = dDistance;
-			}
-		}
+
+		/*Emplacement d'insertion retrouvé...*/
+		g_array_insert_val(gtIndexFaces,iLoopInsert,iFaceIndex);
+		g_array_insert_val(gtDistances,iLoopInsert,dDistance);
 	}
-	return gtTabFaceOrder;
+
+	g_array_free(gtDistances, TRUE);
+	return gtIndexFaces;
 }
 
-void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote )
+void Cube_insertFaceArray()
 {
-    cCube->tPoint[0].x = dX;
-    cCube->tPoint[0].y = dY;
-    cCube->tPoint[0].z = dZ;
-
-    cCube->tPoint[1].x = dX + dCote;
-    cCube->tPoint[1].y = dY;
-    cCube->tPoint[1].z = dZ;
-
-    cCube->tPoint[2].x = dX + dCote;
-    cCube->tPoint[2].y = dY + dCote;
-    cCube->tPoint[2].z = dZ;
-
-    cCube->tPoint[3].x = dX;
-    cCube->tPoint[3].y = dY + dCote;
-    cCube->tPoint[3].z = dZ;
-
-    cCube->tPoint[4].x = dX;
-    cCube->tPoint[4].y = dY;
-    cCube->tPoint[4].z = dZ + dCote;
-
-    cCube->tPoint[5].x = dX + dCote;
-    cCube->tPoint[5].y = dY;
-    cCube->tPoint[5].z = dZ + dCote;
-
-    cCube->tPoint[6].x = dX + dCote;
-    cCube->tPoint[6].y = dY + dCote;
-    cCube->tPoint[6].z = dZ + dCote;
-
-    cCube->tPoint[7].x = dX;
-    cCube->tPoint[7].y = dY + dCote;
-    cCube->tPoint[7].z = dZ + dCote;
-
-    cCube->estSelectionne = FALSE;
 
 }
 
@@ -187,7 +157,7 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 	/* Dessin face par face dans l'ordre*/
 	for(iFaceIndex=0;iFaceIndex<7;iFaceIndex++)
 	{
-		iFace = g_array_index(gtTabFacesOrder,int,iFaceIndex); /* Recup de la face à récupérer */
+		iFace = g_array_index(gtTabFacesOrder,int,iFaceIndex); /* Recup de la face à dessiner*/
 
 		/* Adpatation des points à dessiner en fonction de la face */
 		switch(iFace)
@@ -473,39 +443,6 @@ void Cube_modSize(Cube* pCube, double dRatio)
 	}
 }
 
-gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam)
-{
-    gboolean est_contenu = FALSE;
-    double iNbFaces = 0;
-	tdCoord2D* pPointProj0 = NULL;tdCoord2D* pPointProj4 = NULL;
-	tdCoord2D* pPointProj1 = NULL;tdCoord2D* pPointProj5 = NULL;
-	tdCoord2D* pPointProj2 = NULL;tdCoord2D* pPointProj6 = NULL;
-	tdCoord2D* pPointProj3 = NULL;tdCoord2D* pPointProj7 = NULL;
-
-	/* Projection de tous les point du cube */
-	pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
-	pPointProj1 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[1]),pCam);
-	pPointProj2 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[2]),pCam);
-	pPointProj3 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[3]),pCam);
-	pPointProj4 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[4]),pCam);
-	pPointProj5 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[5]),pCam);
-	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
-	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
-
-    est_contenu = est_contenu || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj2), (*pPointProj3), x, y )
-                              || Cube_inFace( (*pPointProj1), (*pPointProj5), (*pPointProj6), (*pPointProj2), x, y )
-                              || Cube_inFace( (*pPointProj4), (*pPointProj5), (*pPointProj6), (*pPointProj7), x, y )
-                              || Cube_inFace( (*pPointProj0), (*pPointProj4), (*pPointProj7), (*pPointProj3), x, y )
-                              || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj5), (*pPointProj4), x, y )
-                              || Cube_inFace( (*pPointProj3), (*pPointProj2), (*pPointProj6), (*pPointProj7), x, y );
-
-    free(pPointProj0);	free(pPointProj4);
-	free(pPointProj1);	free(pPointProj5);
-	free(pPointProj2);	free(pPointProj6);
-	free(pPointProj3);	free(pPointProj7);
-    return est_contenu;
-}
-
 gboolean Cube_inFace(tdCoord2D tP1,tdCoord2D tP2,tdCoord2D tP3, tdCoord2D tP4, double dXClick, double dYClick )
 {
 	int iNb = 0, iLoop = 0;
@@ -568,29 +505,34 @@ gboolean Cube_inFace(tdCoord2D tP1,tdCoord2D tP2,tdCoord2D tP3, tdCoord2D tP4, d
     	return FALSE;
 }
 
-/*
-int scalaire_result( Point a, Point b, int x, int y )
+gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam)
 {
-    Point ab;
-    Point ap;
-    double produitScalaire = 0.0;
+    gboolean est_contenu = FALSE;
+	tdCoord2D* pPointProj0 = NULL;tdCoord2D* pPointProj4 = NULL;
+	tdCoord2D* pPointProj1 = NULL;tdCoord2D* pPointProj5 = NULL;
+	tdCoord2D* pPointProj2 = NULL;tdCoord2D* pPointProj6 = NULL;
+	tdCoord2D* pPointProj3 = NULL;tdCoord2D* pPointProj7 = NULL;
 
-    ab.x = b.x - a.x;
-    ab.y = b.y - a.y;
+	/* Projection de tous les point du cube */
+	pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[2]),pCam);
+	pPointProj3 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[3]),pCam);
+	pPointProj4 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[4]),pCam);
+	pPointProj5 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[5]),pCam);
+	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
+	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
 
-    ap.x = x - a.x;
-    ap.y = y - a.y;
+    est_contenu = est_contenu || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj2), (*pPointProj3), x, y )
+                              || Cube_inFace( (*pPointProj1), (*pPointProj5), (*pPointProj6), (*pPointProj2), x, y )
+                              || Cube_inFace( (*pPointProj4), (*pPointProj5), (*pPointProj6), (*pPointProj7), x, y )
+                              || Cube_inFace( (*pPointProj0), (*pPointProj4), (*pPointProj7), (*pPointProj3), x, y )
+                              || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj5), (*pPointProj4), x, y )
+                              || Cube_inFace( (*pPointProj3), (*pPointProj2), (*pPointProj6), (*pPointProj7), x, y );
 
-    produitScalaire = ab.x * ap.x + ab.y * ap.y;
-
-    if( produitScalaire > 0 )
-    {
-        return 1;
-    }
-    else if( produitScalaire < 0 )
-    {
-        return -1;
-    }
-    else return 0;
+    free(pPointProj0);	free(pPointProj4);
+	free(pPointProj1);	free(pPointProj5);
+	free(pPointProj2);	free(pPointProj6);
+	free(pPointProj3);	free(pPointProj7);
+    return est_contenu;
 }
-*/
