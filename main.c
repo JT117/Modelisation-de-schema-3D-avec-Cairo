@@ -240,6 +240,7 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
         if( strcmp( gdk_keyval_name(event->keyval), "Right") == 0 )
         {
             // Fonction de rotation scene/objet
+        	//Cube_rotateCube(g_array_index(scene->tObjet,objet*,0)->type.Cube,0.0,1.47,0.0);
             gtk_widget_queue_draw( window );
         }
         else if( strcmp( gdk_keyval_name(event->keyval), "Shift_L") == 0 )

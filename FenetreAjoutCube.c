@@ -111,7 +111,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_entry_set_text( GTK_ENTRY( fao->entryR ), "0" );
     gtk_entry_set_text( GTK_ENTRY( fao->entryG ), "0" );
     gtk_entry_set_text( GTK_ENTRY( fao->entryB ), "0" );
-    gtk_entry_set_text( GTK_ENTRY( fao->entryA ), "255" );
+    gtk_entry_set_text( GTK_ENTRY( fao->entryA ), "1" );
 
     fao->barreCouleur = gtk_hbutton_box_new();
     gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->barreCouleur ), GTK_BUTTONBOX_END );
@@ -266,6 +266,14 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
     Scene* scene = (Scene*)fao->scene;
     Cube* pNewCube = NULL;
 
+    double dR,dG,dB,dA = 0;
+    /* Récupération des coudes couleurs */
+	dR = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryR ) ) );
+	dG = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryG ) ) );
+	dB = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryB ) ) );
+	dA = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryA ) ) );
+
+    //Coordonnées de création de l'objet
 	dX = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry1) ) );
 	dY = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry2) ) );
 	dZ = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry3) ) );
@@ -280,25 +288,10 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             Point_initCoord( tdCenter, dX, dY, dZ);
             pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
 
-            /*
-            int a = 0;
-            sscanf( gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ), "Groupe %d", &a );
-            Scene_ajouter_cube( fao->scene, pNewCube, a );
-            */
             Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
 
             Scene_ajouter_cube( fao->scene, pNewCube, groupe->id );
-
-            double r,g,b,a = 0;
-            r = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryR ) ) );
-            g = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryG ) ) );
-            b = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryB ) ) );
-            a = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryA ) ) );
-
-            pNewCube->tColor[0] = r/255;
-            pNewCube->tColor[1] = g/255;
-            pNewCube->tColor[2] = b/255;
-            pNewCube->tColor[3] = a/255;
+            Color_setColor(pNewCube->tColor,(dR/255),(dG/255),(dB/255),dA);
 
             gtk_widget_queue_draw( scene->zoneDeDessin );
             Modification_modification_effectuer( scene );
@@ -327,7 +320,6 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             tdCoord coord;
             tdCoord coord1;
             Point_initCoord( coord, fao->scene->creation->x, fao->scene->creation->y, fao->scene->creation->z );
-            // Largeur non prise en compte pour le test
             Point_initCoord( coord1, fao->scene->creation->x + dWidth, fao->scene->creation->y + dHeight, fao->scene->creation->z );
             Rectangle_createRectangle( coord, coord1 );
             Scene_ajouter_rectangle( fao->scene, &rect );

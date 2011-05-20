@@ -6,6 +6,7 @@
 C_SRCS += \
 ../Camera.c \
 ../Clavier.c \
+../Color.c \
 ../Cube.c \
 ../FenetreAjoutCube.c \
 ../FenetrePropriete.c \
@@ -27,6 +28,7 @@ C_SRCS += \
 OBJS += \
 ./Camera.o \
 ./Clavier.o \
+./Color.o \
 ./Cube.o \
 ./FenetreAjoutCube.o \
 ./FenetrePropriete.o \
@@ -48,6 +50,7 @@ OBJS += \
 C_DEPS += \
 ./Camera.d \
 ./Clavier.d \
+./Color.d \
 ./Cube.d \
 ./FenetreAjoutCube.d \
 ./FenetrePropriete.d \

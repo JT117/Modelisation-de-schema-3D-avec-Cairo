@@ -1,7 +1,8 @@
-#ifndef FENETRE_AJOUT_CUBE_H
-#define FENETRE_AJOUT_CUBE_H
+#ifndef FENETRE_AJOUT_H
+#define FENETRE_AJOUT_H
 
 #include <gtk/gtk.h>
+
 #include "Scene.h"
 #include "Color.h"
 
@@ -38,4 +39,4 @@ struct FenetreAjoutCube
 
 void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene );
 
-#endif //FENETRE_AJOUT_CUBE_H
+#endif //FENETRE_AJOUT_H

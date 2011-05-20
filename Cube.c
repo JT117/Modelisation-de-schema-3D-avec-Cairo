@@ -52,15 +52,21 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 	Point sGravCenter, sCamPoint;
 	GArray* gtIndexFaces=NULL; /* Tableau des index des faces à dessiner, c'est cette structure qui sera retournée*/
 	GArray* gtDistances=NULL; /*Tableau des distance entre la caméra et le centre de gravité de chaque face, servira pour classer les indexs de face*/
-	int iFaceIndex;
+	int iFaceIndex = 0;
 	int iLoopInsert = 0;
 	int iPoint1, iPoint2; //stockage les index des points du cube pour calcul du centre de gravité
-	double dDistance, dDistanceArray ;
+	double dDistance, dDistanceArray=0.0 ;
 
 	/*Allocation de GArray */
-	//gtTabFaceOrder =  g_array_new(FALSE,FALSE,sizeof(int));
 	gtIndexFaces = g_array_sized_new(FALSE,TRUE,sizeof(int),6);
 	gtDistances = g_array_sized_new(FALSE,TRUE,sizeof(double),6);
+
+	/* Initialisation du tableau des distances */
+	for(iLoopInsert=0;iLoopInsert<=5;iLoopInsert++)
+	{
+		g_array_insert_val(gtIndexFaces,iLoopInsert,iFaceIndex);
+		g_array_insert_val(gtDistances,iLoopInsert,dDistanceArray);
+	}
 
 	/* Création d'un point ayant pour coordonées le centre du repere de la caméra*/
 	Point_init(&sCamPoint, pCam->CoordCam[0], pCam->CoordCam[1], pCam->CoordCam[2]);
@@ -148,7 +154,7 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 
 	/* Recherche de l'ordre dans lequel on doit dessiner les faces */
 	gtTabFacesOrder = Cube_facesOrder(pCube,pCam);
-
+	printf("Taille tableau face (fonction dessin) : %d\n",gtTabFacesOrder->len);
 	/* Dessin face par face dans l'ordre*/
 	for(iFaceIndex=0;iFaceIndex<6;iFaceIndex++)
 	{

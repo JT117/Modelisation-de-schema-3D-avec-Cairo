@@ -12,7 +12,7 @@ typedef double Color[4];
  * @param g Composante Verte
  * @param b Composante Bleue
  */
-void Color_setColor(Color* ptColor,double r, double g, double b, double a);
+void Color_setColor(Color tColor,double r, double g, double b, double a);
 
 
 #endif
