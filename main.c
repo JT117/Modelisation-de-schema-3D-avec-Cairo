@@ -109,22 +109,27 @@ int main (int argc, char *argv[])
 
     gtk_widget_set_size_request( scene->tree, 200, height - (height/1.3 ));
 //************************** Barre d'outils ***********************************************************
-    GtkWidget* hbarre = gtk_hbutton_box_new( );
+    GtkWidget* hbarre = gtk_hbutton_box_new();
+    GtkWidget* vbarre = gtk_vbutton_box_new();
 
     GtkWidget* boutonMain = gtk_button_new_with_label("Main");
     GtkWidget* boutonZomm = gtk_button_new_with_label("Zoom");
+    GtkWidget* boutonNormal = gtk_button_new_with_label("Normal");
 
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonMain );
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonZomm );
+    gtk_container_add( GTK_CONTAINER( vbarre ), boutonNormal );
+    gtk_container_add( GTK_CONTAINER( vbarre ), hbarre );
 
     gtk_button_box_set_layout( GTK_BUTTON_BOX( hbarre ), GTK_BUTTONBOX_CENTER );
+    gtk_button_box_set_layout( GTK_BUTTON_BOX( vbarre ), GTK_BUTTONBOX_START );
 
 //*******************************Layout****************************************************************
 
     GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
     GtkWidget* vbox = gtk_vbox_new( FALSE, 0 );
     gtk_container_add( GTK_CONTAINER( vbox ), scene->tree );
-    gtk_container_add( GTK_CONTAINER( vbox ), hbarre );
+    gtk_container_add( GTK_CONTAINER( vbox ), vbarre );
 
     gtk_container_add( GTK_CONTAINER( hbox ), zoneDeDessin );
     gtk_container_add( GTK_CONTAINER( hbox ), vbox );
@@ -147,6 +152,8 @@ int main (int argc, char *argv[])
     g_signal_connect( G_OBJECT( scene->tree ), "button-press-event", G_CALLBACK(clickDroitGroupe), scene );
 
     g_signal_connect( G_OBJECT( boutonMain ), "clicked", G_CALLBACK( changementCurseur ), scene);
+    g_signal_connect( G_OBJECT( boutonNormal ), "clicked", G_CALLBACK( changementCurseur ), scene);
+    g_signal_connect( G_OBJECT( boutonZomm ), "clicked", G_CALLBACK( changementCurseur ), scene);
 
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
@@ -391,6 +398,33 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         {
             scene->rotation.x = event->x;
             scene->rotation.y = event->y;
+        }
+    }
+    else if( scene->souris == LOUPE )
+    {
+        if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
+        {
+            int i = 0;
+
+            for( i = 0; i < scene->selection->nbSelection; i++ )
+            {
+                Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
+
+                Objet_homothetie( objet, 2 );
+                gtk_widget_queue_draw( widget );
+            }
+        }
+        if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel
+        {
+            int i = 0;
+
+            for( i = 0; i < scene->selection->nbSelection; i++ )
+            {
+                Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
+
+                Objet_homothetie( objet, -2 );
+                gtk_widget_queue_draw( widget );
+            }
         }
     }
     return TRUE;
@@ -956,6 +990,20 @@ static gboolean changementCurseur( GtkButton* bouton, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
-    scene->souris = MAIN;
-
+    if( strcmp( gtk_button_get_label( bouton ), "Main" ) == 0 )
+    {
+        scene->souris = MAIN;
+    }
+    else if( strcmp( gtk_button_get_label( bouton ), "Zoom" ) == 0 )
+    {
+        scene->souris = LOUPE;
+    }
+    else if( strcmp( gtk_button_get_label( bouton ), "Normal" ) == 0 )
+    {
+        scene->souris = NORMAL;
+    }
 }
+
+
+
+

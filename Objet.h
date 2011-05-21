@@ -56,5 +56,6 @@ void Objet_selection( Objet* objet );
 void Objet_deselection( Objet* objet );
 
 void Objet_rotation( Objet* objet, double x, double y );
+void Objet_homothetie( Objet* objet, int ratio );
 
 #endif  // OBJET_H
