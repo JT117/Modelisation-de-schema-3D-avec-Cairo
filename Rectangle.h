@@ -19,6 +19,7 @@ typedef struct Rectangle
 	 */
 	Point tPoint[4];
 
+    gboolean estSelectionne;
 	Point Center; /* Coordonées du repere de l'objet, utilisé pour les transformations */
 	Color tColor; /* Couleur de l'objet */
 } Rectangle;

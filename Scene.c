@@ -96,21 +96,48 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe )
 
 }
 
-void Scene_ajouter_segment( Scene* scene, Segment* pSeg )
+void Scene_ajouter_segment( Scene* scene, Segment* pSeg, int idGroupe )
 {
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
     Objet_est_un_Segment( objet, pSeg );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
+
+    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    Groupe_ajouter_Objet( groupe, objet );
+
+    gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
 }
 
-void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect )
+void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect, int idGroupe )
 {
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
     Objet_est_un_Rectangle( objet, rect );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
+
+    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    Groupe_ajouter_Objet( groupe, objet );
+
+    gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
 }
+
+void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
+{
+    Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
+    Objet_est_une_Sphere( objet, sphere );
+    g_array_append_val( scene->tObjet, objet );
+    scene->nbObjet++;
+
+    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    Groupe_ajouter_Objet( groupe, objet );
+
+    gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
+}
+
 
 /** Fonction qui dessiner tout les objets de la scene
  * @param scene, un pointeur sur une scene initialisée

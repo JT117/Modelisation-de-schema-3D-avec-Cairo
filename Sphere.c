@@ -176,14 +176,14 @@ gboolean Sphere_Contient_Point( Sphere* cSphere, double x, double y )
     return TRUE;
 }
 
-gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
+gboolean Sphere_est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
 {
     int nb = 0;
 
-    nb += scalaire_result( a, b, x, y );
-    nb += scalaire_result( b, c, x, y );
-    nb += scalaire_result( c, d, x, y );
-    nb += scalaire_result( d, a, x, y );
+    nb += Sphere_scalaire_result( a, b, x, y );
+    nb += Sphere_scalaire_result( b, c, x, y );
+    nb += Sphere_scalaire_result( c, d, x, y );
+    nb += Sphere_scalaire_result( d, a, x, y );
 
     if( nb == 4 || nb == -4 )
     {
@@ -192,7 +192,7 @@ gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
     else return FALSE;
 }
 
-int scalaire_result( Point a, Point b, int x, int y )
+int Sphere_scalaire_result( Point a, Point b, int x, int y )
 {
     Point ab;
     Point ap;

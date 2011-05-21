@@ -37,6 +37,8 @@ Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
 	{
 		/* TODO : Implémenter fatalError*/
 	}
+	pNewRect->estSelectionne = FALSE;
+
 	return pNewRect;
 }
 

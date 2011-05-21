@@ -26,6 +26,8 @@ Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2)
 		{
 			/* TODO : Implémenter fatalError*/
 		}
+    pNewSeg->estSelectionne = FALSE;
+
 	return pNewSeg;
 }
 

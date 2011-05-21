@@ -45,12 +45,16 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Clavier.h" />
+		<Unit filename="Color.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="Color.h" />
 		<Unit filename="Config.h" />
 		<Unit filename="Cube.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Cube.h" />
+		<Unit filename="Enum.h" />
 		<Unit filename="FenetreAjoutCube.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -59,6 +63,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FenetrePropriete.h" />
+		<Unit filename="Group.h" />
 		<Unit filename="Groupe.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -99,6 +104,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Selection.h" />
+		<Unit filename="Sphere.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Sphere.h" />
 		<Unit filename="TransfoTools.c">
 			<Option compilerVar="CC" />
 		</Unit>

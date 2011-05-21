@@ -54,7 +54,7 @@ void dessiner_Cube( Cube* cCube, cairo_t* cr, InfoCamera* cam);
 
 gboolean Cube_Contient_Point( Cube* cCube, double x, double y, InfoCamera* pCam);
 
-gboolean est_dans_face( tdCoord2D* a, tdCoord2D* b, tdCoord2D* c, tdCoord2D* d, double x, double y );
+//gboolean est_dans_face( tdCoord2D* a, tdCoord2D* b, tdCoord2D* c, tdCoord2D* d, double x, double y );
 
 int scalaire_result( tdCoord2D* a, tdCoord2D* b, int x, int y );
 

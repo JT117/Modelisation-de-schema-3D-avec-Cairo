@@ -372,20 +372,20 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
         {
             int i = 0;
+            Point diff;
+            diff.x = scene->rotation.x - event->x;
+            diff.y = scene->rotation.y - event->y;
 
             for( i = 0; i < scene->selection->nbSelection; i++ )
             {
                 Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
-                Point diff;
-                diff.x = scene->rotation.x - event->x;
-                diff.y = scene->rotation.y - event->y;
+
                 Objet_rotation( objet, diff.x, diff.y );
-
-                scene->rotation.x = event->x;
-                scene->rotation.y = event->y;
-
-                gtk_widget_queue_draw( widget );
             }
+            scene->rotation.x = event->x;
+            scene->rotation.y = event->y;
+
+            gtk_widget_queue_draw( widget );
         }
         else if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
         {
@@ -710,9 +710,6 @@ static gboolean selectionChanged(GtkTreeSelection *selection, gpointer data)
             for( j = 0; j < groupe->nbObjet; j++ )
             {
                 Objet* objet = g_array_index( groupe->tObjet, Objet*, j );
-                g_array_append_val( scene->selection->tSelection, objet );
-                scene->selection->nbSelection++;
-                Objet_selection( objet );
                 gtk_tree_selection_select_iter( scene->treeSelection, objet->iter );
                 modif = TRUE;
             }
@@ -725,16 +722,12 @@ static gboolean selectionChanged(GtkTreeSelection *selection, gpointer data)
 
         if( gtk_tree_selection_iter_is_selected( scene->treeSelection, objet->iter ) )
         {
-            g_array_append_val( scene->selection->tSelection, objet );
-            scene->selection->nbSelection++;
-            Objet_selection( objet );
-            gtk_tree_selection_select_iter( scene->treeSelection, objet->iter );
+            Selection_selectionner( scene, objet );
             modif = TRUE;
         }
         else
         {
             Selection_deselectionner( scene, objet );
-            gtk_tree_selection_unselect_iter( scene->treeSelection, objet->iter );
         }
     }
 
@@ -920,7 +913,7 @@ static gboolean suppression_Groupe( GtkButton* button, gpointer data )
 
     Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(scene->CBajoutGroupe) ) ) ;
 
-    if( groupe != NULL )
+    if( groupe != NULL && groupe->id != 0 )
     {
         Groupe* pere = groupe->pere;
 

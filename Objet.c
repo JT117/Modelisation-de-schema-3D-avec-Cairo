@@ -44,6 +44,15 @@ void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
 
 }
 
+void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
+{
+	pObj->typeObjet = (char*)malloc( 6 * sizeof(char) ); /* allocation chaine de type */
+	pObj->type.sphere = pSph; /* sauvegarde pointeur sur objet */
+	strcpy( pObj->typeObjet, "Sphere" );
+	pObj->doitEtreDeselectionner = TRUE;
+
+}
+
 /** Fonction qui dessine l'objet
  * @param objet, un pointeur sur l'objet à dessiner
  * @param cr, un pointeur sur le contexte cairo servant à dessiner sur la zoneDeDessin
@@ -63,6 +72,10 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 	{
 		Segment_drawSegment( objet->type.segment, cr, cam);
 	}
+	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+	{
+	    Sphere_drawSphere( objet->type.sphere, cr, cam );
+	}
 }
 
 
@@ -81,6 +94,10 @@ gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCa
     {
     	return Rectangle_Contient_Point( objet->type.rectangle, x, y,pCam);
     }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+        return Sphere_Contient_Point( objet->type.sphere, x, y );
+    }
     return TRUE;
 }
 
@@ -93,6 +110,18 @@ void Objet_selection( Objet* objet )
     {
         objet->type.cube->estSelectionne = TRUE;
     }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+        objet->type.rectangle->estSelectionne = TRUE;
+    }
+    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    {
+        objet->type.segment->estSelectionne = TRUE;
+    }
+    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    {
+        objet->type.sphere->estSelectionne = TRUE;
+    }
 }
 
 /** Fonction qui mets le flag de selection de l'objet à FALSE
@@ -104,13 +133,25 @@ void Objet_deselection( Objet* objet )
     {
         objet->type.cube->estSelectionne = FALSE;
     }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+        objet->type.rectangle->estSelectionne = FALSE;
+    }
+    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    {
+        objet->type.segment->estSelectionne = FALSE;
+    }
+    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    {
+        objet->type.sphere->estSelectionne = FALSE;
+    }
 }
 
 void Objet_rotation( Objet* objet, double x, double y )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        Cube_rotateCube( objet->type.cube, 0,0.785 , 0 );
+        Cube_rotateCube( objet->type.cube, 0, x/200, y/200 );
     }
 }
 

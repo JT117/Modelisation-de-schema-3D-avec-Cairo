@@ -66,15 +66,14 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
                 g_array_append_val( scene->selection->tSelection, objet );
                 scene->selection->nbSelection++;
                 Objet_selection( objet );
+                gtk_tree_selection_select_iter( scene->treeSelection,objet->iter );
             }
             else if( !estDejaSelectionner )
             {
                 Selection_deselectionner_tout( scene );
                 g_array_free( scene->selection->tSelection, FALSE );
                 scene->selection->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
-                g_array_append_val( scene->selection->tSelection, objet );
-                Objet_selection( objet );
-                scene->selection->nbSelection = 1;
+                Selection_selectionner(scene, objet );
             }
             else if( !scene->selection->selection_multiple )
             {
@@ -90,9 +89,6 @@ void Selection_selectionner_objet( Scene* scene, double x, double y )   // A opt
     if( nbNonSelectionner == scene->nbObjet )
     {
         Selection_deselectionner_tout( scene );
-        g_array_free( scene->selection->tSelection, FALSE );
-        scene->selection->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
-        scene->selection->nbSelection = 0;
     }
 }
 
@@ -197,7 +193,7 @@ void Selection_selectionner( Scene* scene, Objet* objet )
         g_array_append_val( scene->selection->tSelection, objet );
         scene->selection->nbSelection++;
         Objet_selection( objet );
-        gtk_tree_selection_select_iter( scene->treeSelection,objet->iter );
+        gtk_tree_selection_select_iter( scene->treeSelection, objet->iter );
         gtk_widget_queue_draw( scene->tree );
     }
 }
@@ -232,6 +228,11 @@ void Selection_deselectionner_tout( Scene* scene )
         Objet* objet = (Objet*)g_array_index( scene->selection->tSelection, Objet*, i );
         Objet_deselection( objet );
     }
+
+    g_array_free( scene->selection->tSelection, FALSE );
+    scene->selection->tSelection = g_array_new( FALSE, FALSE, sizeof( Objet* ) );
+    scene->selection->nbSelection = 0;
+
     gtk_tree_selection_unselect_all( scene->treeSelection );
 }
 

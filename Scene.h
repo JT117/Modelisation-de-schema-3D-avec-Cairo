@@ -68,10 +68,11 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window );
 /** Fonction qui ajoute un cube à la scene */
 void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe );
 
-void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect );
+void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect, int idGroupe );
 
-void Scene_ajouter_segment( Scene* scene, Segment* pSeg );
+void Scene_ajouter_segment( Scene* scene, Segment* pSeg, int idGroupe );
 
+void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe );
 
 /** Fonction qui eneleve un objet de la scene */
 void Scene_enlever_objet( Scene* scene, Objet* objet );
@@ -94,7 +95,7 @@ void Scene_reset( Scene* scene, GtkWidget* window );
 /** Fonction qui recostruit la scene apres un reset */
 void Scene_reconstruire( Scene* scene, GtkWidget* window );
 
-void Scene_ajouter_rectangle( Scene* scene, Rectangle* pRect );
+
 
 
 #endif // SCENE_H

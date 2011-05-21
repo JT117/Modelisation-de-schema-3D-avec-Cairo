@@ -37,9 +37,9 @@ void Sphere_rotateSphereWorld(Sphere* pSphere, double dAngleX, double dAngleY, d
 
 gboolean Sphere_Contient_Point( Sphere* cSphere, double x, double y );
 
-gboolean est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
+gboolean Sphere_est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
 
-int scalaire_result( Point a, Point b, int x, int y );
+int Sphere_scalaire_result( Point a, Point b, int x, int y );
 
 /**
  * Agrandit/retrécit un objet de type Sphere suivant le ratio fourni en param.
