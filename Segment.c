@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "Segment.h"
 
 
@@ -20,6 +22,7 @@ Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2)
 			pNewSeg->tColor[2]=0.0;
 			pNewSeg->tColor[3]=1.0;
 
+			pNewSeg->bArrowed = FALSE;
 			pNewSeg->bDashed = FALSE;
 		}
 		else
@@ -34,6 +37,8 @@ Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2)
 void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 {
 	double dDashLength = 10.0;
+	double dArrowAngle = 0.0; /* Va permettre de stocker l'angle entre le segment et l'axe X */
+	tdCoord2D tArrow1, tArrow2; /* Va permettre de stocker les positions des extrémités d'une segment avec flêche */
 	tdCoord2D* pPointProj1 = NULL;
 	tdCoord2D* pPointProj2 = NULL;
 
@@ -47,8 +52,22 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 	cairo_set_source_rgba (cr, pSeg->tColor[0], pSeg->tColor[1], pSeg->tColor[2] ,pSeg->tColor[3]);
 
 	if(pSeg->bDashed == TRUE)
-	{
 		cairo_set_dash(cr,&dDashLength,1,0);
+
+	if( pSeg->bArrowed == TRUE ) /* On trace la tête de la flêche */
+	{
+		/* Recherche des points constituants les deux extrémités(gauche et droite) de la fléche */
+		dArrowAngle = atan2 ( (*pPointProj2)[1] - (*pPointProj1)[1], (*pPointProj2)[0] - (*pPointProj1)[0] ) + M_PI;
+
+		tArrow1[0] = (*pPointProj2)[0]  + 15 * cos(dArrowAngle - 0.5); /* 15 correspond à la taille de la flêche */
+		tArrow1[1] = (*pPointProj2)[1]  + 15 * sin(dArrowAngle - 0.5); /* 0.5 à l'angle entre le segment et une extrémité de la flêche*/
+
+		tArrow2[0] = (*pPointProj2)[0]  + 15 * cos(dArrowAngle + 0.5);
+		tArrow2[1] = (*pPointProj2)[1]  + 15 * sin(dArrowAngle + 0.5);
+
+		cairo_move_to( cr, tArrow1[0], tArrow1[1]);
+		cairo_line_to( cr, (*pPointProj2)[0],(*pPointProj2)[1]);
+		cairo_move_to( cr, tArrow1[0], tArrow1[1]);
 	}
 	cairo_set_line_width(cr, 0.8);
 	cairo_stroke(cr); /* dessin contour, perte du path */

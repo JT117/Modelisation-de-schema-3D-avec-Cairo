@@ -363,14 +363,16 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             tdCoord coord1;
 
             Point_initCoord( coord, dX, dY, dZ );
-            Point_initCoord( coord1, dX + dWidth, dY + dHeight, dZ );
+            Point_initCoord( coord1, dX + dWidth, dY - dHeight, dZ );
 
             Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
 
             pNewRect = Rectangle_createRectangle( coord, coord1 );
+            Color_setColor(pNewRect->tColor,(dR/255),(dG/255),(dB/255),dA);
+
             Scene_ajouter_rectangle( fao->scene, pNewRect, groupe->id );
 
-            Color_setColor(pNewRect->tColor,(dR/255),(dG/255),(dB/255),dA);
+
         }
         else
         {
