@@ -6,6 +6,7 @@
 O_SRCS += \
 ../obj/Debug/Camera.o \
 ../obj/Debug/Clavier.o \
+../obj/Debug/Color.o \
 ../obj/Debug/Cube.o \
 ../obj/Debug/FenetreAjoutCube.o \
 ../obj/Debug/FenetrePropriete.o \
@@ -19,6 +20,7 @@ O_SRCS += \
 ../obj/Debug/Scene.o \
 ../obj/Debug/Segment.o \
 ../obj/Debug/Selection.o \
+../obj/Debug/Sphere.o \
 ../obj/Debug/TransfoTools.o \
 ../obj/Debug/main.o 
 

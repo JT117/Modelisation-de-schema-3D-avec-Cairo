@@ -21,6 +21,7 @@ typedef struct Segment
 
     gboolean estSelectionne;
 	gboolean bDashed;
+	gboolean bArrowed;
 }Segment;
 
 
