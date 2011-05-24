@@ -10,11 +10,17 @@
 	<File name="Config.h" open="0" top="0" tabpos="0">
 		<Cursor position="136" topLine="0" />
 	</File>
-	<File name="Cube.c" open="1" top="1" tabpos="3">
+	<File name="Cube.c" open="0" top="0" tabpos="3">
 		<Cursor position="7608" topLine="206" />
 	</File>
 	<File name="Cube.h" open="0" top="0" tabpos="9">
 		<Cursor position="1513" topLine="23" />
+	</File>
+	<File name="FenPrincipale.c" open="1" top="1" tabpos="2">
+		<Cursor position="4455" topLine="74" />
+	</File>
+	<File name="FenPrincipale.h" open="1" top="0" tabpos="3">
+		<Cursor position="1771" topLine="0" />
 	</File>
 	<File name="FenetreAjoutCube.c" open="0" top="0" tabpos="7">
 		<Cursor position="11689" topLine="225" />
@@ -34,7 +40,7 @@
 	<File name="MatrixTools.h" open="0" top="0" tabpos="0">
 		<Cursor position="691" topLine="0" />
 	</File>
-	<File name="Objet.c" open="1" top="0" tabpos="2">
+	<File name="Objet.c" open="0" top="0" tabpos="2">
 		<Cursor position="3418" topLine="66" />
 	</File>
 	<File name="Objet.h" open="0" top="0" tabpos="10">
@@ -56,7 +62,7 @@
 		<Cursor position="1315" topLine="0" />
 	</File>
 	<File name="Scene.h" open="0" top="0" tabpos="4">
-		<Cursor position="1521" topLine="0" />
+		<Cursor position="1659" topLine="22" />
 	</File>
 	<File name="Selection.c" open="0" top="0" tabpos="8">
 		<Cursor position="6859" topLine="192" />
@@ -65,6 +71,6 @@
 		<Cursor position="1166" topLine="7" />
 	</File>
 	<File name="main.c" open="1" top="0" tabpos="1">
-		<Cursor position="17381" topLine="348" />
+		<Cursor position="66" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

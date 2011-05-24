@@ -55,6 +55,10 @@
 		</Unit>
 		<Unit filename="Cube.h" />
 		<Unit filename="Enum.h" />
+		<Unit filename="FenPrincipale.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="FenPrincipale.h" />
 		<Unit filename="FenetreAjoutCube.c">
 			<Option compilerVar="CC" />
 		</Unit>
