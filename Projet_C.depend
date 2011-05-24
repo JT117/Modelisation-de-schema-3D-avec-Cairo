@@ -2,7 +2,7 @@
 1299146539 source:/home/julien/Documents/Projet_C/main.c
 	<cairo.h>
 
-1305990759 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
+1306221930 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
 	<gtk/gtk.h>
 	<math.h>
 	"Cube.h"
@@ -2231,7 +2231,7 @@
 1302804820 /usr/include/gtk-2.0/gtk/gtktipsquery.h
 	<gtk/gtk.h>
 
-1305997827 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
+1306221930 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
 	"FenetreAjoutCube.h"
 	"Config.h"
 
@@ -2640,7 +2640,7 @@
 1304773797 source:/media/JT117/Modelisation-de-schema-3D-avec-Cairo/Segment.c
 	"Segment.h"
 
-1305993015 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Segment.h
+1306221930 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Segment.h
 	<cairo.h>
 	<gtk/gtk.h>
 	"Point.h"
@@ -2648,7 +2648,8 @@
 	"Camera.h"
 	"Color.h"
 
-1305993032 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Segment.c
+1306221930 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Segment.c
+	<math.h>
 	"Segment.h"
 
 1303997532 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutRectangle.h
@@ -2688,4 +2689,7 @@
 	"FenetrePropriete.h"
 	"Enum.h"
 	"Selection.h"
+
+1306150738 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
+	"FenPrincipale.h"
 
