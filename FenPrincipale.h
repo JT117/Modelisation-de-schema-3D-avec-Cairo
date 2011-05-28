@@ -1,9 +1,10 @@
-#include "FenetreAjoutCube.h" /* TODO : réflechir à un moyen de ne faire qu'un seule module FenetreAjout */
+#include "FenetreAjoutCube.h"
 #include "Cube.h"
 #include "Objet.h"
 #include "Scene.h"
 #include "Config.h"
 #include "FenetrePropriete.h"
+#include "ExportWindow.h"
 #include "Enum.h"
 #include "Selection.h"
 
@@ -27,4 +28,15 @@ static gboolean ajout_Groupe( GtkButton* button, gpointer data );
 static gboolean supprimer_Groupe( GtkWidget* button, gpointer data );
 static gboolean suppression_Groupe( GtkButton* button, gpointer data );
 static gboolean changementCurseur( GtkButton* button, gpointer data );
+
+
+/**
+ * Appelle la fonction de création de la fenêtre d'ajout de texte.
+ */
+static gboolean newText(gpointer data);
+
+/**
+ * Fonction qui va appeler la fonction de création de la fenêtre d'exportation.
+ */
+static gboolean main_export(GtkWidget *menuItem, gpointer data );
 

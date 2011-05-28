@@ -60,6 +60,10 @@ struct Scene
 
     int souris;
     Point rotation;
+
+    /*Taille de la surface de projection */
+    double dHeight;
+    double dWidth;
 };
 
 /** Fonction qui initialise une scene */

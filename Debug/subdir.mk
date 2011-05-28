@@ -8,6 +8,7 @@ C_SRCS += \
 ../Clavier.c \
 ../Color.c \
 ../Cube.c \
+../ExportWindow.c \
 ../FenPrincipale.c \
 ../FenetreAjoutCube.c \
 ../FenetrePropriete.c \
@@ -31,6 +32,7 @@ OBJS += \
 ./Clavier.o \
 ./Color.o \
 ./Cube.o \
+./ExportWindow.o \
 ./FenPrincipale.o \
 ./FenetreAjoutCube.o \
 ./FenetrePropriete.o \
@@ -54,6 +56,7 @@ C_DEPS += \
 ./Clavier.d \
 ./Color.d \
 ./Cube.d \
+./ExportWindow.d \
 ./FenPrincipale.d \
 ./FenetreAjoutCube.d \
 ./FenetrePropriete.d \

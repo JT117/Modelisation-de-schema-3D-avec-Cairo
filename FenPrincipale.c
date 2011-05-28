@@ -25,6 +25,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     GtkWidget* nouveau = gtk_menu_item_new_with_label( "Nouveau" );
     GtkWidget* ouvrir = gtk_menu_item_new_with_label( "Ouvrir" );
     GtkWidget* sauvegarder = gtk_menu_item_new_with_label( "Sauvegarder" );
+    GtkWidget* wExport = gtk_menu_item_new_with_label( "Exporter" );
     GtkWidget* quitter = gtk_menu_item_new_with_label( "Quitter" );
     gtk_menu_item_set_submenu(GTK_MENU_ITEM (fichier), menu);
 
@@ -40,7 +41,8 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     gtk_menu_attach( GTK_MENU(menu), nouveau, 0, 1, 0, 1 );
     gtk_menu_attach( GTK_MENU(menu), ouvrir, 0, 1, 1, 2 );
     gtk_menu_attach( GTK_MENU(menu), sauvegarder, 0, 1, 2, 3 );
-    gtk_menu_attach( GTK_MENU(menu), quitter, 0, 1, 3, 4 );
+    gtk_menu_attach( GTK_MENU(menu), wExport, 0, 1, 3, 4 );
+    gtk_menu_attach( GTK_MENU(menu), quitter, 0, 1, 4, 5 );
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), fichier);
     gtk_menu_bar_append(GTK_MENU_BAR (menuBarre), edition);
 
@@ -50,8 +52,9 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     double width = gdk_screen_get_width(screen);
     double height = gdk_screen_get_height(screen);
 
-    /* Création de la caméra qui va bien TODO : étudier un moyen de mettre ça dans une fonction d'initialisation, init scene ?*/
     scene->camera = Camera_createCam(width-200,height-75);
+    scene->dHeight = height-75;
+    scene->dWidth = height-200;
 
     gtk_widget_set_size_request( zoneDeDessin, width-200, height-75 );
     gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );
@@ -141,6 +144,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     g_signal_connect( G_OBJECT( nouveau ), "activate", G_CALLBACK( main_nouveau ), scene);
     g_signal_connect( G_OBJECT( ouvrir ), "activate", G_CALLBACK( main_ouvrir ), scene);
     g_signal_connect( G_OBJECT( sauvegarder ), "activate", G_CALLBACK( main_sauvegarder ), scene);
+    g_signal_connect( G_OBJECT( wExport ), "activate", G_CALLBACK( main_export ), scene);
     g_signal_connect( G_OBJECT( quitter ), "activate", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( scene->modification->annuler ), "activate", G_CALLBACK( main_annuler ), scene);
     g_signal_connect( G_OBJECT( scene->modification->refaire ), "activate", G_CALLBACK( main_refaire ), scene);
@@ -172,7 +176,6 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     free( scene );
 
     return EXIT_SUCCESS;
-
  }
 
 /** Fonction dessinant la scene, partie principale du programme, gérant aussi le dessin du rectangle de selection
@@ -281,11 +284,21 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
     return TRUE;
 }
 
-gboolean newText(gpointer data)
+static gboolean newText(gpointer data)
 {
 	/*
 	 * TODO : à compléter, appel à la fenêtre d'ajout texte
 	 */
+	return TRUE;
+}
+
+static gboolean main_export(GtkWidget *menuItem, gpointer data )
+{
+	Scene* scene = (Scene*)data;
+
+	ExportWindow* pEw = (ExportWindow*)malloc( 1 * sizeof( ExportWindow ) );
+	ExportWindow_init(pEw, scene);
+	return TRUE;
 }
 
 /** Fonction gérant les clics/deplacements souris, associant aux clics les differentes fonctions
