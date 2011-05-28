@@ -16,10 +16,12 @@ struct FenetreAjoutCube
     GtkWidget* entry1; // X
     GtkWidget* entry2; // Y
     GtkWidget* entry3; // Z
-    GtkWidget* entryR; // Z
-    GtkWidget* entryG; // Z
-    GtkWidget* entryB; // Z
-    GtkWidget* entryA; // Z
+
+    GtkWidget* entryR; // R
+    GtkWidget* entryG; // G
+    GtkWidget* entryB; // B
+    GtkWidget* entryA; // Alpha
+
     GtkWidget* boutonOk;
     GtkWidget* boutonAnnuler;
     GtkWidget* barreSelection;

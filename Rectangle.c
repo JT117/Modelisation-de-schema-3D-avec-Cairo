@@ -182,13 +182,12 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
 	tdMatrix tdMatTransfo;
 	tdCoord tdCoordApTransfo;
 
-	Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
-
 	if(dAngleX != 0)
 	{
 		/*Récupération de la matrice de rotation qui va bien */
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
 
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<4 ;iLoop++)
 		{
@@ -202,12 +201,17 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
 			/* réinitialisation coord après transformation pour le  point suivant */
 			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		}
+
+		/* Modification des coordonnées du centre de la figure */
+		Matrix_multiMatrixVect(tdMatTransfo, pRectangle->Center.tdCoordWorld, tdCoordApTransfo);
+		Point_init(&(pRectangle->Center),tdCoordApTransfo[0],tdCoordApTransfo[1],tdCoordApTransfo[2]);
 	}
 
 	if(dAngleY != 0)
 	{
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
 
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<4 ;iLoop++)
 		{
@@ -221,13 +225,16 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
 			/* réinitialisation coord après transformation pour le  point suivant */
 			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		}
-
+		/* Modification des coordonnées du centre de la figure */
+		Matrix_multiMatrixVect(tdMatTransfo, pRectangle->Center.tdCoordWorld, tdCoordApTransfo);
+		Point_init(&(pRectangle->Center),tdCoordApTransfo[0],tdCoordApTransfo[1],tdCoordApTransfo[2]);
 	}
 
 	if(dAngleZ != 0)
 	{
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
 
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<4 ;iLoop++)
 		{
@@ -241,6 +248,9 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
 			/* réinitialisation coord après transformation pour le  point suivant */
 			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		}
+		/* Modification des coordonnées du centre de la figure */
+		Matrix_multiMatrixVect(tdMatTransfo, pRectangle->Center.tdCoordWorld, tdCoordApTransfo);
+		Point_init(&(pRectangle->Center),tdCoordApTransfo[0],tdCoordApTransfo[1],tdCoordApTransfo[2]);
 	}
 }
 

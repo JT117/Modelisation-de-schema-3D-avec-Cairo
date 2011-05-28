@@ -83,6 +83,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
 
     GtkWidget* boutonMain = gtk_button_new_with_label("Main");
     GtkWidget* boutonMainWorld = gtk_button_new_with_label("MainWorld");
+    GtkWidget* boutonText = gtk_button_new_with_label("Texte");
     GtkWidget* boutonZomm = gtk_button_new_with_label("Zoom");
     GtkWidget* boutonNormal = gtk_button_new_with_label("Normal");
 
@@ -90,6 +91,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonZomm );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonNormal );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonMainWorld );
+    gtk_container_add( GTK_CONTAINER( vbarre ), boutonText );
     gtk_container_add( GTK_CONTAINER( vbarre ), hbarre );
 
     gtk_button_box_set_layout( GTK_BUTTON_BOX( hbarre ), GTK_BUTTONBOX_CENTER );
@@ -279,6 +281,13 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
     return TRUE;
 }
 
+gboolean newText(gpointer data)
+{
+	/*
+	 * TODO : à compléter, appel à la fenêtre d'ajout texte
+	 */
+}
+
 /** Fonction gérant les clics/deplacements souris, associant aux clics les differentes fonctions
  * @param window, le widget ayant reçu l'evenement
  * @param event, le type d'evenement ici plusieurs evenements nous interessent : "button-press-event", "button-release-event", "motion-notify-event"
@@ -377,10 +386,8 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 		if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
 		{
 			int i = 0;
-			tdCoord2D tMove;
+			tdCoord2D tMove;  /* Mouvement = différence entre l'endroit ou l'utilisateur a commencé son clique et la position actuelle du curseur */
 			Point_initCoord2D(tMove, scene->rotation.x-event->x, scene->rotation.y-event->y);
-			////diff.x = scene->rotation.x - event->x;
-			//diff.y = scene->rotation.y - event->y;
 
 			for( i = 0; i < scene->selection->nbSelection; i++ )
 			{
@@ -401,7 +408,19 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 	}
     else if( scene->souris == LOUPE )
     {
-        if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
+        if( event->type == GDK_MOTION_NOTIFY && event->button == 1 )
+        {
+        	Camera_setCoordCam(scene->camera, (scene->camera->CoordCam)[0], (scene->camera->CoordCam)[1],
+									(scene->camera->CoordCam)[2]+(scene->rotation.tdCoordWorld[1]-event->y));
+        	gtk_widget_queue_draw( scene->zoneDeDessin );
+        }
+        else if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
+		{
+        	Point_initCoord2D(scene->rotation.tdCoordWorld, event->x, event->y);
+				/* TODO : modifier le nom de la variable rotation*/
+		}
+
+        if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel
         {
             int i = 0;
 
@@ -409,9 +428,17 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
             {
                 Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
 
-                Objet_homothetie( objet, 2 );
+                Objet_homothetie( objet, -2 );
                 gtk_widget_queue_draw( widget );
             }
+        }
+    }
+    else if( scene->souris == TEXT )
+    {
+        if( event->type == GDK_BUTTON_PRESS && event->button == 1 ) /* Clique gauche utilisateur */
+        {
+            /* Création fenetre de création de texte */
+            newText(scene);
         }
         if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel
         {
@@ -448,7 +475,7 @@ static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data )
     Scene* scene = (Scene*)data;
     FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube) );
     initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
-    //initialiser_FenetreAjoutRectangle( fao, scene );
+
     return TRUE;
 }
 
@@ -1006,8 +1033,8 @@ static gboolean changementCurseur( GtkButton* bouton, gpointer data )
 	{
 		scene->souris = MAINWORLD;
 	}
+    else if( strcmp( gtk_button_get_label( bouton ), "Text" ) == 0 )
+	{
+		scene->souris = TEXT;
+	}
 }
-
-
-
-

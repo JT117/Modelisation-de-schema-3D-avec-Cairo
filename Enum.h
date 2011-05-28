@@ -2,6 +2,6 @@
 #define ENUM_H
 
 enum{ GROUPE };
-enum{ MAIN, LOUPE, MAINWORLD, NORMAL};
+enum{ MAIN, LOUPE, MAINWORLD, NORMAL, TEXT};
 
 #endif //ENUM_H
