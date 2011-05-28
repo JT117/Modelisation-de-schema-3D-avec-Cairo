@@ -8,6 +8,7 @@ O_SRCS += \
 ../obj/Debug/Clavier.o \
 ../obj/Debug/Color.o \
 ../obj/Debug/Cube.o \
+../obj/Debug/FenPrincipale.o \
 ../obj/Debug/FenetreAjoutCube.o \
 ../obj/Debug/FenetrePropriete.o \
 ../obj/Debug/Groupe.o \

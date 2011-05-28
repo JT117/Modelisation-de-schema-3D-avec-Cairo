@@ -82,12 +82,14 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     GtkWidget* vbarre = gtk_vbutton_box_new();
 
     GtkWidget* boutonMain = gtk_button_new_with_label("Main");
+    GtkWidget* boutonMainWorld = gtk_button_new_with_label("MainWorld");
     GtkWidget* boutonZomm = gtk_button_new_with_label("Zoom");
     GtkWidget* boutonNormal = gtk_button_new_with_label("Normal");
 
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonMain );
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonZomm );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonNormal );
+    gtk_container_add( GTK_CONTAINER( vbarre ), boutonMainWorld );
     gtk_container_add( GTK_CONTAINER( vbarre ), hbarre );
 
     gtk_button_box_set_layout( GTK_BUTTON_BOX( hbarre ), GTK_BUTTONBOX_CENTER );
@@ -121,6 +123,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     g_signal_connect( G_OBJECT( scene->tree ), "button-press-event", G_CALLBACK(clickDroitGroupe), scene );
 
     g_signal_connect( G_OBJECT( boutonMain ), "clicked", G_CALLBACK( changementCurseur ), scene);
+    g_signal_connect( G_OBJECT( boutonMainWorld ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonNormal ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonZomm ), "clicked", G_CALLBACK( changementCurseur ), scene);
 
@@ -369,6 +372,33 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
             scene->rotation.y = event->y;
         }
     }
+    else if( scene->souris == MAINWORLD )
+	{
+		if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
+		{
+			int i = 0;
+			tdCoord2D tMove;
+			Point_initCoord2D(tMove, scene->rotation.x-event->x, scene->rotation.y-event->y);
+			////diff.x = scene->rotation.x - event->x;
+			//diff.y = scene->rotation.y - event->y;
+
+			for( i = 0; i < scene->selection->nbSelection; i++ )
+			{
+				Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
+
+				Objet_rotationWorld(objet,tMove[0],tMove[1]);
+			}
+			scene->rotation.x = event->x;
+			scene->rotation.y = event->y;
+
+			gtk_widget_queue_draw( widget );
+		}
+		else if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
+		{
+			scene->rotation.x = event->x;
+			scene->rotation.y = event->y;
+		}
+	}
     else if( scene->souris == LOUPE )
     {
         if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
@@ -972,6 +1002,10 @@ static gboolean changementCurseur( GtkButton* bouton, gpointer data )
     {
         scene->souris = NORMAL;
     }
+    else if( strcmp( gtk_button_get_label( bouton ), "MainWorld" ) == 0 )
+	{
+		scene->souris = MAINWORLD;
+	}
 }
 
 
