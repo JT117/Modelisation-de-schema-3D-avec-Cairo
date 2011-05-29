@@ -49,7 +49,7 @@ void Camera_setCoordCam(InfoCamera* pCam,double dX, double dY, double dZ)
 	pCam->CoordCam[2]=dZ;
 	pCam->CoordCam[3]=1;
 
-	/* On en profite pour modifer la matrice de passage World->repére caméra */
+	/* Modification de la matrice de passage pour tout déplacement de la caméra*/
 	Camera_setMatPassage(pCam, dX, dY, dZ);
 }
 
@@ -89,7 +89,7 @@ void Camera_setFrustum(InfoCamera* pCam, double dAngleV, double dRatio)
 void Camera_setDistancePlan(InfoCamera* pCam, double dDMin, double dDmax)
 {
 	pCam->dDMin=dDMin;
-	pCam->dDMax=dDmax;
+	pCam->dDMax=dDmax; //TODO : enlever Dmax qui ne sert à rien
 }
 
 void Camera_projectionCalculation(InfoCamera *pCam)

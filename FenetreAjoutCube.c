@@ -23,6 +23,7 @@ void initialiser_FenetreAjoutCube( FenetreAjoutCube* fao, Scene* scene )
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Cube" );
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Parallélépipède rectangle" );
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Sphere" );
+    gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Rectangle" );
     gtk_widget_set_size_request( GTK_WIDGET( comboBox ), 250, -1 );
 
     GtkWidget* text = gtk_label_new("Type d'objet : ");
@@ -196,7 +197,8 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
         gtk_widget_draw( fao->fenetre, NULL );
         gtk_widget_show_all(fao->fenetre);
     }
-    else if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Parallélépipède rectangle" ) == 0 )
+    else if( (strcmp( gtk_combo_box_get_active_text( comboBox ), "Parallélépipède rectangle" ) == 0)
+					|| (strcmp( gtk_combo_box_get_active_text( comboBox ), "Rectangle" ) == 0) )
     {
         FenetreAjoutCube_enlever_layout( fao );
 
@@ -301,7 +303,7 @@ void FenetreAjoutCube_enlever_layout( FenetreAjoutCube* fao )
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 {
-	double dWidth;//, largeur; /* TODO : modifier les noms pour avoir hauteur + profondeur */
+	double dWidth, dHeight ;/* TODO : modifier les noms pour avoir hauteur + profondeur */
 	double dX, dY,dZ; /*Coordonnées du centre de gravité du nouvel objet*/
 	tdCoord tdCenter;
     FenetreAjoutCube* fao = (FenetreAjoutCube*)data;
@@ -354,7 +356,7 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
     else if( strcmp( fao->dernierLayout, "Rectangle" ) == 0 )
     {
         dWidth = atof( gtk_entry_get_text( GTK_ENTRY( fao->longueur ) ) ); /*Récupération de la longueur du cube*/
-        double dHeight = atof( gtk_entry_get_text( GTK_ENTRY( fao->largeur ) ) );
+        dHeight = atof( gtk_entry_get_text( GTK_ENTRY( fao->largeur ) ) );
 
         if( dWidth > 0 && dHeight > 0 )
         {
@@ -362,8 +364,8 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             tdCoord coord;
             tdCoord coord1;
 
-            Point_initCoord( coord, dX, dY, dZ );
-            Point_initCoord( coord1, dX + dWidth, dY - dHeight, dZ );
+            Point_initCoord( coord, dX-dWidth/2, dY+dHeight/2, dZ );
+            Point_initCoord( coord1, dX + dWidth/2, dY - dHeight/2, dZ );
 
             Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
 
@@ -383,10 +385,7 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer une taille !" );
 
             if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
-            {
                 gtk_widget_destroy( avertissement );
-
-            }
         }
     }
     else if( strcmp( fao->dernierLayout, "Sphere" ) == 0 )

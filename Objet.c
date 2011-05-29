@@ -160,6 +160,14 @@ void Objet_rotation( Objet* objet, double x, double y )
     }
 }
 
+void Objet_rotationWorld( Objet* objet, double x, double y )
+{
+    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    {
+    	Cube_rotateCubeWorld(objet->type.cube, 0, x/200, y/200);
+    }
+}
+
 void Objet_homothetie( Objet* objet, int ratio )
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )

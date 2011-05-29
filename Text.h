@@ -21,6 +21,9 @@ struct Text
 
     gboolean estSelectionne;
 	Color tColor; /* Couleur de l'objet */
+
+	/* Taille du texte à afficher */
+	double dSize;
 };
 
 void Text_drawText(Text* pText, cairo_t* cr, InfoCamera* pCam);

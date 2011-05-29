@@ -2,17 +2,21 @@
 
 #include "Text.h"
 
-
 void Text_drawText(Text* pText, cairo_t* cr, InfoCamera* pCam)
 {
-	cairo_text_extents_t te;
-	cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+	//cairo_text_extents_t te;
+	cairo_set_source_rgba (cr, pText->tColor[0], pText->tColor[1], pText->tColor[2], pText->tColor[3]);
 	cairo_select_font_face (cr, "Georgia",CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-	cairo_set_font_size (cr, 1.2);
-	cairo_text_extents (cr, "a", &te);
-	cairo_move_to (cr, 0.5 - te.width / 2 - te.x_bearing,
-	    0.5 - te.height / 2 - te.y_bearing);
-	cairo_show_text (cr, "a");
+
+	cairo_set_font_size (cr, pText->dSize);
+
+	cairo_move_to(cr, pText->coordText[0], pText->coordText[1]);
+	cairo_show_text(cr, pText->pText);
+}
+
+void Text_setColor(Text* pText, double dR, double dG, double dB, double dA)
+{
+	Color_setColor(&(pText->tColor),dR,dG,dB,dA);
 }
 
 Text* Text_createText(tdCoord2D tPos, char* pText)
@@ -21,8 +25,11 @@ Text* Text_createText(tdCoord2D tPos, char* pText)
 
 	if( (pNewText= (Text*)malloc(sizeof(Text))) )
 	{
-		pNewText->coordText[0]=tPos[0];
-		pNewText->coordText[1]=tPos[1];
+		Point_initCoord2D(pNewText->coordText,tPos[0],tPos[1]);
+
+		/* COuleur + taille par défait */
+		pNewText->dSize = 10;
+		Color_setColor( pNewText->tColor, 1.0, 1.0, 1.0, 1.0);
 
 		if( (pNewText->pText= (char*)malloc(sizeof(pText))) )
 		{
@@ -51,10 +58,6 @@ void Text_destroy(Text* pText)
 }
 
 gboolean Text_Contient_Point( Text* pText, double x, double y );
-
-/*
-int scalaire_result( Point a, Point b, int x, int y );
-*/
 
 /**
  * Agrandit/retrécit un objet de type Text suivant le ratio fourni en param.

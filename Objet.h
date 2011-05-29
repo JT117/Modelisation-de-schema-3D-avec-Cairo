@@ -55,7 +55,23 @@ void Objet_selection( Objet* objet );
 /** Deselection l'objet */
 void Objet_deselection( Objet* objet );
 
+/**
+ * Méthode permettant d'appeler la méthode rotation associée au type d'objet passé en param.
+ *
+ * @param objet Pointeur vers l'objet concerné
+ * @param x Déplacement de la souris en x
+ * @param y Déplacement de la souris en y
+ */
 void Objet_rotation( Objet* objet, double x, double y );
+
+/**
+ * Méthode permettant d'appeler la méthode rotationWorld associée au type d'objet passé en param.
+ *
+ * @param objet Pointeur vers l'objet concerné
+ * @param x Déplacement de la souris en x
+ * @param y Déplacement de la souris en y
+ */
+void Objet_rotationWorld( Objet* objet, double x, double y );
 void Objet_homothetie( Objet* objet, int ratio );
 
 #endif  // OBJET_H
