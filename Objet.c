@@ -33,6 +33,7 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     pObj->type.rectangle = pRect; /* sauvegarde pointeur sur objet */
     strcpy( pObj->typeObjet, "Rectangle" );
     pObj->doitEtreDeselectionner = TRUE;
+    pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
 void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
@@ -41,7 +42,7 @@ void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
 	pObj->type.segment = pSeg; /* sauvegarde pointeur sur objet */
 	strcpy( pObj->typeObjet, "Segment" );
 	pObj->doitEtreDeselectionner = TRUE;
-
+	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
 void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
@@ -50,7 +51,7 @@ void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
 	pObj->type.sphere = pSph; /* sauvegarde pointeur sur objet */
 	strcpy( pObj->typeObjet, "Sphere" );
 	pObj->doitEtreDeselectionner = TRUE;
-
+	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
 /** Fonction qui dessine l'objet
@@ -152,6 +153,10 @@ void Objet_rotation( Objet* objet, double x, double y )
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
         Cube_rotateCube( objet->type.cube, 0, x/200, y/200 );
+    }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+        Rectangle_rotate( objet->type.rectangle, 0, x/200, y/200 );
     }
 }
 

@@ -664,6 +664,11 @@ static gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
     for( i = 0; i < nb; i++ )
     {
         Objet* objet = g_array_index( scene->selection->tSelection, Objet*, 0 );
+        Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, objet->numeroGroupe );
+
+        Groupe_enlever_objet( groupe, objet );
+        gtk_tree_selection_unselect_iter( scene->treeSelection, objet->iter );
+        gtk_tree_store_remove( scene->store, objet->iter );
 
         Selection_deselectionner( scene, objet );
         Scene_enlever_objet( scene, objet );
@@ -672,6 +677,7 @@ static gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
     Modification_modification_effectuer( scene );
 
     gtk_widget_queue_draw( scene->zoneDeDessin );
+    gtk_widget_queue_draw( scene->tree );
 
     return TRUE;
 }

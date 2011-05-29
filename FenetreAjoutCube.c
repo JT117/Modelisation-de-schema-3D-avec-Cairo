@@ -372,6 +372,9 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 
             Scene_ajouter_rectangle( fao->scene, pNewRect, groupe->id );
 
+            gtk_widget_queue_draw( scene->zoneDeDessin );
+            Modification_modification_effectuer( scene );
+            g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
 
         }
         else
@@ -401,6 +404,10 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             Scene_ajouter_sphere( fao->scene, pNewSph, groupe->id );
 
             Color_setColor(pNewSph->tColor,(dR/255),(dG/255),(dB/255),dA);
+
+            gtk_widget_queue_draw( scene->zoneDeDessin );
+            Modification_modification_effectuer( scene );
+            g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
         }
         else
         {

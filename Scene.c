@@ -107,7 +107,7 @@ void Scene_ajouter_segment( Scene* scene, Segment* pSeg, int idGroupe )
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
-    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Segment", -1);
 }
 
 void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect, int idGroupe )
@@ -121,7 +121,7 @@ void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect, int idGroupe )
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
-    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Pavé droit", -1);
 }
 
 void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
@@ -135,7 +135,7 @@ void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
-    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Sphère", -1);
 }
 
 
