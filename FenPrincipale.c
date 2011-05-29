@@ -54,7 +54,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
 
     scene->camera = Camera_createCam(width-200,height-75);
     scene->dHeight = height-75;
-    scene->dWidth = height-200;
+    scene->dWidth = width-200;
 
     gtk_widget_set_size_request( zoneDeDessin, width-200, height-75 );
     gtk_container_add( GTK_CONTAINER( mainWindow ), main_box );
