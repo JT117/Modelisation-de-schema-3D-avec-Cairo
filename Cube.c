@@ -224,10 +224,10 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 		cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
 		cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
 
-		if(pCube->estSelectionne == TRUE)
-			cairo_set_source_rgb ( cr, 1.0, 0, 0); /* couleur contour */
+		if(pCube->estSelectionne == TRUE)  /* réglage de la couleur du contour*/
+			cairo_set_source_rgb ( cr, 1.0, 0, 0);
 		else
-			cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+			cairo_set_source_rgb ( cr, 0, 0, 0);
 
 		cairo_stroke(cr); /* dessin contour, perte du path */
 	}

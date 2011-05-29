@@ -12,11 +12,9 @@ Sphere* Sphere_createSphere(tdCoord tCenter, double dRadius)
 	if( (pNewSphere = (Sphere*)malloc(sizeof(Sphere))) != NULL )
 	{
 		/*Sauvegarde des infos sur les points dans notre structure */
-		Point_init( &((pNewSphere->tPoint)[0]), tCenter[0], tCenter[1], tCenter[2]);
-		Point_init( &((pNewSphere->tPoint)[0]), tCenter[0], tCenter[1], tCenter[2]+dRadius);
-		//pNewSphere->dRadius = dRadius;
+		Point_init( &((pNewSphere->tPoint)[0]), tCenter[0], tCenter[1]+dRadius, tCenter[2]);
 
-		/* Init du centre du repere de la figure (centre de gravité du Sphere) */
+		/* Init du centre du repere de la figure (centre de gravité de lma sphere) */
 		Point_init( &(pNewSphere->Center), tCenter[0], tCenter[1], tCenter[2]);
 
 		/*Couleur par défaut, pas de transparence*/
@@ -41,8 +39,8 @@ void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam)
 	tdCoord2D* pPointProj1 = NULL;
 
 	/* Projection des points du rayon de la sphere */
-	pPointProj0 = ProjectionTools_getPictureCoord(&((pSphere->tPoint)[0]),pCam);
-	pPointProj1 = ProjectionTools_getPictureCoord(&((pSphere->tPoint)[1]),pCam);
+	pPointProj0 = ProjectionTools_getPictureCoord(&(pSphere->Center),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pSphere->tPoint)[0]),pCam);
 
 	dRadius = Point_euclideanDistance2D((*pPointProj0),(*pPointProj1));
 
@@ -53,7 +51,11 @@ void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam)
 	cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
 
 
-	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	if(pSphere->estSelectionne == TRUE)  /* réglage de la couleur du contour*/
+		cairo_set_source_rgb ( cr, 1.0, 0, 0);
+	else
+		cairo_set_source_rgb ( cr, 0, 0, 0);
+
 	cairo_stroke(cr); /* dessin contour, perte du path */
 
 	free(pPointProj0);
@@ -73,58 +75,72 @@ void Sphere_rotateSphereWorld(Sphere* pSphere, double dAngleX, double dAngleY, d
 		/*Récupération de la matrice de rotation qui va bien */
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
 
-		/* On effectue la transformation pour tous  les points du rectangle */
-		for(iLoop=0 ; iLoop<2 ;iLoop++)
-		{
-			/*Transformation dans le repere du monde*/
-			Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
-			/* Modification des coordonnées dans le repere du monde !*/
-			pSphere->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
-			pSphere->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
-			pSphere->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
+		/*Transformation dans le repere du monde*/
+		Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);
+		/* Modification des coordonnées dans le repere du monde !*/
+		pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
+		pSphere->tPoint[0].tdCoordWorld[1] = tdCoordApTransfo[1];
+		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];
 
-			/* réinitialisation coord après transformation pour le  point suivant */
-			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
-		}
+		/* réinitialisation coord après transformation pour le  point suivant */
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+
+		/*Transformation dans le repere du monde*/
+		Matrix_multiMatrixVect(tdMatTransfo, pSphere->Center.tdCoordWorld, tdCoordApTransfo);
+		/* Modification des coordonnées dans le repere du monde !*/
+		pSphere->Center.tdCoordWorld[0] = tdCoordApTransfo[0];
+		pSphere->Center.tdCoordWorld[1] = tdCoordApTransfo[1];
+		pSphere->Center.tdCoordWorld[2] = tdCoordApTransfo[2];
+
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 	}
 
 	if(dAngleY != 0)
 	{
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
 
-		/* On effectue la transformation pour tous  les points du rectangle */
-		for(iLoop=0 ; iLoop<2 ;iLoop++)
-		{
-			/*Transformation dans le repere du monde*/
-			Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
-			/* Modification des coordonnées dans le repere du monde !*/
-			pSphere->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
-			pSphere->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
-			pSphere->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
+		/*Transformation dans le repere du monde*/
+		Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);
+		/* Modification des coordonnées dans le repere du monde !*/
+		pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
+		pSphere->tPoint[0].tdCoordWorld[1] = tdCoordApTransfo[1];
+		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];
 
-			/* réinitialisation coord après transformation pour le  point suivant */
-			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
-		}
+		/* réinitialisation coord après transformation pour le  point suivant */
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 
+		/*Transformation dans le repere du monde*/
+		Matrix_multiMatrixVect(tdMatTransfo, pSphere->Center.tdCoordWorld, tdCoordApTransfo);
+		/* Modification des coordonnées dans le repere du monde !*/
+		pSphere->Center.tdCoordWorld[0] = tdCoordApTransfo[0];
+		pSphere->Center.tdCoordWorld[1] = tdCoordApTransfo[1];
+		pSphere->Center.tdCoordWorld[2] = tdCoordApTransfo[2];
+
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 	}
 
 	if(dAngleZ != 0)
 	{
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
 
-		/* On effectue la transformation pour tous  les points du rectangle */
-		for(iLoop=0 ; iLoop<2 ;iLoop++)
-		{
-			/*Transformation dans le repere du monde*/
-			Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[iLoop].tdCoordWorld, tdCoordApTransfo);
-			/* Modification des coordonnées dans le repere du monde !*/
-			pSphere->tPoint[iLoop].tdCoordWorld[0] = tdCoordApTransfo[0];
-			pSphere->tPoint[iLoop].tdCoordWorld[1] = tdCoordApTransfo[1];
-			pSphere->tPoint[iLoop].tdCoordWorld[2] = tdCoordApTransfo[2];
+		/*Transformation dans le repere du monde*/
+		Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);
+		/* Modification des coordonnées dans le repere du monde !*/
+		pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
+		pSphere->tPoint[0].tdCoordWorld[1] = tdCoordApTransfo[1];
+		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];
 
-			/* réinitialisation coord après transformation pour le  point suivant */
-			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
-		}
+		/* réinitialisation coord après transformation pour le  point suivant */
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+
+		/*Transformation dans le repere du monde*/
+		Matrix_multiMatrixVect(tdMatTransfo, pSphere->Center.tdCoordWorld, tdCoordApTransfo);
+		/* Modification des coordonnées dans le repere du monde !*/
+		pSphere->Center.tdCoordWorld[0] = tdCoordApTransfo[0];
+		pSphere->Center.tdCoordWorld[1] = tdCoordApTransfo[1];
+		pSphere->Center.tdCoordWorld[2] = tdCoordApTransfo[2];
+
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 	}
 }
 
@@ -171,48 +187,20 @@ void Sphere_modSize(Sphere* pSphere, double dRatio)
 	}
 }
 
-gboolean Sphere_Contient_Point( Sphere* cSphere, double x, double y )
+gboolean Sphere_Contient_Point( Sphere* pSphere, double x, double y, InfoCamera* pCam)
 {
-    return TRUE;
-}
+	tdCoord2D* pPointProj0 = NULL;
+	tdCoord2D* pPointProj1 = NULL;
+	tdCoord2D tClickCoord;
+	double dRadius, dDistClick;
 
-gboolean Sphere_est_dans_face( Point a, Point b, Point c, Point d, double x, double y )
-{
-    int nb = 0;
+	Point_initCoord2D(tClickCoord, x, y);
 
-    nb += Sphere_scalaire_result( a, b, x, y );
-    nb += Sphere_scalaire_result( b, c, x, y );
-    nb += Sphere_scalaire_result( c, d, x, y );
-    nb += Sphere_scalaire_result( d, a, x, y );
+	pPointProj0 = ProjectionTools_getPictureCoord(&(pSphere->Center),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pSphere->tPoint)[0]),pCam);
 
-    if( nb == 4 || nb == -4 )
-    {
-        return TRUE;
-    }
-    else return FALSE;
-}
+	dRadius = Point_euclideanDistance2D((*pPointProj0),(*pPointProj1));
+	dDistClick = Point_euclideanDistance2D((*pPointProj0), tClickCoord);
 
-int Sphere_scalaire_result( Point a, Point b, int x, int y )
-{
-    Point ab;
-    Point ap;
-    double produitScalaire = 0.0;
-
-    ab.x = b.x - a.x;
-    ab.y = b.y - a.y;
-
-    ap.x = x - a.x;
-    ap.y = y - a.y;
-
-    produitScalaire = ab.x * ap.x + ab.y * ap.y;
-
-    if( produitScalaire > 0 )
-    {
-        return 1;
-    }
-    else if( produitScalaire < 0 )
-    {
-        return -1;
-    }
-    else return 0;
+    return (dDistClick<=dRadius);
 }

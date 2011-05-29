@@ -95,9 +95,9 @@ gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCa
     {
     	return Rectangle_Contient_Point( objet->type.rectangle, x, y,pCam);
     }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
     {
-        return Sphere_Contient_Point( objet->type.sphere, x, y );
+        return Sphere_Contient_Point( objet->type.sphere, x, y,pCam);
     }
     return TRUE;
 }

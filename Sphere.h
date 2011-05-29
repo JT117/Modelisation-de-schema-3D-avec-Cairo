@@ -14,7 +14,7 @@ typedef struct Sphere Sphere;
 struct Sphere
 {
     /* Rayon de la sphere*/
-    Point tPoint[2];
+    Point tPoint[1];
 
     gboolean estSelectionne;
     Point Center; /* Coordonées du repere de l'objet, utilisé pour les transformations */
@@ -35,8 +35,6 @@ Sphere* Sphere_createSphere(tdCoord tCenter, double dRadius);
  */
 void Sphere_rotateSphereWorld(Sphere* pSphere, double dAngleX, double dAngleY, double dAngleZ);
 
-gboolean Sphere_Contient_Point( Sphere* cSphere, double x, double y );
-
 gboolean Sphere_est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
 
 int Sphere_scalaire_result( Point a, Point b, int x, int y );
@@ -47,6 +45,11 @@ int Sphere_scalaire_result( Point a, Point b, int x, int y );
  * @param dRatio Le ratio d'agrandissement/rétrecissement
  */
 void Sphere_modSize(Sphere* pRectangle, double dRatio);
+
+/**
+ * Indique si la position du clique de l'utilisateur correspond à la sphere.
+ */
+gboolean Sphere_Contient_Point( Sphere* pSphere, double x, double y, InfoCamera* pCam);
 
 
 #endif //Sphere_H
