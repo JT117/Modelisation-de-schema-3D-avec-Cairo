@@ -85,13 +85,28 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     GtkWidget* vbarre = gtk_vbutton_box_new();
 
     GtkWidget* boutonMain = gtk_button_new_with_label("Main");
+    GtkWidget* imageMain = gtk_image_new_from_file( "main.png" );
+    gtk_button_set_image( GTK_BUTTON( boutonMain ), imageMain );
+
+
     GtkWidget* boutonMainWorld = gtk_button_new_with_label("MainWorld");
+
     GtkWidget* boutonText = gtk_button_new_with_label("Texte");
-    GtkWidget* boutonZomm = gtk_button_new_with_label("Zoom");
+    GtkWidget* imageText = gtk_image_new_from_file( "texte.png" );
+    gtk_button_set_image( GTK_BUTTON( boutonText ), imageText );
+
+
+    GtkWidget* boutonZoom = gtk_button_new_with_label("Zoom");
+    GtkWidget* imageZoom = gtk_image_new_from_file( "loupe.png" );
+    gtk_button_set_image( GTK_BUTTON( boutonZoom ), imageZoom );
+
+
     GtkWidget* boutonNormal = gtk_button_new_with_label("Normal");
+    GtkWidget* imageNormal = gtk_image_new_from_file( "normal.jpg" );
+    gtk_button_set_image( GTK_BUTTON( boutonNormal ), imageNormal );
 
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonMain );
-    gtk_container_add( GTK_CONTAINER( hbarre ), boutonZomm );
+    gtk_container_add( GTK_CONTAINER( hbarre ), boutonZoom );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonNormal );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonMainWorld );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonText );
@@ -130,7 +145,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     g_signal_connect( G_OBJECT( boutonMain ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonMainWorld ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonNormal ), "clicked", G_CALLBACK( changementCurseur ), scene);
-    g_signal_connect( G_OBJECT( boutonZomm ), "clicked", G_CALLBACK( changementCurseur ), scene);
+    g_signal_connect( G_OBJECT( boutonZoom ), "clicked", G_CALLBACK( changementCurseur ), scene);
 
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
@@ -734,6 +749,11 @@ static gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
     for( i = 0; i < nb; i++ )
     {
         Objet* objet = g_array_index( scene->selection->tSelection, Objet*, 0 );
+        Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, objet->numeroGroupe );
+
+        Groupe_enlever_objet( groupe, objet );
+        gtk_tree_selection_unselect_iter( scene->treeSelection, objet->iter );
+        gtk_tree_store_remove( scene->store, objet->iter );
 
         Selection_deselectionner( scene, objet );
         Scene_enlever_objet( scene, objet );
@@ -742,6 +762,7 @@ static gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
     Modification_modification_effectuer( scene );
 
     gtk_widget_queue_draw( scene->zoneDeDessin );
+    gtk_widget_queue_draw( scene->tree );
 
     return TRUE;
 }

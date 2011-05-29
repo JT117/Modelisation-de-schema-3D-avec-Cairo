@@ -69,7 +69,16 @@ void Rectangle_drawRectangle(Rectangle* pRectangle, cairo_t* cr, InfoCamera* pCa
 	cairo_set_source_rgba (cr, pRectangle->tColor[0], pRectangle->tColor[1], pRectangle->tColor[2] ,pRectangle->tColor[3]);
 	cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
 	cairo_set_line_width(cr,2.0);/* réglage taille de la ligne*/
-	cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+
+	if( pRectangle->estSelectionne )
+	{
+	    cairo_set_source_rgb ( cr, 255, 0, 0);
+	}
+	else
+	{
+        cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
+	}
+
 	cairo_stroke(cr); /* dessin contour, perte du path */
 
 	free(pPointProj1);
