@@ -166,6 +166,14 @@ void Objet_rotationWorld( Objet* objet, double x, double y )
     {
     	Cube_rotateCubeWorld(objet->type.cube, 0, x/200, y/200);
     }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+	{
+		Rectangle_rotateWorld(objet->type.rectangle, 0, x/200, y/200);
+	}
+    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    {
+    	Sphere_rotateWorld(objet->type.sphere, 0, x/200, y/200);
+    }
 }
 
 void Objet_homothetie( Objet* objet, int ratio )

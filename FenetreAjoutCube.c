@@ -364,13 +364,13 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
             tdCoord coord;
             tdCoord coord1;
 
+            Point_initCoord( tdCenter, dX, dY, dZ); /* Récupération des coordonées du centre */
             Point_initCoord( coord, dX-dWidth/2, dY+dHeight/2, dZ );
             Point_initCoord( coord1, dX + dWidth/2, dY - dHeight/2, dZ );
+            pNewRect = Rectangle_createRectangle( coord, coord1, tdCenter );
+			Color_setColor(pNewRect->tColor,(dR/255),(dG/255),(dB/255),dA);
 
             Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
-
-            pNewRect = Rectangle_createRectangle( coord, coord1 );
-            Color_setColor(pNewRect->tColor,(dR/255),(dG/255),(dB/255),dA);
 
             Scene_ajouter_rectangle( fao->scene, pNewRect, groupe->id );
 

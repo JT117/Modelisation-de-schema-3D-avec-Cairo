@@ -6,7 +6,7 @@
 #include "TransfoTools.h"
 #include "Point.h"
 
-Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
+Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2, tdCoord tdCenter)
 {
 	Rectangle* pNewRect = NULL;
 
@@ -22,7 +22,7 @@ Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2)
 			Point_init( &((pNewRect->tPoint)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
 
 			/* Init du centre du repere de la figure (centre de gravité du rectangle) */
-			Point_init( &(pNewRect->Center), tdCorner1[0]+((tdCorner2[0]-tdCorner1[0])/2),tdCorner1[1]+((tdCorner2[1]-tdCorner1[1])/2), tdCorner1[2]+((tdCorner2[2]-tdCorner1[2])/2));
+			Point_init( &(pNewRect->Center), tdCenter[0],tdCenter[1] , tdCenter[2]);
 
 			/*Couleur par défaut, pas de transparence*/
 			pNewRect->tColor[0]=1.0;
@@ -49,40 +49,39 @@ void Rectangle_destroyRectangle(Rectangle* pRect)
 
 void Rectangle_drawRectangle(Rectangle* pRectangle, cairo_t* cr, InfoCamera* pCam )
 {
+	tdCoord2D* pPointProj0 = NULL;
 	tdCoord2D* pPointProj1 = NULL;
 	tdCoord2D* pPointProj2 = NULL;
+	tdCoord2D* pPointProj3 = NULL;
+
+	pPointProj0 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[2]),pCam);
+	pPointProj3 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[3]),pCam);
 
 	/* Construction du path */
-	pPointProj1 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[0]),pCam);
-	cairo_move_to( cr, (*pPointProj1)[0], (*pPointProj1)[1]);
-	pPointProj2 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[1]),pCam);
+	cairo_move_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]);
+	cairo_line_to( cr, (*pPointProj1)[0], (*pPointProj1)[1]);
 	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
-	free(pPointProj2);
-	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[2]),pCam);
-	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
-	free(pPointProj2);
-	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[3]),pCam);
-	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
+	cairo_line_to( cr, (*pPointProj3)[0], (*pPointProj3)[1]);
 	cairo_close_path(cr);
 
 	/* Réglage de la couleur du rectangle */
 	cairo_set_source_rgba (cr, pRectangle->tColor[0], pRectangle->tColor[1], pRectangle->tColor[2] ,pRectangle->tColor[3]);
 	cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
-	cairo_set_line_width(cr,2.0);/* réglage taille de la ligne*/
+	cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
 
 	if( pRectangle->estSelectionne )
-	{
-	    cairo_set_source_rgb ( cr, 255, 0, 0);
-	}
+	    cairo_set_source_rgb ( cr, 1.0, 0, 0);
 	else
-	{
         cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
-	}
 
 	cairo_stroke(cr); /* dessin contour, perte du path */
 
+	free(pPointProj0);
 	free(pPointProj1);
 	free(pPointProj2);
+	free(pPointProj3);
 }
 
 void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, double dAngleZ)
@@ -92,13 +91,16 @@ void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, dou
 	tdCoord tdCoordRepObj, tdCoordApTransfo;
 
 	/* Initialisation des coordonées*/
-	tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
-	tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
-	tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
-	tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+	Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+	Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 
 	/* Construction de la matrice de passage World -> Repere objet */
 	Matrix_initMatrix(tdMatPassRepObj); /* initialisation de la matrice de passage dans repere objet*/
+	tdMatPassRepObj[0][0] = 1;
+	tdMatPassRepObj[1][1] = 1;
+	tdMatPassRepObj[2][2] = 1;
+	tdMatPassRepObj[3][3] = 1;
+
 	tdMatPassRepObj[0][3] = -pRectangle->Center.tdCoordWorld[0];
 	tdMatPassRepObj[1][3] = -pRectangle->Center.tdCoordWorld[1];
 	tdMatPassRepObj[2][3] = -pRectangle->Center.tdCoordWorld[2];
@@ -124,10 +126,8 @@ void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, dou
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
 			/* on réinitialise les vecteurs contenant les infos sur la transformation */
-			tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
-			tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
-			tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
-			tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		}
 	}
 
@@ -150,10 +150,8 @@ void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, dou
 			pRectangle->tPoint[iLoop].tdCoordWorld[2] = pRectangle->tPoint[iLoop].tdCoordWorld[2]
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
-			tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
-			tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
-			tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
-			tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		}
 
 	}
@@ -177,10 +175,8 @@ void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, dou
 			pRectangle->tPoint[iLoop].tdCoordWorld[2] = pRectangle->tPoint[iLoop].tdCoordWorld[2]
 																			+ (tdCoordApTransfo[2]-tdCoordRepObj[2]);
 
-			tdCoordRepObj[0] = 0;tdCoordApTransfo[0] = 0;
-			tdCoordRepObj[1] = 0;tdCoordApTransfo[1] = 0;
-			tdCoordRepObj[2] = 0;tdCoordApTransfo[2] = 0;
-			tdCoordRepObj[3] = 0;tdCoordApTransfo[3] = 0;
+			Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
+			Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		}
 	}
 }

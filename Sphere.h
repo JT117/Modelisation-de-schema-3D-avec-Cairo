@@ -19,6 +19,12 @@ struct Sphere
     gboolean estSelectionne;
     Point Center; /* Coordonées du repere de l'objet, utilisé pour les transformations */
 	Color tColor; /* Couleur de l'objet */
+
+	/*Garde une trace du rayon de la sphere, utile notamment pour la fonction
+	 * de rotation afin de garder la distance centre-point pour tracé et
+	 * ne pas deformer la taille de la sphere en faisant tourner le
+	 * poitn en question autour de Y (et ainsi eviter la déformation de la sphere projettée*/
+	double dRadius;  /* TODO : enlever ce long commentaire et le mettre dans le rapport */
 };
 
 void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam);
@@ -33,7 +39,7 @@ Sphere* Sphere_createSphere(tdCoord tCenter, double dRadius);
  * @param dAngleZ Angle de rotation suivant l'axe Z
  * @warning Les angles doivent être en radian
  */
-void Sphere_rotateSphereWorld(Sphere* pSphere, double dAngleX, double dAngleY, double dAngleZ);
+void Sphere_rotateWorld(Sphere* pSphere, double dAngleX, double dAngleY, double dAngleZ);
 
 gboolean Sphere_est_dans_face( Point a, Point b, Point c, Point d, double x, double y );
 

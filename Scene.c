@@ -139,6 +139,61 @@ void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
 }
 
 
+/**
+ * Face enregistrer dans un nouveau tableau GArray alloué sur le tas les adresses des objets dans l'ordre dans lequel ils doivent être dessinés.
+ * @param tObjects Les objets à dessiner
+ * @return Le tableau des adresses sur objets dans l'ordre
+ */
+GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
+{
+	Point sCamPoint;
+	GArray* gtObjects=NULL; /* Tableau des index des faces à dessiner, c'est cette structure qui sera retournée*/
+	GArray* gtDistances=NULL; /*Tableau des distance entre la caméra et le centre de gravité de chaque face, servira pour classer les indexs de face*/
+	Objet* pObj = NULL;
+	int iObjectIndex = 0;
+	int iLoopInsert = 0;
+	double dDistance= 0.0, dDistanceArray=0.0;
+
+	/*Allocation des GArray */
+	gtObjects = g_array_sized_new(FALSE,TRUE,sizeof(Objet),tObjects->len);
+	gtDistances = g_array_sized_new(FALSE,TRUE,sizeof(double),tObjects->len);
+
+	//g_array_insert_val(gtIndexFaces,,iFaceIndex);
+	g_array_insert_val(gtDistances,0,dDistanceArray);
+
+	/* Création d'un point ayant pour coordonées le centre du repere de la caméra*/
+	Point_init(&sCamPoint, pCam->CoordCam[0], pCam->CoordCam[1], pCam->CoordCam[2]);
+	for(iObjectIndex=0;iObjectIndex<tObjects->len;iObjectIndex++) /* Pour chaque objet */
+	{
+		pObj =  g_array_index(tObjects,Objet*,iObjectIndex);
+		/* calcul de la distance entre le centre de gravité de l'objet et le centre de repere de la caméra */
+		if( strcmp( pObj->typeObjet, "Cube") == 0 )  /* Si l'objet est un cube */
+			dDistance = Point_euclideanDistance( &(pObj->type.cube->Center), &sCamPoint);
+		else if(strcmp( pObj->typeObjet, "Rectangle") == 0 )
+			dDistance = Point_euclideanDistance( &(pObj->type.rectangle->Center), &sCamPoint);
+		else if(strcmp( pObj->typeObjet, "Sphere") == 0 )
+			dDistance = Point_euclideanDistance( &(pObj->type.sphere->Center), &sCamPoint);
+
+
+		/* Insertion là où il faut ! */
+		iLoopInsert=0;
+		dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
+		/* Insertion de l'index de la face là où il faut*/
+		while(dDistanceArray!= 0 && dDistanceArray>dDistance)
+		{
+			iLoopInsert++;
+			dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
+		}
+
+		/*Emplacement d'insertion retrouvé...*/
+		g_array_insert_val(gtObjects,iLoopInsert,pObj);
+		g_array_insert_val(gtDistances,iLoopInsert,dDistance);
+	}
+
+	g_array_free(gtDistances, TRUE);
+	return gtObjects;
+}
+
 /** Fonction qui dessiner tout les objets de la scene
  * @param scene, un pointeur sur une scene initialisée
  * @param cr, un contexte cairo créer sur la zoneDeDessin
@@ -149,6 +204,9 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 
     for( i = 0; i < scene->nbObjet; i++ )
     {
+    	/* Recherche de l'ordre des objets et composition d'un tableau */
+
+    	/* TODO TODO TODO TODO LE PLUS TOT POSSIBLE */
         Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr, scene->camera );
     }
 }

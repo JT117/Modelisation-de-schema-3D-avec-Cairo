@@ -17,6 +17,8 @@ Sphere* Sphere_createSphere(tdCoord tCenter, double dRadius)
 		/* Init du centre du repere de la figure (centre de gravité de lma sphere) */
 		Point_init( &(pNewSphere->Center), tCenter[0], tCenter[1], tCenter[2]);
 
+		pNewSphere->dRadius = dRadius;
+
 		/*Couleur par défaut, pas de transparence*/
 		pNewSphere->tColor[0]=0.4;
 		pNewSphere->tColor[1]=0.4;
@@ -42,7 +44,7 @@ void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam)
 	pPointProj0 = ProjectionTools_getPictureCoord(&(pSphere->Center),pCam);
 	pPointProj1 = ProjectionTools_getPictureCoord(&((pSphere->tPoint)[0]),pCam);
 
-	dRadius = Point_euclideanDistance2D((*pPointProj0),(*pPointProj1));
+	dRadius = Point_euclideanDistance2D((*pPointProj0),(*pPointProj1));  // TODO : FAAAAAAAUUUUUUUXXXX
 
 	cairo_arc (cr, (*pPointProj0)[0], (*pPointProj0)[1], dRadius, 0.0, 2*M_PI);
 
@@ -62,85 +64,75 @@ void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam)
 	free(pPointProj1);
 }
 
-void Sphere_rotateSphereWorld(Sphere* pSphere, double dAngleX, double dAngleY, double dAngleZ)
+void Sphere_rotateWorld(Sphere* pSphere, double dAngleX, double dAngleY, double dAngleZ)
 {
-	int iLoop;
 	tdMatrix tdMatTransfo;
 	tdCoord tdCoordApTransfo;
-
-	Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 
 	if(dAngleX != 0)
 	{
 		/*Récupération de la matrice de rotation qui va bien */
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
 
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/*Transformation dans le repere du monde*/
-		Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);
+		/*Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);*/
 		/* Modification des coordonnées dans le repere du monde !*/
+		/*
 		pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
 		pSphere->tPoint[0].tdCoordWorld[1] = tdCoordApTransfo[1];
-		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];
+		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];*/
 
 		/* réinitialisation coord après transformation pour le  point suivant */
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
-
 		/*Transformation dans le repere du monde*/
 		Matrix_multiMatrixVect(tdMatTransfo, pSphere->Center.tdCoordWorld, tdCoordApTransfo);
 		/* Modification des coordonnées dans le repere du monde !*/
-		pSphere->Center.tdCoordWorld[0] = tdCoordApTransfo[0];
-		pSphere->Center.tdCoordWorld[1] = tdCoordApTransfo[1];
-		pSphere->Center.tdCoordWorld[2] = tdCoordApTransfo[2];
-
-		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		Point_init(&(pSphere->Center),tdCoordApTransfo[0],tdCoordApTransfo[1],tdCoordApTransfo[2]);
+		Point_init(&(pSphere->tPoint[0]),tdCoordApTransfo[0]+pSphere->dRadius,tdCoordApTransfo[1],tdCoordApTransfo[2]);
 	}
 
 	if(dAngleY != 0)
 	{
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
 
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/*Transformation dans le repere du monde*/
-		Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);
+		/*Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);*/
 		/* Modification des coordonnées dans le repere du monde !*/
-		pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
+		/*pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
 		pSphere->tPoint[0].tdCoordWorld[1] = tdCoordApTransfo[1];
-		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];
+		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];*/
 
 		/* réinitialisation coord après transformation pour le  point suivant */
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
-
 		/*Transformation dans le repere du monde*/
 		Matrix_multiMatrixVect(tdMatTransfo, pSphere->Center.tdCoordWorld, tdCoordApTransfo);
 		/* Modification des coordonnées dans le repere du monde !*/
-		pSphere->Center.tdCoordWorld[0] = tdCoordApTransfo[0];
-		pSphere->Center.tdCoordWorld[1] = tdCoordApTransfo[1];
-		pSphere->Center.tdCoordWorld[2] = tdCoordApTransfo[2];
-
-		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
+		Point_init(&(pSphere->Center),tdCoordApTransfo[0],tdCoordApTransfo[1],tdCoordApTransfo[2]);
+		Point_init(&(pSphere->tPoint[0]),tdCoordApTransfo[0]+pSphere->dRadius,tdCoordApTransfo[1],tdCoordApTransfo[2]);
 	}
 
 	if(dAngleZ != 0)
 	{
 		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
 
+		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/*Transformation dans le repere du monde*/
-		Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);
+		//Matrix_multiMatrixVect(tdMatTransfo, pSphere->tPoint[0].tdCoordWorld, tdCoordApTransfo);
 		/* Modification des coordonnées dans le repere du monde !*/
-		pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
+		/*pSphere->tPoint[0].tdCoordWorld[0] = tdCoordApTransfo[0];
 		pSphere->tPoint[0].tdCoordWorld[1] = tdCoordApTransfo[1];
-		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];
+		pSphere->tPoint[0].tdCoordWorld[2] = tdCoordApTransfo[2];*/
 
 		/* réinitialisation coord après transformation pour le  point suivant */
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
-
 		/*Transformation dans le repere du monde*/
 		Matrix_multiMatrixVect(tdMatTransfo, pSphere->Center.tdCoordWorld, tdCoordApTransfo);
 		/* Modification des coordonnées dans le repere du monde !*/
-		pSphere->Center.tdCoordWorld[0] = tdCoordApTransfo[0];
-		pSphere->Center.tdCoordWorld[1] = tdCoordApTransfo[1];
-		pSphere->Center.tdCoordWorld[2] = tdCoordApTransfo[2];
+		Point_init(&(pSphere->Center),tdCoordApTransfo[0],tdCoordApTransfo[1],tdCoordApTransfo[2]);
+		Point_init(&(pSphere->tPoint[0]),tdCoordApTransfo[0]+pSphere->dRadius,tdCoordApTransfo[1],tdCoordApTransfo[2]);
 
-		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 	}
 }
 

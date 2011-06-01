@@ -30,10 +30,11 @@ typedef struct Rectangle
  *
  * @param tdCorner1 position du sommet haut gauche
  * @param tdCorner2 position du sommet bas droit
+ * @param tdCenter Position du centre de gravité du rectangle
  *
  * @return un structure sRectangle fraichement allouée
  */
-Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2);
+Rectangle* Rectangle_createRectangle(tdCoord tdCorner1,tdCoord tdCorner2, tdCoord tdCenter);
 
 
 /**
