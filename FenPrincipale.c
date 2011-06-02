@@ -381,11 +381,17 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
             Selection_selectionner_click_drag( scene );
             scene->selection->selection_en_cours = TRUE;
 
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "rectangle.png") ) ), 12, 12 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+
             gtk_widget_queue_draw( widget );
         }
         else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
         {
             scene->selection->selection_en_cours = FALSE;
+
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "normal.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 
             gtk_widget_queue_draw( widget );
         }
@@ -414,6 +420,14 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         {
             scene->rotation.x = event->x;
             scene->rotation.y = event->y;
+
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main_fermer.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+        }
+        else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
+        {
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
         }
     }
     else if( scene->souris == MAINWORLD )
