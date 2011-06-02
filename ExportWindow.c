@@ -1,123 +1,89 @@
 #include "ExportWindow.h"
-#include "Selection.h"
-
-static gboolean Export_doExport( GtkButton* button, gpointer data )
-{
-	/* Récupération des données relatives la fenêtre d'exportation*/
-	ExportWindow* ew = (ExportWindow*)data;
-	Scene* scene = (Scene*)ew->scene;
-
-	cairo_surface_t *surface = NULL; /*Surface sur laquelle on va dessiner*/
-	cairo_t *cr=NULL; /*COntexte associé à la surface */
-
-	if( strcmp(gtk_entry_get_text( GTK_ENTRY( ew->wName)),"") != 0) /*On test si le nom a été renseigné */
-	{
-		if( strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "PNG" ) == 0 )
-		{
-			surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, scene->dWidth, scene->dHeight);
-			cr = cairo_create (surface);
-			Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
-			Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
-			cairo_surface_write_to_png(surface, gtk_entry_get_text( GTK_ENTRY( ew->wName)) ); /* Projection sur une surfae PNG*/
-			cairo_surface_destroy(surface);
-		}
-		else if(strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "PDF" ) == 0 )
-		{
-			surface = cairo_pdf_surface_create( gtk_entry_get_text( GTK_ENTRY( ew->wName)), scene->dWidth, scene->dHeight);
-			cr = cairo_create(surface);
-			Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
-			Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
-			cairo_surface_destroy(surface);
-		}
-		else if(strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "SVG" ) == 0 )
-		{
-			surface = cairo_svg_surface_create(gtk_entry_get_text( GTK_ENTRY( ew->wName)), scene->dWidth, scene->dHeight );
-		    cr = cairo_create(surface);
-		    Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
-			Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
-		    cairo_surface_destroy(surface);
-		}
-
-		cairo_destroy( cr );
-	}
-	else
-	{
-		GtkWidget* avertissement =
-		gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer un nom" );
-
-		if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
-		{
-			gtk_widget_destroy( avertissement );
-
-		}
-	}
-
-	return TRUE;
-}
 
 void ExportWindow_init( ExportWindow* ew, Scene* scene )
 {
-    ew->fenetre = gtk_window_new( GTK_WINDOW_TOPLEVEL );
-    ew->scene = scene;
+    GtkWidget *dialog = gtk_file_chooser_dialog_new ("Exporter la scene", NULL, GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, NULL);
+    gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+    GtkFileFilter* filtre = gtk_file_filter_new();
+    gtk_file_filter_add_pattern( GTK_FILE_FILTER (filtre), "*.png");
+    gtk_file_filter_add_pattern( GTK_FILE_FILTER (filtre), "*.pdf");
+    gtk_file_filter_add_pattern( GTK_FILE_FILTER (filtre), "*.svg");
+    gtk_file_chooser_set_filter( GTK_FILE_CHOOSER(dialog), GTK_FILE_FILTER(filtre) );
 
-    gtk_window_set_position( GTK_WINDOW( ew->fenetre ), GTK_WIN_POS_CENTER );
-    gtk_window_set_modal( GTK_WINDOW( ew->fenetre ), TRUE );
-    gtk_window_set_title( GTK_WINDOW( ew->fenetre ), "Exportation" );
-
-    /*Entry pour la saisie d'un nom */
-    ew->wName = gtk_entry_new();
-    gtk_widget_set_size_request(ew->wName, 50, -1 );
-
-    /* Labels utilisés */
-    GtkWidget* wLabelName = gtk_label_new("Nom : ");
-    GtkWidget* wLabelFormat = gtk_label_new("Format : ");
-
-
-    /** COMBO BOX SELECTION FORMAT **/
     ew->comboBox = gtk_combo_box_new_text();
-	gtk_combo_box_append_text( GTK_COMBO_BOX( ew->comboBox ), "PNG" );
-	gtk_combo_box_append_text( GTK_COMBO_BOX( ew->comboBox ), "SVG" );
-	gtk_combo_box_append_text( GTK_COMBO_BOX( ew->comboBox ), "PDF" );
+	gtk_combo_box_append_text( GTK_COMBO_BOX( ew->comboBox ), "png" );
+	gtk_combo_box_append_text( GTK_COMBO_BOX( ew->comboBox ), "svg" );
+	gtk_combo_box_append_text( GTK_COMBO_BOX( ew->comboBox ), "pdf" );
+    gtk_file_chooser_set_extra_widget( GTK_FILE_CHOOSER(dialog), ew->comboBox );
+    gtk_combo_box_set_active( GTK_COMBO_BOX( ew->comboBox ), 0 );
+    g_signal_emit_by_name( GTK_OBJECT( ew->comboBox ), "changed", NULL );
 
-//***************************************************************************
+    if( gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT )
+    {
+        char *filename = NULL;
+        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+        filename = (char*)realloc( filename, ( strlen(filename) + 4 ) * sizeof( char ) );
+        filename = strcat( filename,"." );
+        filename = strcat( filename, gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ) );
 
-    ew->barreObjet = gtk_hbutton_box_new();
+        printf( "Exportation : %s\n", filename );
 
-    gtk_container_add( GTK_CONTAINER( ew->barreObjet ), wLabelName );
-    gtk_container_add( GTK_CONTAINER( ew->barreObjet ), ew->wName );
+        cairo_surface_t *surface = NULL; /*Surface sur laquelle on va dessiner*/
+        cairo_t *cr = NULL; /*COntexte associé à la surface */
 
-    gtk_container_add( GTK_CONTAINER( ew->barreObjet ), wLabelFormat );
-    gtk_container_add( GTK_CONTAINER( ew->barreObjet ), ew->comboBox );
+        if( strcmp( filename, "" ) != 0 ) /*On test si le nom a été renseigné */
+        {
+            if( strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "png" ) == 0 )
+            {
+                surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, scene->dWidth, scene->dHeight);
+                cr = cairo_create (surface);
+                Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
+                Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
+                cairo_surface_write_to_png(surface, filename ); /* Projection sur une surfae PNG*/
+                cairo_surface_destroy(surface);
+                g_free (filename);
+                gtk_widget_destroy (dialog);
+            }
+            else if(strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "pdf" ) == 0 )
+            {
+                surface = cairo_pdf_surface_create( filename, scene->dWidth, scene->dHeight);
+                cr = cairo_create(surface);
+                Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
+                Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
+                cairo_surface_destroy(surface);
+                g_free (filename);
+                gtk_widget_destroy (dialog);
+            }
+            else if(strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "svg" ) == 0 )
+            {
+                surface = cairo_svg_surface_create( filename, scene->dWidth, scene->dHeight );
+                cr = cairo_create(surface);
+                Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
+                Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
+                cairo_surface_destroy(surface);
+                g_free (filename);
+                gtk_widget_destroy (dialog);
+            }
 
-    gtk_button_box_set_layout( GTK_BUTTON_BOX( ew->barreObjet ), GTK_BUTTONBOX_START );
 
-    g_object_ref( ew->barreObjet );
+            cairo_destroy( cr );
+        }
+        else
+        {
+            GtkWidget* avertissement =
+            gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer un nom de fichier" );
 
-    //*************** Barre Bouton ***********************************
+            if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+            {
+                gtk_widget_destroy( avertissement );
 
-    ew->wOKButton= gtk_button_new_with_label("OK");
-    ew->wCancelButton = gtk_button_new_with_label("Annuler");
+            }
+        }
 
-    ew->barreBouton = gtk_hbutton_box_new();
-    gtk_button_box_set_layout( GTK_BUTTON_BOX( ew->barreBouton ), GTK_BUTTONBOX_END );
+    }
+    else
+    {
+          gtk_widget_destroy (dialog);
+    }
 
-    gtk_container_add( GTK_CONTAINER( ew->barreBouton ), ew->wOKButton );
-    gtk_container_add( GTK_CONTAINER( ew->barreBouton ), ew->wCancelButton );
-
-    g_object_ref( ew->barreBouton );
-
-    //*******************************************************************
-
-    ew->layout = gtk_vbox_new( FALSE, 10 );
-
-    gtk_container_add( GTK_CONTAINER( ew->layout ), ew->barreObjet );
-    gtk_container_add( GTK_CONTAINER( ew->layout ), ew->barreBouton );
-
-    gtk_container_add( GTK_CONTAINER( ew->fenetre ), ew->layout );
-
-    /** SIGNAUX **/
-    g_signal_connect_object( G_OBJECT( ew->wCancelButton ), "clicked", G_CALLBACK( gtk_widget_destroy ), ew->fenetre, G_CONNECT_SWAPPED );
-	g_signal_connect( G_OBJECT( ew->wOKButton ), "clicked", G_CALLBACK( Export_doExport ), ew);
-
-    gtk_widget_show_all(ew->fenetre);
 }

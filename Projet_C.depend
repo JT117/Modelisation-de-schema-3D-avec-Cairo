@@ -2691,14 +2691,13 @@
 	"Enum.h"
 	"Selection.h"
 
-1307013535 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
+1307014866 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
 	"FenPrincipale.h"
 
-1307009082 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
+1307022121 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307009128 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
+1307022080 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
 	"ExportWindow.h"
-	"Selection.h"
 
