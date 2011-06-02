@@ -950,8 +950,21 @@ static gboolean ajout_Groupe( GtkButton* button, gpointer data )
 
     if( pere != NULL )
     {
+        int max = 1;
+        int i = 0;
+
+        for( i = 0; i < scene->nbGroupe; i++ )
+        {
+            Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+            if( groupe->id >= max )
+            {
+                max = groupe->id +1 ;
+            }
+        }
+
         Groupe* fils = (Groupe*)malloc( 1 * sizeof( Groupe ) );
-        Groupe_initialiser(fils, pere, scene->nbGroupe );
+        Groupe_initialiser(fils, pere, max );
         GtkWidget* label = gtk_label_new( gtk_entry_get_text( GTK_ENTRY(scene->entryNom) ) );
         fils->nom = (char*)gtk_label_get_text( GTK_LABEL(label) );
 

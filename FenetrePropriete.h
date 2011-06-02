@@ -15,13 +15,22 @@ struct FenetrePropriete
     GtkWidget* entry2; // Y
     GtkWidget* entry3; // Z
     GtkWidget* boutonOk;
+    GtkWidget* boutonAnnuler;
     GtkWidget* barreObjet;
     GtkWidget* barreGroupe;
     GtkWidget* barreBouton;
+    GtkWidget* barreCouleur;
     GtkWidget* layout;
     GtkWidget* hbox_cube;
     GtkWidget* hbox_rect;
     char* dernierLayout;
+    GtkWidget* comboBoxGroupe;
+
+    GtkWidget* entryR; // R
+    GtkWidget* entryG; // G
+    GtkWidget* entryB; // B
+    GtkWidget* entryA; // Alpha
+    Objet* objet;
 
     double x, y, z;
     double L;
@@ -30,7 +39,7 @@ struct FenetrePropriete
 
 void FenetrePropriete_initialiser( FenetrePropriete* fp, Scene* scene );
 
-
+void FenetrePropriete_validation( GtkButton* button, gpointer data );
 
 #endif //FENETRE_PROPRIETE_H
 

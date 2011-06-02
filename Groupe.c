@@ -28,6 +28,7 @@ void Groupe_detruire( Groupe* groupe )
 void Groupe_ajouter_Objet( Groupe* groupe, Objet* objet )
 {
     g_array_append_val( groupe->tObjet, objet );
+    objet->numeroGroupe = groupe->id;
     groupe->nbObjet++;
 }
 
@@ -81,3 +82,18 @@ Groupe* Groupe_trouver( Scene* scene, char* nom )
     return NULL;
 }
 
+Groupe* Groupe_trouver_ById( Scene* scene, int id )
+{
+    int i = 0;
+
+    for( i = 0; i < scene->nbGroupe; i++ )
+    {
+        Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+        if( groupe->id == id )
+        {
+            return groupe;
+        }
+    }
+    return NULL;
+}

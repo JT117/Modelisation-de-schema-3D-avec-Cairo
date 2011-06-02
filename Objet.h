@@ -55,6 +55,10 @@ void Objet_selection( Objet* objet );
 /** Deselection l'objet */
 void Objet_deselection( Objet* objet );
 
+/** Recuperation des couleurs d'un objet */
+void Objet_get_Color( Objet* objet, Color tColor );
+void Objet_set_Color( Objet* objet, double r, double g, double b, double a );
+
 /**
  * Méthode permettant d'appeler la méthode rotation associée au type d'objet passé en param.
  *

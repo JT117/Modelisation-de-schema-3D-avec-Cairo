@@ -86,12 +86,15 @@ void Scene_detruire( Scene* scene )
  **/
 void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe )
 {
+    int i =0;
+
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
     Objet_est_un_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
 
-    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    Groupe* groupe = Groupe_trouver_ById( scene, idGroupe );
+
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
