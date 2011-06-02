@@ -12,7 +12,7 @@ static gboolean Export_doExport( GtkButton* button, gpointer data )
 
 	if( strcmp(gtk_entry_get_text( GTK_ENTRY( ew->wName)),"") != 0) /*On test si le nom a été renseigné */
 	{
-		if( strcmp( gtk_combo_box_get_active_text( ew->comboBox ), "PNG" ) == 0 )
+		if( strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "PNG" ) == 0 )
 		{
 			surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, scene->dWidth, scene->dHeight);
 			cr = cairo_create (surface);
@@ -21,7 +21,7 @@ static gboolean Export_doExport( GtkButton* button, gpointer data )
 			cairo_surface_write_to_png(surface, gtk_entry_get_text( GTK_ENTRY( ew->wName)) ); /* Projection sur une surfae PNG*/
 			cairo_surface_destroy(surface);
 		}
-		else if(strcmp( gtk_combo_box_get_active_text( ew->comboBox ), "PDF" ) == 0 )
+		else if(strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "PDF" ) == 0 )
 		{
 			surface = cairo_pdf_surface_create( gtk_entry_get_text( GTK_ENTRY( ew->wName)), scene->dWidth, scene->dHeight);
 			cr = cairo_create(surface);
@@ -29,7 +29,7 @@ static gboolean Export_doExport( GtkButton* button, gpointer data )
 			Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
 			cairo_surface_destroy(surface);
 		}
-		else if(strcmp( gtk_combo_box_get_active_text( ew->comboBox ), "SVG" ) == 0 )
+		else if(strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "SVG" ) == 0 )
 		{
 			surface = cairo_svg_surface_create(gtk_entry_get_text( GTK_ENTRY( ew->wName)), scene->dWidth, scene->dHeight );
 		    cr = cairo_create(surface);

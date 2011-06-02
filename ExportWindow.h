@@ -13,7 +13,7 @@ typedef struct ExportWindow
     GtkWidget* wName;
 
     /*Combobox*/
-    GtkComboBox* comboBox;
+    GtkWidget* comboBox;
 
     /* Boutons de la fenêtre*/
     GtkWidget* wOKButton;
