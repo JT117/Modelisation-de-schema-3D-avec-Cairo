@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "Objet.h"
 
-void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb )
+void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb, double dX, double dY, double dZ )
 {
     groupe->pere = pere;
     groupe->id = nb;
@@ -11,6 +11,13 @@ void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb )
     groupe->nbFils = 0;
     groupe->tFils = g_array_new( FALSE, FALSE, sizeof( Groupe* ) );
     groupe->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter) );
+
+    /* Initialisation des coordonnées du repere du groupe */
+    Point_initWorld(&(groupe->tCenterGroup),dX,dY,dZ);
+    if( pere != NULL )
+    {
+    	Point_initGroup(&(groupe->tCenterGroup), dX-pere->tCenterGroup.tdCoordWorld[0],dY-pere->tCenterGroup.tdCoordWorld[1],dZ-pere->tCenterGroup.tdCoordWorld[2]);
+    }
 
     if( groupe->id == 0)
     {
