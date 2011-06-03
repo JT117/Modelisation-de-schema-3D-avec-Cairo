@@ -44,6 +44,7 @@ struct Scene
     float tailleCreation;
     /** Pointeur sur la zone de dessin */
     GtkWidget* zoneDeDessin;
+    GtkWidget* mainWindow;
 
     /** Caméra de notre scéne 3D **/
     InfoCamera* camera;
@@ -61,13 +62,15 @@ struct Scene
     int souris;
     Point rotation;
 
+    GdkCursor* curseur;
+
     /*Taille de la surface de projection */
     double dHeight;
     double dWidth;
 };
 
 /** Fonction qui initialise une scene */
-void Scene_initialiser_scene( Scene* scene, GtkWidget* window );
+void Scene_initialiser_scene( Scene* scene, GtkWidget* window, GtkWidget* mainWindow  );
 
 /** Fonction qui ajoute un cube à la scene */
 void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe );

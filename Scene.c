@@ -5,12 +5,13 @@
  * @param scene, un pointeur sur une scene vierge
  * @param window, la zone de dessin à garder
  **/
-void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
+void Scene_initialiser_scene( Scene* scene, GtkWidget* window, GtkWidget* mainWindow  )
 {
     scene->tObjet = g_array_new( FALSE, TRUE, sizeof( Objet* ) );
     scene->nbObjet = 0;
 
     scene->zoneDeDessin = window;
+    scene->mainWindow = mainWindow;
 
     scene->selection = (Selection*)malloc( 1 * sizeof(Selection) );
     Selection_initialiser( scene->selection );
@@ -38,6 +39,8 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window )
     scene->CBajoutGroupe = NULL;
     scene->entryNom = NULL;
     scene->souris = NORMAL;
+
+    scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "normal.png") ) ), 4, 4 );
 }
 
 void Scene_reconstruire( Scene* scene, GtkWidget* window )
@@ -83,12 +86,15 @@ void Scene_detruire( Scene* scene )
  **/
 void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe )
 {
+    int i =0;
+
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
     Objet_est_un_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
     scene->nbObjet++;
 
-    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    Groupe* groupe = Groupe_trouver_ById( scene, idGroupe );
+
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );

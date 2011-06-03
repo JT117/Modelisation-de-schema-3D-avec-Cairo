@@ -12,7 +12,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     zoneDeDessin = gtk_drawing_area_new ();
 
     scene = (Scene*)malloc( 1 * sizeof( Scene) );
-    Scene_initialiser_scene( scene, zoneDeDessin );
+    Scene_initialiser_scene( scene, zoneDeDessin, mainWindow );
 
     GtkWidget* main_box = gtk_vbox_new( FALSE, 0 );
     GtkWidget* menuBarre = gtk_menu_bar_new();
@@ -89,6 +89,8 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
 
 
     GtkWidget* boutonMainWorld = gtk_button_new_with_label("MainWorld");
+    GtkWidget* imageRotation = gtk_image_new_from_file( "rotation.png" );
+    gtk_button_set_image( GTK_BUTTON( boutonMainWorld ), imageRotation );
 
     GtkWidget* boutonText = gtk_button_new_with_label("Texte");
     GtkWidget* imageText = gtk_image_new_from_file( "texte.png" );
@@ -101,8 +103,10 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
 
 
     GtkWidget* boutonNormal = gtk_button_new_with_label("Normal");
-    GtkWidget* imageNormal = gtk_image_new_from_file( "normal.jpg" );
+    GtkWidget* imageNormal = gtk_image_new_from_file( "normal.png" );
     gtk_button_set_image( GTK_BUTTON( boutonNormal ), imageNormal );
+
+
 
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonMain );
     gtk_container_add( GTK_CONTAINER( hbarre ), boutonZoom );
@@ -128,6 +132,8 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
 
 //*****************************************************************************************************
     gtk_widget_show_all( mainWindow );
+    gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+
 
     gtk_window_set_title( GTK_WINDOW( mainWindow), "Sch3Dma" );          // Nom totalement provisiore ^^ (mais qui envoie quand même du bois !)
 
@@ -145,6 +151,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     g_signal_connect( G_OBJECT( boutonMainWorld ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonNormal ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonZoom ), "clicked", G_CALLBACK( changementCurseur ), scene);
+    g_signal_connect( G_OBJECT( boutonText ), "clicked", G_CALLBACK( changementCurseur ), scene);
 
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
@@ -373,11 +380,17 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
             Selection_selectionner_click_drag( scene );
             scene->selection->selection_en_cours = TRUE;
 
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "rectangle.png") ) ), 12, 12 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+
             gtk_widget_queue_draw( widget );
         }
         else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
         {
             scene->selection->selection_en_cours = FALSE;
+
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "normal.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 
             gtk_widget_queue_draw( widget );
         }
@@ -406,6 +419,14 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         {
             scene->rotation.x = event->x;
             scene->rotation.y = event->y;
+
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main_fermer.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+        }
+        else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
+        {
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
         }
     }
     else if( scene->souris == MAINWORLD )
@@ -928,8 +949,21 @@ static gboolean ajout_Groupe( GtkButton* button, gpointer data )
 
     if( pere != NULL )
     {
+        int max = 1;
+        int i = 0;
+
+        for( i = 0; i < scene->nbGroupe; i++ )
+        {
+            Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+            if( groupe->id >= max )
+            {
+                max = groupe->id +1 ;
+            }
+        }
+
         Groupe* fils = (Groupe*)malloc( 1 * sizeof( Groupe ) );
-        Groupe_initialiser(fils, pere, scene->nbGroupe );
+        Groupe_initialiser(fils, pere, max );
         GtkWidget* label = gtk_label_new( gtk_entry_get_text( GTK_ENTRY(scene->entryNom) ) );
         fils->nom = (char*)gtk_label_get_text( GTK_LABEL(label) );
 
@@ -1053,21 +1087,31 @@ static gboolean changementCurseur( GtkButton* bouton, gpointer data )
     if( strcmp( gtk_button_get_label( bouton ), "Main" ) == 0 )
     {
         scene->souris = MAIN;
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
+        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
     }
     else if( strcmp( gtk_button_get_label( bouton ), "Zoom" ) == 0 )
     {
         scene->souris = LOUPE;
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "loupe.png") ) ), 4, 4 );
+        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
     }
     else if( strcmp( gtk_button_get_label( bouton ), "Normal" ) == 0 )
     {
         scene->souris = NORMAL;
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "normal.png") ) ), 4, 4 );
+        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
     }
     else if( strcmp( gtk_button_get_label( bouton ), "MainWorld" ) == 0 )
 	{
 		scene->souris = MAINWORLD;
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "rotation.png") ) ), 4, 4 );
+        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 	}
-    else if( strcmp( gtk_button_get_label( bouton ), "Text" ) == 0 )
+    else if( strcmp( gtk_button_get_label( bouton ), "Texte" ) == 0 )
 	{
 		scene->souris = TEXT;
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "texte.png") ) ), 4, 4 );
+        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 	}
 }

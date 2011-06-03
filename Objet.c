@@ -13,7 +13,7 @@ void Objet_detruire( Objet* objet )
     {
         // Pas d'alloc dynamique
     }
-    free( objet->iter );
+    //free( objet->iter );
 }
 
 /** Fonction qui initialise un objet de type Cube
@@ -216,3 +216,48 @@ void Objet_homothetie( Objet* objet, int ratio )
         Cube_modSize( objet->type.cube, ratio );
     }
 }
+
+void Objet_get_Color( Objet* objet, Color tColor )
+{
+    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    {
+        tColor[0] = objet->type.cube->tColor[0];
+        tColor[1] = objet->type.cube->tColor[1];
+        tColor[2] = objet->type.cube->tColor[2];
+        tColor[3] = objet->type.cube->tColor[3];
+    }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+}
+
+void Objet_set_Color( Objet* objet, double r, double g, double b, double a )
+{
+    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    {
+        Color_setColor( objet->type.cube->tColor,(r/255),(g/255),(b/255),a);
+    }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+}
+
+

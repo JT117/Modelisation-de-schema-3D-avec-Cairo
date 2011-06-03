@@ -2,7 +2,7 @@
 1299146539 source:/home/julien/Documents/Projet_C/main.c
 	<cairo.h>
 
-1306659969 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
+1307008964 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
 	<gtk/gtk.h>
 	<math.h>
 	"Cube.h"
@@ -2231,7 +2231,7 @@
 1302804820 /usr/include/gtk-2.0/gtk/gtktipsquery.h
 	<gtk/gtk.h>
 
-1306660050 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
+1307035656 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjoutCube.c
 	"FenetreAjoutCube.h"
 	"Config.h"
 
@@ -2240,7 +2240,7 @@
 	"Scene.h"
 	"Color.h"
 
-1306659856 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
+1307010651 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2256,7 +2256,7 @@
 	"Enum.h"
 	"Camera.h"
 
-1306659969 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
+1307033175 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
@@ -2265,7 +2265,7 @@
 	"Segment.h"
 	"Sphere.h"
 
-1306659969 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
+1307033444 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 
 1306659857 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
@@ -2273,7 +2273,7 @@
 	<stdio.h>
 	"FenPrincipale.h"
 
-1306659856 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
+1307035993 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
 	"Scene.h"
 	"Selection.h"
 
@@ -2317,11 +2317,11 @@
 1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.h
 	<gtk/gtk.h>
 
-1306659856 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
+1307036138 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
 	"FenetrePropriete.h"
 	"Selection.h"
 
-1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.h
+1307033662 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.h
 	<gtk/gtk.h>
 	"Scene.h"
 
@@ -2330,7 +2330,7 @@
 	<gtk/gtk.h>
 	"Objet.h"
 
-1306659856 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
+1307035850 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
 	"Groupe.h"
 	"Scene.h"
 
@@ -2661,14 +2661,14 @@
 1306659856 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Color.c
 	"Color.h"
 
-1306659857 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Sphere.c
+1307008964 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Sphere.c
 	<gtk/gtk.h>
 	<math.h>
 	"Sphere.h"
 	"ProjectionTools.h"
 	"Point.h"
 
-1306659857 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Sphere.h
+1307008964 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Sphere.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
@@ -2680,16 +2680,24 @@
 1306150087 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.cpp
 	"FenPrincipale.h"
 
-1306659856 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.h
+1307008964 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.h
 	"FenetreAjoutCube.h"
 	"Cube.h"
 	"Objet.h"
 	"Scene.h"
 	"Config.h"
 	"FenetrePropriete.h"
+	"ExportWindow.h"
 	"Enum.h"
 	"Selection.h"
 
-1306663727 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
+1307030045 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
 	"FenPrincipale.h"
+
+1307022121 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
+	<gtk/gtk.h>
+	"Scene.h"
+
+1307022284 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
+	"ExportWindow.h"
 

@@ -6,22 +6,11 @@
 
 typedef struct ExportWindow
 {
-    GtkWidget* fenetre;
     Scene* scene;
-    GtkWidget* longueur;
-    GtkWidget* largeur;
-    GtkWidget* wName;
 
     /*Combobox*/
-    GtkComboBox* comboBox;
+    GtkWidget* comboBox;
 
-    /* Boutons de la fenêtre*/
-    GtkWidget* wOKButton;
-    GtkWidget* wCancelButton;
-
-    GtkWidget* barreObjet;
-    GtkWidget* barreBouton;
-    GtkWidget* layout;
 }ExportWindow;
 
 /**
