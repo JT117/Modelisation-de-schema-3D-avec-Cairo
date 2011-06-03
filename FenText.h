@@ -12,6 +12,7 @@ struct FenText
     GtkWidget* entry1;
     GtkWidget* fontSelection;
     char* texte;
+    char* font;
 
 };
 

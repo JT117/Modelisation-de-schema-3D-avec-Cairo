@@ -18,6 +18,9 @@ typedef struct Objet Objet;
 struct Objet
 {
     char* texte;
+    char* font;
+    int x, y;
+
     /** Un string contenant le type d'objet */
     char* typeObjet;
     /** Un flag indiquant si l'objet est à selectionner */

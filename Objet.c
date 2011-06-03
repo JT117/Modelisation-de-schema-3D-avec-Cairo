@@ -83,6 +83,14 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 	{
 	    Sphere_drawSphere( objet->type.sphere, cr, cam );
 	}
+	else if( strcmp( objet->typeObjet, "Texte" ) == 0 )
+	{
+	    cairo_set_source_rgb(cr, 0.9, 0.9, 0.0 );
+	    cairo_set_font_size( cr, 50 );
+	    cairo_select_font_face(cr, "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
+	    cairo_move_to(cr, 50, 50 );
+        cairo_show_text(cr, objet->texte );
+	}
 }
 
 

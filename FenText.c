@@ -48,7 +48,7 @@ void FenText_propriete( GtkButton* button, gpointer data )
 
     g_signal_connect_object( G_OBJECT( gtk_font_selection_dialog_get_cancel_button( GTK_FONT_SELECTION_DIALOG(ft->fontSelection)) ), "clicked", G_CALLBACK( gtk_widget_destroy ), ft->fontSelection, G_CONNECT_SWAPPED );
     g_signal_connect( G_OBJECT(  gtk_font_selection_dialog_get_ok_button( GTK_FONT_SELECTION_DIALOG(ft->fontSelection) ) ), "clicked", G_CALLBACK( FenText_changement ), ft );
-    g_signal_connect( G_OBJECT(  gtk_font_selection_dialog_get_apply_button( GTK_FONT_SELECTION_DIALOG(ft->fontSelection) ) ), "clicked", G_CALLBACK( FenText_changement ), ft );
+  //  g_signal_connect( G_OBJECT(  gtk_font_selection_dialog_get_apply_button( GTK_FONT_SELECTION_DIALOG(ft->fontSelection) ) ), "clicked", G_CALLBACK( FenText_changement ), ft );
 
 
     gtk_widget_show_all( ft->fontSelection );
@@ -57,8 +57,8 @@ void FenText_propriete( GtkButton* button, gpointer data )
 void FenText_changement( GtkButton* button, gpointer data )
 {
     FenText* ft = (FenText*)data;
-    ft->texte = (char*)malloc( 60 * sizeof( char ) );
-    ft->texte = gtk_font_selection_get_font_name( GTK_FONT_SELECTION(ft->fontSelection) );
+    ft->font = (char*)malloc( 60 * sizeof( char ) );
+    ft->font = gtk_font_selection_dialog_get_font_name( GTK_FONT_SELECTION_DIALOG(ft->fontSelection) );
     gtk_widget_destroy( ft->fontSelection );
 }
 
@@ -70,10 +70,20 @@ void FenText_validation( GtkButton* button, gpointer data )
     strcpy( objet->typeObjet, "Texte" );
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
-    objet->texte = ft->texte;
+    objet->font = ft->font;
+    objet->texte = (char*)malloc( 60 * sizeof( char ) );
+    GtkWidget* label = gtk_label_new( gtk_entry_get_text( GTK_ENTRY(ft->entry1) ) );
+    objet->texte = (char*)gtk_label_get_text( GTK_LABEL(label) );
 
     g_array_append_val( ft->scene->tObjet, objet );
     ft->scene->nbObjet++;
+
+    Groupe* groupe = Groupe_trouver_ById( ft->scene, 0 );
+
+    Groupe_ajouter_Objet( groupe, objet );
+
+    gtk_tree_store_append (ft->scene->store, objet->iter, groupe->iter );
+    gtk_tree_store_set (ft->scene->store, objet->iter, GROUPE, objet->texte, -1);
 
     gtk_widget_destroy( ft->fenetre );
 }

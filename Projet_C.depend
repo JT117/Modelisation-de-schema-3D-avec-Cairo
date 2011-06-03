@@ -2257,7 +2257,7 @@
 	"Enum.h"
 	"Camera.h"
 
-1307135454 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
+1307137720 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
@@ -2265,7 +2265,7 @@
 	"Segment.h"
 	"Sphere.h"
 
-1307135751 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
+1307139062 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 	"Groupe.h"
 	"Rectangle.h"
@@ -2715,10 +2715,10 @@
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307135447 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.h
+1307138034 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.h
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307135894 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.c
+1307138733 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.c
 	"FenText.h"
 
