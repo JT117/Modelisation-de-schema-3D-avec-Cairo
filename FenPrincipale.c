@@ -902,7 +902,6 @@ static gboolean nouveau_groupe(GtkWidget *menuItem, gpointer data )
      }
 
      gtk_widget_set_size_request( GTK_WIDGET( scene->CBajoutGroupe ), 100, -1 );
-     gtk_widget_set_size_request( GTK_WIDGET( fenetre ), 320, -1 );
 
      GtkWidget* hbox = gtk_hbox_new( FALSE, 10 );
      GtkWidget* hbox1 = gtk_hbox_new( FALSE, 10 );
@@ -919,12 +918,38 @@ static gboolean nouveau_groupe(GtkWidget *menuItem, gpointer data )
      GtkWidget* barreBouton = gtk_hbutton_box_new();
      gtk_button_box_set_layout( GTK_BUTTON_BOX( barreBouton ), GTK_BUTTONBOX_END );
 
+      //******** Barre Position ************************************
+
+    scene->entry1 = gtk_entry_new();
+    scene->entry2 = gtk_entry_new();
+    scene->entry3 = gtk_entry_new();
+
+    gtk_widget_set_size_request(scene->entry1, 50, -1 );
+    gtk_widget_set_size_request(scene->entry2, 50, -1 );
+    gtk_widget_set_size_request(scene->entry3, 50, -1 );
+
+    GtkWidget* text1 = gtk_label_new("Position du centre X Y Z :");
+
+    GtkWidget* barrePosition = gtk_hbox_new( 5, TRUE );
+
+    gtk_container_add( GTK_CONTAINER( barrePosition ), text1 );
+    gtk_container_add( GTK_CONTAINER( barrePosition ), scene->entry1 );
+    gtk_entry_set_text( GTK_ENTRY( scene->entry1 ), "0" );
+
+    gtk_container_add( GTK_CONTAINER( barrePosition ), scene->entry2 );
+    gtk_entry_set_text( GTK_ENTRY( scene->entry2 ), "0" );
+
+    gtk_container_add( GTK_CONTAINER( barrePosition ), scene->entry3 );
+    gtk_entry_set_text( GTK_ENTRY( scene->entry3 ), "0" );
+
+//*********************************************************************
      gtk_container_add( GTK_CONTAINER( barreBouton ), boutonOk );
      gtk_container_add( GTK_CONTAINER( barreBouton ), boutonAnnuler );
 
      GtkWidget* vbox = gtk_vbox_new( FALSE, 10 );
      gtk_container_add( GTK_CONTAINER( vbox ), hbox );
      gtk_container_add( GTK_CONTAINER( vbox ), hbox1 );
+     gtk_container_add( GTK_CONTAINER( vbox ), barrePosition );
      gtk_container_add( GTK_CONTAINER( vbox ), barreBouton );
 
      gtk_container_add( GTK_CONTAINER( fenetre ), vbox );
@@ -962,10 +987,25 @@ static gboolean ajout_Groupe( GtkButton* button, gpointer data )
             }
         }
 
+         double dX, dY, dZ = 0;
+        //Coordonnées de création de l'objet
+        dX = atof( gtk_entry_get_text( GTK_ENTRY( scene->entry1) ) );
+        dY = atof( gtk_entry_get_text( GTK_ENTRY( scene->entry2) ) );
+        dZ = atof( gtk_entry_get_text( GTK_ENTRY( scene->entry3) ) );
+
         Groupe* fils = (Groupe*)malloc( 1 * sizeof( Groupe ) );
-        Groupe_initialiser(fils, pere, max );
-        GtkWidget* label = gtk_label_new( gtk_entry_get_text( GTK_ENTRY(scene->entryNom) ) );
-        fils->nom = (char*)gtk_label_get_text( GTK_LABEL(label) );
+        Groupe_initialiser(fils, pere, max, dX, dY, dZ );
+
+        if( strcmp( gtk_entry_get_text( GTK_ENTRY(scene->entryNom) ), "" ) != 0 )
+        {
+            GtkWidget* label = gtk_label_new( gtk_entry_get_text( GTK_ENTRY(scene->entryNom) ) );
+            fils->nom = (char*)gtk_label_get_text( GTK_LABEL(label) );
+        }
+        else
+        {
+            GtkWidget* label = gtk_label_new( "Anonyme" );
+            fils->nom = (char*)gtk_label_get_text( GTK_LABEL(label) );
+        }
 
         Groupe_ajouter_Fils( pere, fils );
         g_array_append_val( scene->tGroupe, fils );

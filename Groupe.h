@@ -42,7 +42,7 @@ void Groupe_TransfoCalc(Groupe* pGroup );
  */
 void Groupe_addTransfo(Groupe* pGroup, tdMatrix tdNouvTransfo);
 
-void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb );
+void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb, double dX, double dY, double dZ );
 
 void Groupe_enlever_fils( Groupe* groupe, Groupe* fils );
 

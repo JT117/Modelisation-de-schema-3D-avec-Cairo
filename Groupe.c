@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "Objet.h"
 
-void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb )
+void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb, double dX, double dY, double dZ )
 {
     groupe->pere = pere;
     groupe->id = nb;
