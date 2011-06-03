@@ -71,7 +71,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FenetrePropriete.h" />
-		<Unit filename="Group.h" />
 		<Unit filename="Groupe.c">
 			<Option compilerVar="CC" />
 		</Unit>

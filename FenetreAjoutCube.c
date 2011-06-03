@@ -330,7 +330,7 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
         if( dWidth > 0 )
         {
             Point_initCoord( tdCenter, dX, dY, dZ);
-            pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
+            Cube* pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
 
             Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
 

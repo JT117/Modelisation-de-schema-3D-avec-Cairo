@@ -24,7 +24,7 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window, GtkWidget* mainWi
     Modification_initialiser( scene->modification );
 
     Groupe* groupeDeBase = (Groupe*)malloc( 1 * sizeof( Groupe ) );
-    Groupe_initialiser( groupeDeBase, NULL, 0 );
+    Groupe_initialiser( groupeDeBase, NULL, 0, 0, 0, 0 );
     scene->tGroupe = g_array_new( FALSE, FALSE, sizeof( Groupe* ) ); //coucou =)
     g_array_append_val( scene->tGroupe, groupeDeBase );
     scene->nbGroupe = 1;

@@ -9,6 +9,7 @@
 #include "Segment.h"
 #include "Sphere.h"
 
+struct Scene;
 struct Rectangle;
 struct Groupe;
 
@@ -87,5 +88,10 @@ void Objet_rotation( Objet* objet, double x, double y );
  */
 void Objet_rotationWorld( Objet* objet, double x, double y );
 void Objet_homothetie( Objet* objet, int ratio );
+
+/** Sauvegarde d'un objet dans le fichier de suvegarde */
+void Objet_sauvegarde( Objet* objet, FILE* fichier );
+
+void Objet_restaure( FILE* fichier, struct Scene* scene);
 
 #endif  // OBJET_H
