@@ -8,6 +8,7 @@
 #include "Enum.h"
 #include "Selection.h"
 #include "FenTrans.h"
+#include "FenText.h"
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);

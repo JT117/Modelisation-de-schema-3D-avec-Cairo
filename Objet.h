@@ -17,6 +17,7 @@ struct Groupe;
 typedef struct Objet Objet;
 struct Objet
 {
+    char* texte;
     /** Un string contenant le type d'objet */
     char* typeObjet;
     /** Un flag indiquant si l'objet est à selectionner */

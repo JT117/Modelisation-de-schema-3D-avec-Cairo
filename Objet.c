@@ -13,6 +13,7 @@ void Objet_detruire( Objet* objet )
     {
         // Pas d'alloc dynamique
     }
+    //g_free( objet->texte );
 }
 
 /** Fonction qui initialise un objet de type Cube

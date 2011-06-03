@@ -307,9 +307,11 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
 
 static gboolean newText(gpointer data)
 {
-	/*
-	 * TODO : à compléter, appel à la fenêtre d'ajout texte
-	 */
+    Scene* scene = (Scene*)data;
+
+	FenText* ft = (FenText*)malloc( 1 * sizeof( FenText ) );
+	FenText_init(ft, scene);
+
 	return TRUE;
 }
 
@@ -1112,8 +1114,27 @@ static gboolean suppression_Groupe( GtkButton* button, gpointer data )
             gtk_tree_store_remove( scene->store, objet->iter);
             gtk_tree_store_append (scene->store, objet->iter, pere->iter);
             gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->typeObjet, -1);
-
         }
+
+        for( i = 0; i < groupe->nbFils; i++ )
+        {
+            Groupe* fils = g_array_index( groupe->tFils, Groupe*, i );
+
+            gtk_tree_store_remove( scene->store, fils->iter);
+            gtk_tree_store_append (scene->store, fils->iter, pere->iter);
+            gtk_tree_store_set (scene->store, fils->iter, GROUPE, fils->nom, -1);
+        }
+
+        for( i = 0; i < scene->nbGroupe; i++ )
+        {
+            Groupe* current = g_array_index( scene->tGroupe, Groupe*, i );
+            if( groupe == current )
+            {
+                g_array_remove_index( scene->tGroupe, i );
+                scene->nbGroupe--;
+            }
+        }
+
         gtk_tree_store_remove( scene->store, groupe->iter);
         Groupe_detruire( groupe );
         gtk_widget_destroy( scene->fenetre );
