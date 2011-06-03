@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-typedef double tdCoord[4];
-typedef double tdCoord2D[2];
+typedef double tCoord[4];
+typedef double tCoord2D[2];
 
 typedef struct Point
 {
@@ -15,7 +15,9 @@ typedef struct Point
     double z;
 
     /**Coordonnées du point dans le repère de l'univers**/
-	tdCoord tdCoordWorld;
+	tCoord tdCoordWorld;
+	/** Coordonnées du point dans le repere du groupe parent **/
+	tCoord tdCoordGroup;
 }Point;
 
 /**
@@ -32,19 +34,23 @@ void Point_init(Point* pPoint,double dX, double dY, double dZ);
  * Initialise des coordonnées avec des valeurs particulières.
  *
  */
-void Point_initCoord(tdCoord pCoord,double dX, double dY, double dZ);
+void Point_initCoord(tCoord pCoord,double dX, double dY, double dZ);
 
 /**
  * Initialisation des coordonées 2D.
  */
-void Point_initCoord2D(tdCoord pCoord,double dX, double dY);
+void Point_initCoord2D(tCoord pCoord,double dX, double dY);
 
 void Point_middlePoint(Point* pRes, Point* pP1, Point* pP2);
 
 double Point_euclideanDistance(Point* pP1, Point* pP2);
 
-double Point_euclideanDistance2D(tdCoord2D pP1, tdCoord2D pP2);
+double Point_euclideanDistance2D(tCoord2D pP1, tCoord2D pP2);
 
-double Point_determinant(tdCoord2D tP1, tdCoord2D tP2);
+double Point_determinant(tCoord2D tP1, tCoord2D tP2);
+
+void Point_initGroup(Point* pPoint, double dX, double dY, double dZ);
+
+void Point_initWorld(Point* pPoint, double dX, double dY, double dZ);
 
 #endif // POINT_H

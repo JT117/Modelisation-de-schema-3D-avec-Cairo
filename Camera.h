@@ -7,7 +7,7 @@
 typedef struct InfoCamera
 {
 	/** Position de la caméra dans le reférentiel de l'univers**/
-	tdCoord CoordCam;
+	tCoord CoordCam;
 
 	/** Distance séparant le point de référence de la caméra (view point) du nearPlan **/
 	double dDMin;

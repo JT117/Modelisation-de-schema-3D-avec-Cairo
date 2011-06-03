@@ -4,14 +4,19 @@
 
 #include "ProjectionTools.h"
 
-tdCoord2D* ProjectionTools_getPictureCoord(Point* pPoint, InfoCamera* pCam)
+void ProjectionTools_getCoordWorld()
 {
-	tdCoord2D* tdPictureCoord = NULL;
-	tdCoord tdCamCoord; /* Coordonnées dans le repère caméra */
+
+}
+
+tCoord2D* ProjectionTools_getPictureCoord(Point* pPoint, InfoCamera* pCam)
+{
+	tCoord2D* tdPictureCoord = NULL;
+	tCoord tdCamCoord; /* Coordonnées dans le repère caméra */
 
 	Point_initCoord(tdCamCoord, 0,0,0);
 
-	if( (tdPictureCoord = (tdCoord2D*)malloc(sizeof(tdCoord2D))) != NULL )
+	if( (tdPictureCoord = (tCoord2D*)malloc(sizeof(tCoord2D))) != NULL )
 	{
 		(*tdPictureCoord)[0]=0;
 		(*tdPictureCoord)[1]=0;

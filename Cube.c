@@ -5,7 +5,7 @@
 #include "ProjectionTools.h"
 #include "Point.h"
 
-Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth)
+Cube* Cube_createCube(tCoord tCenter, double dHeight,double dWidth, double dDepth)
 {
 	double dHalfH, dHalfW, dHalfD;
 	Cube* pNewCube = NULL;
@@ -137,10 +137,10 @@ void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam)
 	int iFaceIndex;
 	int iFace;
 	GArray* gtTabFacesOrder=NULL;
-	tdCoord2D* pPointProj0 = NULL;tdCoord2D* pPointProj4 = NULL;
-	tdCoord2D* pPointProj1 = NULL;tdCoord2D* pPointProj5 = NULL;
-	tdCoord2D* pPointProj2 = NULL;tdCoord2D* pPointProj6 = NULL;
-	tdCoord2D* pPointProj3 = NULL;tdCoord2D* pPointProj7 = NULL;
+	tCoord2D* pPointProj0 = NULL;tCoord2D* pPointProj4 = NULL;
+	tCoord2D* pPointProj1 = NULL;tCoord2D* pPointProj5 = NULL;
+	tCoord2D* pPointProj2 = NULL;tCoord2D* pPointProj6 = NULL;
+	tCoord2D* pPointProj3 = NULL;tCoord2D* pPointProj7 = NULL;
 
 	/* Projection de tous les point du cube */
 	pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
@@ -244,7 +244,7 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 {
 	int iLoop;
 	tdMatrix tdMatTransfo, tdMatPassRepObj; /* MAtrice de rotation, matrice de passage dans le repère objet*/
-	tdCoord tdCoordRepObj, tdCoordApTransfo;
+	tCoord tdCoordRepObj, tdCoordApTransfo;
 
 	/* Initialisation des coordonées*/
 	Point_initCoord(tdCoordRepObj, 0.0, 0.0, 0.0);
@@ -264,7 +264,7 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 	if(dAngleX != 0)
 	{
 		/*Récupération de la matrice de rotation qui va bien */
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, AXEX);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<8 ;iLoop++)
@@ -289,7 +289,7 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 
 	if(dAngleY != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, AXEY);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<8 ;iLoop++)
@@ -314,7 +314,7 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
 
 	if(dAngleZ != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, AXEZ);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<8 ;iLoop++)
@@ -341,12 +341,12 @@ void Cube_rotateCubeWorld(Cube* pCube, double dAngleX, double dAngleY, double dA
 {
 	int iLoop;
 	tdMatrix tdMatTransfo;
-	tdCoord tdCoordApTransfo;
+	tCoord tdCoordApTransfo;
 
 	if(dAngleX != 0)
 	{
 		/*Récupération de la matrice de rotation qui va bien */
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, AXEX);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
@@ -370,7 +370,7 @@ void Cube_rotateCubeWorld(Cube* pCube, double dAngleX, double dAngleY, double dA
 
 	if(dAngleY != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, AXEY);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
@@ -393,7 +393,7 @@ void Cube_rotateCubeWorld(Cube* pCube, double dAngleX, double dAngleY, double dA
 
 	if(dAngleZ != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, AXEZ);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
@@ -419,7 +419,7 @@ void Cube_modSize(Cube* pCube, double dRatio)
 {
 	int iLoop;
 	tdMatrix tdMatTransfo, tdMatPassRepObj;
-	tdCoord tdCoordRepObj, tdCoordApTransfo;
+	tCoord tdCoordRepObj, tdCoordApTransfo;
 
 	/* Initialisation des coordonées*/
 	Point_initCoord(tdCoordRepObj, 0, 0, 0);
@@ -458,75 +458,15 @@ void Cube_modSize(Cube* pCube, double dRatio)
 	}
 }
 
-gboolean Cube_inFace(tdCoord2D tP1,tdCoord2D tP2,tdCoord2D tP3, tdCoord2D tP4, double dXClick, double dYClick )
-{
-	int iNb = 0, iLoop = 0;
-	double tDistanceClick[2]; /* Distance (sur x et y) entre la position du curseur et chaque point  */
-	double tDistancePoints[2]; /* Distance entre deux points d'une arrête*/
-	double dDet = 0;
-	tdCoord2D tCoordClick;
 
-	Point_initCoord2D(tCoordClick, dXClick, dYClick); /* Coordonnées du clique */
-
-	/* On passe chaque arrête en revue */
-	for(iLoop=0; iLoop<4; iLoop++)
-	{
-		switch(iLoop)
-		{
-			case 0:
-			{
-				tDistanceClick[0] =tCoordClick[0]-tP1[0];
-				tDistanceClick[1] = tCoordClick[1]-tP1[1];
-				tDistancePoints[0] = tP2[0]-tP1[0];
-				tDistancePoints[1] = tP2[1]-tP1[1];
-				break;
-			}
-			case 1:
-			{
-				tDistanceClick[0] = tCoordClick[0]-tP2[0];
-				tDistanceClick[1] = tCoordClick[1]-tP2[1];
-				tDistancePoints[0] = tP3[0]-tP2[0];
-				tDistancePoints[1] = tP3[1]-tP2[1];
-				break;
-			}
-			case 2:
-			{
-				tDistanceClick[0] = tCoordClick[0]-tP3[0];
-				tDistanceClick[1] = tCoordClick[1]-tP3[1];
-				tDistancePoints[0] = tP4[0]-tP3[0];
-				tDistancePoints[1] = tP4[1]-tP3[1];
-				break;
-			}
-			case 3:
-			{
-				tDistanceClick[0] = tCoordClick[0]-tP4[0];
-				tDistanceClick[1] = tCoordClick[1]-tP4[1];
-				tDistancePoints[0] = tP1[0]-tP4[0];
-				tDistancePoints[1] = tP1[1]-tP4[1];
-				break;
-			}
-		}
-		dDet = Point_determinant(tDistancePoints,tDistanceClick );
-
-		if( dDet > 0)
-				iNb++;
-		else if( dDet < 0)
-				iNb--;
-	}
-
-    if( iNb == 4 || iNb == -4 )
-        return TRUE;
-    else
-    	return FALSE;
-}
 
 gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam)
 {
     gboolean est_contenu = FALSE;
-	tdCoord2D* pPointProj0 = NULL;tdCoord2D* pPointProj4 = NULL;
-	tdCoord2D* pPointProj1 = NULL;tdCoord2D* pPointProj5 = NULL;
-	tdCoord2D* pPointProj2 = NULL;tdCoord2D* pPointProj6 = NULL;
-	tdCoord2D* pPointProj3 = NULL;tdCoord2D* pPointProj7 = NULL;
+	tCoord2D* pPointProj0 = NULL;tCoord2D* pPointProj4 = NULL;
+	tCoord2D* pPointProj1 = NULL;tCoord2D* pPointProj5 = NULL;
+	tCoord2D* pPointProj2 = NULL;tCoord2D* pPointProj6 = NULL;
+	tCoord2D* pPointProj3 = NULL;tCoord2D* pPointProj7 = NULL;
 
 	/* Projection de tous les point du cube */
 	pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
@@ -538,12 +478,12 @@ gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam)
 	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
 	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
 
-    est_contenu = est_contenu || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj2), (*pPointProj3), x, y )
-                              || Cube_inFace( (*pPointProj1), (*pPointProj5), (*pPointProj6), (*pPointProj2), x, y )
-                              || Cube_inFace( (*pPointProj4), (*pPointProj5), (*pPointProj6), (*pPointProj7), x, y )
-                              || Cube_inFace( (*pPointProj0), (*pPointProj4), (*pPointProj7), (*pPointProj3), x, y )
-                              || Cube_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj5), (*pPointProj4), x, y )
-                              || Cube_inFace( (*pPointProj3), (*pPointProj2), (*pPointProj6), (*pPointProj7), x, y );
+    est_contenu = est_contenu || Selection_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj2), (*pPointProj3), x, y )
+                              || Selection_inFace( (*pPointProj1), (*pPointProj5), (*pPointProj6), (*pPointProj2), x, y )
+                              || Selection_inFace( (*pPointProj4), (*pPointProj5), (*pPointProj6), (*pPointProj7), x, y )
+                              || Selection_inFace( (*pPointProj0), (*pPointProj4), (*pPointProj7), (*pPointProj3), x, y )
+                              || Selection_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj5), (*pPointProj4), x, y )
+                              || Selection_inFace( (*pPointProj3), (*pPointProj2), (*pPointProj6), (*pPointProj7), x, y );
 
     free(pPointProj0);	free(pPointProj4);
 	free(pPointProj1);	free(pPointProj5);

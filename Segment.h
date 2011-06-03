@@ -33,7 +33,7 @@ typedef struct Segment
  *
  * @return un structure Segment fraichement allouée
  */
-Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2);
+Segment* Segment_createSegment(tCoord tdCoord1,tCoord tdCoord2);
 
 
 /**

@@ -3,10 +3,21 @@
 
 #include "MatrixTools.h"
 
-enum axe
+
+typedef enum{TRANSLATION, ROTATION} transfoType;
+
+typedef enum axe
 {
-	axeX, axeY, axeZ
-};
+	AXEX, AXEY, AXEZ
+}axe;
+
+typedef struct Transfo
+{
+	/*Définit le type de transformation*/
+	transfoType eTransfoType;
+	/** Définit la matrice de transformation **/
+	tdMatrix tdMatrixTransfo;
+}Transfo;
 
 
 /**

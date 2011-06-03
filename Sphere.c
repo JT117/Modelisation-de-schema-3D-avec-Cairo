@@ -5,7 +5,7 @@
 #include "ProjectionTools.h"
 #include "Point.h"
 
-Sphere* Sphere_createSphere(tdCoord tCenter, double dRadius)
+Sphere* Sphere_createSphere(tCoord tCenter, double dRadius)
 {
 	Sphere* pNewSphere = NULL;
 
@@ -37,8 +37,8 @@ Sphere* Sphere_createSphere(tdCoord tCenter, double dRadius)
 void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam)
 {
 	double dRadius=0;
-	tdCoord2D* pPointProj0 = NULL;
-	tdCoord2D* pPointProj1 = NULL;
+	tCoord2D* pPointProj0 = NULL;
+	tCoord2D* pPointProj1 = NULL;
 
 	/* Projection des points du rayon de la sphere */
 	pPointProj0 = ProjectionTools_getPictureCoord(&(pSphere->Center),pCam);
@@ -67,12 +67,12 @@ void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam)
 void Sphere_rotateWorld(Sphere* pSphere, double dAngleX, double dAngleY, double dAngleZ)
 {
 	tdMatrix tdMatTransfo;
-	tdCoord tdCoordApTransfo;
+	tCoord tdCoordApTransfo;
 
 	if(dAngleX != 0)
 	{
 		/*Récupération de la matrice de rotation qui va bien */
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, axeX);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, AXEX);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/*Transformation dans le repere du monde*/
@@ -94,7 +94,7 @@ void Sphere_rotateWorld(Sphere* pSphere, double dAngleX, double dAngleY, double 
 
 	if(dAngleY != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, axeY);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, AXEY);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/*Transformation dans le repere du monde*/
@@ -115,7 +115,7 @@ void Sphere_rotateWorld(Sphere* pSphere, double dAngleX, double dAngleY, double 
 
 	if(dAngleZ != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, axeZ);
+		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, AXEZ);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/*Transformation dans le repere du monde*/
@@ -140,7 +140,7 @@ void Sphere_modSize(Sphere* pSphere, double dRatio)
 {
 	int iLoop;
 	tdMatrix tdMatTransfo, tdMatPassRepObj;
-	tdCoord tdCoordRepObj, tdCoordApTransfo;
+	tCoord tdCoordRepObj, tdCoordApTransfo;
 
 	/* Initialisation des coordonées*/
 	Point_initCoord(tdCoordRepObj, 0, 0, 0);
@@ -181,9 +181,9 @@ void Sphere_modSize(Sphere* pSphere, double dRatio)
 
 gboolean Sphere_Contient_Point( Sphere* pSphere, double x, double y, InfoCamera* pCam)
 {
-	tdCoord2D* pPointProj0 = NULL;
-	tdCoord2D* pPointProj1 = NULL;
-	tdCoord2D tClickCoord;
+	tCoord2D* pPointProj0 = NULL;
+	tCoord2D* pPointProj1 = NULL;
+	tCoord2D tClickCoord;
 	double dRadius, dDistClick;
 
 	Point_initCoord2D(tClickCoord, x, y);

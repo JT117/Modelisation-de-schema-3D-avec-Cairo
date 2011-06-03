@@ -1,5 +1,6 @@
 #include "Selection.h"
 #include "Config.h"
+#include "Objet.h"
 
 /** Fonction qui initialise une structure selection
  * @param selection, un pointeur sur la selection à initialiser
@@ -265,6 +266,68 @@ void Selection_dessiner_rectangle( Selection* selection, cairo_t* cr )
         cairo_rectangle( cr, selection->departSelection.x, selection->departSelection.y, selection->finSelection.x - selection->departSelection.x, selection->finSelection.y - selection->departSelection.y );
         cairo_fill( cr );
     }
+}
+
+gboolean Selection_inFace(tCoord2D tP1,tCoord2D tP2,tCoord2D tP3, tCoord2D tP4, double dXClick, double dYClick )
+{
+	int iNb = 0, iLoop = 0;
+	double tDistanceClick[2]; /* Distance (sur x et y) entre la position du curseur et chaque point  */
+	double tDistancePoints[2]; /* Distance entre deux points d'une arrête*/
+	double dDet = 0;
+	tCoord2D tCoordClick;
+
+	Point_initCoord2D(tCoordClick, dXClick, dYClick); /* Coordonnées du clique */
+
+	/* On passe chaque arrête en revue */
+	for(iLoop=0; iLoop<4; iLoop++)
+	{
+		switch(iLoop)
+		{
+			case 0:
+			{
+				tDistanceClick[0] =tCoordClick[0]-tP1[0];
+				tDistanceClick[1] = tCoordClick[1]-tP1[1];
+				tDistancePoints[0] = tP2[0]-tP1[0];
+				tDistancePoints[1] = tP2[1]-tP1[1];
+				break;
+			}
+			case 1:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP2[0];
+				tDistanceClick[1] = tCoordClick[1]-tP2[1];
+				tDistancePoints[0] = tP3[0]-tP2[0];
+				tDistancePoints[1] = tP3[1]-tP2[1];
+				break;
+			}
+			case 2:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP3[0];
+				tDistanceClick[1] = tCoordClick[1]-tP3[1];
+				tDistancePoints[0] = tP4[0]-tP3[0];
+				tDistancePoints[1] = tP4[1]-tP3[1];
+				break;
+			}
+			case 3:
+			{
+				tDistanceClick[0] = tCoordClick[0]-tP4[0];
+				tDistanceClick[1] = tCoordClick[1]-tP4[1];
+				tDistancePoints[0] = tP1[0]-tP4[0];
+				tDistancePoints[1] = tP1[1]-tP4[1];
+				break;
+			}
+		}
+		dDet = Point_determinant(tDistancePoints,tDistanceClick );
+
+		if( dDet > 0)
+				iNb++;
+		else if( dDet < 0)
+				iNb--;
+	}
+
+    if( iNb == 4 || iNb == -4 )
+        return TRUE;
+    else
+    	return FALSE;
 }
 
 

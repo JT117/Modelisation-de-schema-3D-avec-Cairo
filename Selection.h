@@ -6,8 +6,8 @@
 #include <string.h>
 
 struct Scene;
+struct Objet;
 
-#include "Objet.h"
 #include "Point.h"
 
 /** Structure Selection gérant la selection des objets dans la scene */
@@ -42,11 +42,11 @@ void Selection_dessiner_rectangle( Selection* selection, cairo_t* cr );
 
 void Selection_detruire( Selection* selection );
 
-gboolean Selection_est_deja_selectionner( Selection* selection, Objet* objet );
+gboolean Selection_est_deja_selectionner( Selection* selection,struct Objet* objet );
 
-void Selection_deselectionner( struct Scene* scene, Objet* objet );
+void Selection_deselectionner( struct Scene* scene,struct Objet* objet );
 
-void Selection_selectionner( struct Scene* scene, Objet* objet );
+void Selection_selectionner( struct Scene* scene,struct Objet* objet );
 
 #endif  //SELECTION_H
 

@@ -1,4 +1,7 @@
 #include "Objet.h"
+#include "Groupe.h"
+#include "Rectangle.h"
+#include <math.h>
 
 /** Fonction qui libère un objet selon son type
  * @param objet, l'objet à liberer
@@ -33,6 +36,10 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     pObj->type.rectangle = pRect; /* sauvegarde pointeur sur objet */
     strcpy( pObj->typeObjet, "Rectangle" );
     pObj->doitEtreDeselectionner = TRUE;
+
+    /* Allocation des tableaux dynamiques contenant les transformations à appliquer sur l'objet */
+    Matrix_initIdentityMatrix(pObj->tTransfoMatrix);
+
     pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
@@ -62,12 +69,11 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        //dessiner_Cube( objet->type.cube, cr, cam);
         Cube_drawCube( objet->type.cube, cr, cam );
     }
     else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
 	{
-		Rectangle_drawRectangle( objet->type.rectangle, cr, cam);
+		Rectangle_drawRectangleFinal( objet, cr, cam);
 	}
     else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
 	{
@@ -150,13 +156,40 @@ void Objet_deselection( Objet* objet )
 
 void Objet_rotation( Objet* objet, double x, double y )
 {
+	tdMatrix tdTransfoMat, tdNewTransfo;
+	double dAngleX = y/200;
+	double dAngleY = x/200;
+	double dAngleZ = 0.0;
+
+	Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
+	/* On recherche la matrice de rotation qui va bien */
+	if(dAngleX != 0)
+	{
+		TransfoTools_getMatrixRotation(tdNewTransfo, dAngleX, AXEX);
+		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+	}
+
+	if(dAngleY != 0)
+	{
+		TransfoTools_getMatrixRotation(tdNewTransfo, dAngleY, AXEY);
+		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+	}
+
+	if(dAngleZ != 0)
+	{
+		TransfoTools_getMatrixRotation(tdNewTransfo, dAngleZ, AXEZ);
+		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+	}
+
+
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
         Cube_rotateCube( objet->type.cube, 0, x/200, y/200 );
     }
     else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
     {
-        Rectangle_rotate( objet->type.rectangle, 0, x/200, y/200 );
+    	Rectangle_transfo(objet->type.rectangle, tdTransfoMat);
+        //Rectangle_rotate( objet->type.rectangle, 0, x/200, y/200 );
     }
 }
 

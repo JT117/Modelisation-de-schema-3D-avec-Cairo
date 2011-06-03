@@ -5,10 +5,12 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-#include "Rectangle.h"
 #include "Cube.h"
 #include "Segment.h"
 #include "Sphere.h"
+
+struct Rectangle;
+struct Groupe;
 
 /** Structure representant un objet dans l'interface graphique, servant à masquer l'implementation des differents objets à la GUI */
 typedef struct Objet Objet;
@@ -22,13 +24,21 @@ struct Objet
     int numeroGroupe;
     /** iteration de l'arbre pour placement dans l'arbre d'objet */
     GtkTreeIter* iter;
+
+    /** Pointeur vers groupe pere **/
+    struct Groupe* pFatherGroup;
     /** Union contenant le pointeur sur le bon type de l'objet */
     union{
             Cube* cube;
-            Rectangle* rectangle;
+            struct Rectangle* rectangle;
             Segment* segment;
             Sphere* sphere;
          }type;
+
+	 /** Tableau des transformation à appliquer sur les objets du groupe concerné ainsi que tous les groupes fils **/
+	 GArray* aTransfo;
+	 /** Matrice de transformation comprenant toutes les transfo du tableau aTransfo  Tfinale = T1*T2*...*Tn **/
+	 tdMatrix tTransfoMatrix;
 };
 
 /** Libere la memoire allouer dynamiquement pour un objet */
@@ -39,7 +49,7 @@ void Objet_detruire( Objet* objet );
 void Objet_est_un_Cube( Objet* objet, Cube* cube );
 
 /** Initialise un Objet Rectangle */
-void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect );
+void Objet_est_un_Rectangle( Objet* pObj, struct Rectangle* pRect );
 void Objet_est_un_Segment( Objet* pObj, Segment* pSeg );
 void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph );
 

@@ -304,8 +304,8 @@ void FenetreAjoutCube_enlever_layout( FenetreAjoutCube* fao )
 static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 {
 	double dWidth, dHeight ;/* TODO : modifier les noms pour avoir hauteur + profondeur */
-	double dX, dY,dZ; /*Coordonnées du centre de gravité du nouvel objet*/
-	tdCoord tdCenter;
+	double dX, dY,dZ; /*Coordonnées du centre de gravité du nouvel objet dans le repere pere*/
+	tCoord tdCenter;
     FenetreAjoutCube* fao = (FenetreAjoutCube*)data;
     Scene* scene = (Scene*)fao->scene;
     Cube* pNewCube = NULL;
@@ -361,23 +361,24 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
         if( dWidth > 0 && dHeight > 0 )
         {
             Rectangle* pNewRect;
-            tdCoord coord;
-            tdCoord coord1;
+            tCoord coord;
+            tCoord coord1;
 
-            Point_initCoord( tdCenter, dX, dY, dZ); /* Récupération des coordonées du centre */
-            Point_initCoord( coord, dX-dWidth/2, dY+dHeight/2, dZ );
-            Point_initCoord( coord1, dX + dWidth/2, dY - dHeight/2, dZ );
+            /* On recupere le groupe concerné par la création */
+            Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
+
+            Point_initCoord( tdCenter, dX, dY, dZ); /* Récupération des coordonées du centre (par rapport au groupe)*/
+            /* Initialisation des points aux coordonées qui vont bien pour le repere objet */
+            Point_initCoord( coord, -dWidth/2, dHeight/2, 0 );         //Point_initCoord( coord, dX-dWidth/2, dY+dHeight/2, dZ );
+            Point_initCoord( coord1, dWidth/2, -dHeight/2, 0 );    // Point_initCoord( coord1, dX + dWidth/2, dY - dHeight/2, dZ );
             pNewRect = Rectangle_createRectangle( coord, coord1, tdCenter );
 			Color_setColor(pNewRect->tColor,(dR/255),(dG/255),(dB/255),dA);
-
-            Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
 
             Scene_ajouter_rectangle( fao->scene, pNewRect, groupe->id );
 
             gtk_widget_queue_draw( scene->zoneDeDessin );
             Modification_modification_effectuer( scene );
             g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
-
         }
         else
         {

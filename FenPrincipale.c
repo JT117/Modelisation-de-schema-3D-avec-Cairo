@@ -1,4 +1,3 @@
-
 #include "FenPrincipale.h"
 
 int FenPrincipale_initialiser (int argc, char* argv[] )
@@ -414,7 +413,7 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 		if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
 		{
 			int i = 0;
-			tdCoord2D tMove;  /* Mouvement = différence entre l'endroit ou l'utilisateur a commencé son clique et la position actuelle du curseur */
+			tCoord2D tMove;  /* Mouvement = différence entre l'endroit ou l'utilisateur a commencé son clique et la position actuelle du curseur */
 			Point_initCoord2D(tMove, scene->rotation.x-event->x, scene->rotation.y-event->y);
 
 			for( i = 0; i < scene->selection->nbSelection; i++ )

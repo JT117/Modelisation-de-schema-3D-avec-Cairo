@@ -12,6 +12,6 @@
  *
  * @return Structure contenant le point qui correspond
  */
-tdCoord2D* ProjectionTools_getPictureCoord(Point* pPoint, InfoCamera* pCam);
+tCoord2D* ProjectionTools_getPictureCoord(Point* pPoint, InfoCamera* pCam);
 
 #endif

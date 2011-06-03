@@ -3,7 +3,7 @@
 #include "Segment.h"
 
 
-Segment* Segment_createSegment(tdCoord tdCoord1,tdCoord tdCoord2)
+Segment* Segment_createSegment(tCoord tdCoord1,tCoord tdCoord2)
 {
 	Segment* pNewSeg = NULL;
 
@@ -38,9 +38,9 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 {
 	double dDashLength = 10.0;
 	double dArrowAngle = 0.0; /* Va permettre de stocker l'angle entre le segment et l'axe X */
-	tdCoord2D tArrow1, tArrow2; /* Va permettre de stocker les positions des extrémités d'une segment avec flêche */
-	tdCoord2D* pPointProj1 = NULL;
-	tdCoord2D* pPointProj2 = NULL;
+	tCoord2D tArrow1, tArrow2; /* Va permettre de stocker les positions des extrémités d'une segment avec flêche */
+	tCoord2D* pPointProj1 = NULL;
+	tCoord2D* pPointProj2 = NULL;
 
 	pPointProj1 = ProjectionTools_getPictureCoord(&((pSeg->tPoint)[0]), pCam);
 	pPointProj2 = ProjectionTools_getPictureCoord(&((pSeg->tPoint)[1]), pCam);

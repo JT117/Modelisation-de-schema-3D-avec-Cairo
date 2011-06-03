@@ -14,7 +14,7 @@ typedef struct Text Text;
 struct Text
 {
 	/* Position sur la projection du texte */
-	tdCoord2D coordText;
+	tCoord2D coordText;
 
 	/*Ce qui doit être affiché*/
 	char* pText;
@@ -36,7 +36,7 @@ void Text_drawText(Text* pText, cairo_t* cr, InfoCamera* pCam);
  *
  * @return Nouvelle structure texte fraichement allouée
  */
-Text* Text_createText(tdCoord2D tPos, char* pText);
+Text* Text_createText(tCoord2D tPos, char* pText);
 
 /**
  * Rotation d'un objet Text autour du centre de l'univers.

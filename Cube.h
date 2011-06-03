@@ -9,13 +9,14 @@
 #include "Point.h"
 #include "Color.h"
 #include "Camera.h"
+#include "Selection.h"
 
 typedef struct Cube Cube;
 struct Cube
 {
     // 0-----1
     // |     |
-    // |
+    // |	 |
     // 3-----2
     Point tPoint[8];
 
@@ -26,7 +27,7 @@ struct Cube
 
 void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam);
 
-Cube* Cube_createCube(tdCoord tCenter, double dHeight,double dWidth, double dDepth);
+Cube* Cube_createCube(tCoord tCenter, double dHeight,double dWidth, double dDepth);
 
 /**
  * Rotation d'un objet cube autour de son centre de gravité.
@@ -56,7 +57,7 @@ gboolean Cube_Contient_Point( Cube* cCube, double x, double y, InfoCamera* pCam)
 
 //gboolean est_dans_face( tdCoord2D* a, tdCoord2D* b, tdCoord2D* c, tdCoord2D* d, double x, double y );
 
-int scalaire_result( tdCoord2D* a, tdCoord2D* b, int x, int y );
+int scalaire_result( tCoord2D* a, tCoord2D* b, int x, int y );
 
 /**
  * Agrandit/retrécit un objet de type cube suivant le ratio fourni en param.

@@ -19,7 +19,7 @@ void Text_setColor(Text* pText, double dR, double dG, double dB, double dA)
 	Color_setColor(&(pText->tColor),dR,dG,dB,dA);
 }
 
-Text* Text_createText(tdCoord2D tPos, char* pText)
+Text* Text_createText(tCoord2D tPos, char* pText)
 {
 	Text* pNewText = NULL;
 

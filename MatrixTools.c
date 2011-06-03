@@ -15,8 +15,25 @@ void Matrix_initMatrix(tdMatrix mat)
 		}
 }
 
+void Matrix_initIdentityMatrix(tdMatrix mat)
+{
+	int iLoop=0,iLoop2=0;
 
-tdMatrix* Matrix_multiMatrices(tdMatrix mat1, tdMatrix mat2)
+	/*Initialisation de la matrice*/
+		for(iLoop=0;iLoop<4;++iLoop)
+		{
+			for(iLoop2=0;iLoop2<4;++iLoop2)
+			{
+				if(iLoop==iLoop2)
+					mat[iLoop][iLoop2]= 1;
+				else
+					mat[iLoop][iLoop2]= 0;
+			}
+
+		}
+}
+
+tdMatrix* Matrix_multiMatricesAlloc(tdMatrix mat1, tdMatrix mat2)
 {
 	tdMatrix* pResMat = NULL;
 	int i=0,j=0,k=0;
@@ -25,14 +42,14 @@ tdMatrix* Matrix_multiMatrices(tdMatrix mat1, tdMatrix mat2)
 	if( (pResMat = (tdMatrix*)malloc(sizeof(tdMatrix)*1) ) != NULL )
 	{
 		/* Let's multiply !*/
-			for(i=0;i<4;++i)
+		for(i=0;i<4;++i)
+		{
+			for(j=0;j<4;++j)
 			{
-				for(j=0;j<4;++j)
-				{
-					for(k=0;k<4;++k)
-						(*pResMat)[i][j]= (*pResMat)[i][j] + mat1[i][k]*mat2[k][j];
-				}
+				for(k=0;k<4;++k)
+					(*pResMat)[i][j]= (*pResMat)[i][j] + mat1[i][k]*mat2[k][j];
 			}
+		}
 	}
 	else
 	{
@@ -42,14 +59,40 @@ tdMatrix* Matrix_multiMatrices(tdMatrix mat1, tdMatrix mat2)
 	return pResMat;
 }
 
-void Matrix_multiMatrixVect(tdMatrix pMatrix, double* pVect, tdCoord pRes )
+void Matrix_multiMatrices(tdMatrix mat1, tdMatrix mat2)
 {
-	int iLoopLine=0,iLoopCol=0;
+	tdMatrix tdResMat;
+	int i,j,k;
 
-	for(iLoopLine=0;iLoopLine<4;++iLoopLine)
+	Matrix_initMatrix(tdResMat); /*initialisation de la matrice résultat */
+
+	for(i=0;i<4;++i)
 	{
-		for(iLoopCol=0;iLoopCol<4;iLoopCol++)
-			pRes[iLoopLine] = pRes[iLoopLine] + (pMatrix[iLoopLine][iLoopCol]*pVect[iLoopCol]);
+		for(j=0;j<4;++j)
+		{
+			for(k=0;k<4;++k)
+				tdResMat[i][j]= tdResMat[i][j] + mat1[i][k]*mat2[k][j];
+		}
+	}
+
+	/* Enregistrement du résultat dans la matrice 1 */
+	for(i=0;i<4;++i)
+	{
+		for(j=0;j<4;++j)
+			mat1[i][j] = tdResMat[i][j];
+
+	}
+}
+
+void Matrix_multiMatrixVect(tdMatrix pMatrix, double* pVect, tCoord tdRes )
+{
+	int i=0,j=0;
+
+	for(i=0;i<4;++i)
+	{
+		tdRes[i] = 0;
+		for(j=0;j<4;j++)
+			tdRes[i] = tdRes[i] + (pMatrix[i][j]*pVect[j]);
 	}
 }
 

@@ -118,6 +118,7 @@ void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect, int idGroupe )
     scene->nbObjet++;
 
     Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    objet->pFatherGroup = groupe;  /* On enregistre l'adresse du groupe pere */
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
@@ -147,7 +148,7 @@ void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
 GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
 {
 	Point sCamPoint;
-	GArray* gtObjects=NULL; /* Tableau des index des faces à dessiner, c'est cette structure qui sera retournée*/
+	GArray* gtOrderedObjects=NULL; /* Tableau des index des faces à dessiner, c'est cette structure qui sera retournée*/
 	GArray* gtDistances=NULL; /*Tableau des distance entre la caméra et le centre de gravité de chaque face, servira pour classer les indexs de face*/
 	Objet* pObj = NULL;
 	int iObjectIndex = 0;
@@ -155,7 +156,7 @@ GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
 	double dDistance= 0.0, dDistanceArray=0.0;
 
 	/*Allocation des GArray */
-	gtObjects = g_array_sized_new(FALSE,TRUE,sizeof(Objet),tObjects->len);
+	gtOrderedObjects = g_array_sized_new(FALSE,TRUE,sizeof(Objet),tObjects->len);
 	gtDistances = g_array_sized_new(FALSE,TRUE,sizeof(double),tObjects->len);
 
 	//g_array_insert_val(gtIndexFaces,,iFaceIndex);
@@ -165,7 +166,7 @@ GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
 	Point_init(&sCamPoint, pCam->CoordCam[0], pCam->CoordCam[1], pCam->CoordCam[2]);
 	for(iObjectIndex=0;iObjectIndex<tObjects->len;iObjectIndex++) /* Pour chaque objet */
 	{
-		pObj =  g_array_index(tObjects,Objet*,iObjectIndex);
+		pObj =  (Objet*)g_array_index(tObjects,Objet*,iObjectIndex);
 		/* calcul de la distance entre le centre de gravité de l'objet et le centre de repere de la caméra */
 		if( strcmp( pObj->typeObjet, "Cube") == 0 )  /* Si l'objet est un cube */
 			dDistance = Point_euclideanDistance( &(pObj->type.cube->Center), &sCamPoint);
@@ -186,12 +187,12 @@ GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
 		}
 
 		/*Emplacement d'insertion retrouvé...*/
-		g_array_insert_val(gtObjects,iLoopInsert,pObj);
+		g_array_insert_val(gtOrderedObjects,iLoopInsert,pObj);
 		g_array_insert_val(gtDistances,iLoopInsert,dDistance);
 	}
 
 	g_array_free(gtDistances, TRUE);
-	return gtObjects;
+	return gtOrderedObjects;
 }
 
 /** Fonction qui dessiner tout les objets de la scene
@@ -201,14 +202,25 @@ GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
 void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 {
     int i = 0;
+    GArray* gtObjects = NULL;/* va contenir le tableau des objets dans l'ordre dans lequel il faut les dessiner */
+/*
+    if( scene->nbObjet != 0 )
+    {
+    	gtObjects = Scene_objectsOrder(scene->tObjet, scene->camera);
+
+    	for( i = 0; i < scene->nbObjet; i++ )
+    	{
+    		Objet_dessiner_objet(g_array_index( gtObjects, Objet*, i ) , cr, scene->camera );
+    	}
+
+    	g_array_free(gtObjects,TRUE);
+    }
+    */
 
     for( i = 0; i < scene->nbObjet; i++ )
-    {
-    	/* Recherche de l'ordre des objets et composition d'un tableau */
-
-    	/* TODO TODO TODO TODO LE PLUS TOT POSSIBLE */
-        Objet_dessiner_objet( g_array_index( scene->tObjet, Objet*, i ) , cr, scene->camera );
-    }
+	{
+		Objet_dessiner_objet(g_array_index( scene->tObjet, Objet*, i ) , cr, scene->camera );
+	}
 }
 
 /** Fonction qui dessine une scene vierge

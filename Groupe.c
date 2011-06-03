@@ -1,5 +1,6 @@
 #include "Groupe.h"
 #include "Scene.h"
+#include "Objet.h"
 
 void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb )
 {

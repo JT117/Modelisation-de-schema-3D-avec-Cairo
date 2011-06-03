@@ -29,7 +29,7 @@ struct Sphere
 
 void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam);
 
-Sphere* Sphere_createSphere(tdCoord tCenter, double dRadius);
+Sphere* Sphere_createSphere(tCoord tCenter, double dRadius);
 
 /**
  * Rotation d'un objet Sphere autour du centre de l'univers.
