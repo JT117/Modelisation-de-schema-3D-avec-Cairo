@@ -45,6 +45,9 @@ struct Scene
     /** Pointeur sur la zone de dessin */
     GtkWidget* zoneDeDessin;
     GtkWidget* mainWindow;
+    GtkWidget* entry1; // X
+    GtkWidget* entry2; // Y
+    GtkWidget* entry3; // Z
 
     /** Caméra de notre scéne 3D **/
     InfoCamera* camera;

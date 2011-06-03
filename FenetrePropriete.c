@@ -172,6 +172,7 @@ void FenetrePropriete_validation( GtkButton* button, gpointer data )
         gtk_tree_store_remove( fp->scene->store, fp->objet->iter );
         gtk_tree_store_append( fp->scene->store, fp->objet->iter, groupe->iter );
         gtk_tree_store_set( fp->scene->store, fp->objet->iter, GROUPE, "Cube", -1);
+        gtk_tree_selection_select_iter( fp->scene->treeSelection, fp->objet->iter );
 
     }
 
