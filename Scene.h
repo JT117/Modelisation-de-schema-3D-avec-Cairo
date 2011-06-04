@@ -72,6 +72,18 @@ struct Scene
     double dWidth;
 };
 
+
+/**
+ * Va contenir les informations relatives à un objet ou un groupe dans la perspective de classer les elements
+ */
+typedef struct ClassifyObj
+{
+	double dDistance; /*  distance entre la caméra et le centre de gravité de chaque face, servira pour classer les indexs de face*/
+	Groupe* pGroup;
+	Objet* pObj;
+}ClassifyObj;
+
+
 /** Fonction qui initialise une scene */
 void Scene_initialiser_scene( Scene* scene, GtkWidget* window, GtkWidget* mainWindow  );
 

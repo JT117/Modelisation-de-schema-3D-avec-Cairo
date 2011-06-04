@@ -18,6 +18,8 @@ tCoord2D* ProjectionTools_getPictureCoord(Point* pPoint, InfoCamera* pCam);
 
 /**
  * Calcule les coordonnées du point dans le repère du monde.
+ *
+ *  @param tCoordObj Coordonnées du point dans son repere pere actuel
  */
 void ProjectionTools_getCoordWorld(tCoord tCoordObj,Groupe* pFatherGroup,Point* pPoint);
 

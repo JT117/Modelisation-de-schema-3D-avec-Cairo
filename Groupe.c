@@ -166,13 +166,11 @@ void Groupe_transfo(Groupe* pGroup, tdMatrix tdTransfo)
 
 }
 
-void Groupe_drawMark(Groupe* pGroup,cairo_t* cr, InfoCamera* pCam)
+void Groupe_updateCoordWorld(Groupe* pGroup)
 {
 	int j;
-	tCoord2D* pPointProj0 = NULL; /* Coordonnée du centre du repere une fois projetté */
 	tCoord tCoordBefore, tCoordAfter;
 	tdMatrix tdMatPass;
-	Point tPoint;
 	Groupe* pFatherGroup = pGroup->pere;
 
 	if( pFatherGroup != NULL && pFatherGroup->id != GROUPE0)
@@ -197,19 +195,24 @@ void Groupe_drawMark(Groupe* pGroup,cairo_t* cr, InfoCamera* pCam)
 			pFatherGroup = pFatherGroup->pere;
 		}
 		/* Ici on est en possession des coordonnées de notre point dans le repere du monde (groupe0) dans tCoordAfter */
-		Point_initWorld(&tPoint, tCoordAfter[0],tCoordAfter[1],tCoordAfter[2]);
 		Point_initWorld(&(pGroup->tCenterGroup), tCoordAfter[0],tCoordAfter[1],tCoordAfter[2]);
 	}
 	else /* Groupe de base */
 	{
 		if( pFatherGroup == NULL )
-			Point_initWorld(&tPoint, 0.0, 0.0 ,0.0);
+			Point_initWorld(&(pGroup->tCenterGroup), 0.0, 0.0 ,0.0);
 		else
-			Point_initWorld(&tPoint, pGroup->tCenterGroup.tdCoordGroup[0], pGroup->tCenterGroup.tdCoordGroup[1] ,pGroup->tCenterGroup.tdCoordGroup[2]);
+			Point_initWorld(&(pGroup->tCenterGroup), pGroup->tCenterGroup.tdCoordGroup[0], pGroup->tCenterGroup.tdCoordGroup[1] ,pGroup->tCenterGroup.tdCoordGroup[2]);
 	}
+}
 
+void Groupe_drawMark(Groupe* pGroup,cairo_t* cr, InfoCamera* pCam)
+{
+	tCoord2D* pPointProj0 = NULL; /* Coordonnée du centre du repere une fois projetté */
+
+	Groupe_updateCoordWorld(pGroup);
 	/*On dessine le repere */
-	pPointProj0 = ProjectionTools_getPictureCoord(&(tPoint),pCam);
+	pPointProj0 = ProjectionTools_getPictureCoord(&(pGroup->tCenterGroup),pCam);
 
 	free(pPointProj0);
 	cairo_arc (cr, (*pPointProj0)[0], (*pPointProj0)[1], 2, 0.0, 2*M_PI);

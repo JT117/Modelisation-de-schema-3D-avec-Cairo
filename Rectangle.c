@@ -55,15 +55,9 @@ void Rectangle_destroyRectangle(Rectangle* pRect)
 	free(pRect);
 }
 
-
-void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
+void Rectangle_updateCoordWolrd(Objet* pObj)
 {
 	int i,j;
-	/* Coordonnées de points une fois projettés */
-	tCoord2D* pPointProj0 = NULL;
-	tCoord2D* pPointProj1 = NULL;
-	tCoord2D* pPointProj2 = NULL;
-	tCoord2D* pPointProj3 = NULL;
 	tdMatrix tdMatPass;
 	tCoord tdCoordBefore;
 	tCoord tdCoordAfter; /* Va contenir les coordonnées de points màj après chaque itération */
@@ -89,6 +83,24 @@ void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 		Matrix_multiMatrixVect(tdMatPass, tdCoordBefore, tdCoordAfter); /* tdCoordAfter contient les coordonnées du point après le premier changement de base*/
 		ProjectionTools_getCoordWorld(tdCoordAfter,pFatherGroup,&(pRec->tPoint[i]));
 	}
+
+	pFatherGroup = pObj->pFatherGroup;
+	/* On met aussi à jour les coordonnées du centre de l'objet */
+	ProjectionTools_getCoordWorld(pRec->Center.tdCoordGroup,pFatherGroup,&(pRec->Center));
+}
+
+void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
+{
+	Rectangle* pRec = NULL;
+	/* Coordonnées de points une fois projettés */
+	tCoord2D* pPointProj0 = NULL;
+	tCoord2D* pPointProj1 = NULL;
+	tCoord2D* pPointProj2 = NULL;
+	tCoord2D* pPointProj3 = NULL;
+
+	Rectangle_updateCoordWolrd(pObj); /* Changement de repere -> on passe dans le repere objet */
+
+	pRec = pObj->type.rectangle;
 	/* Grace à nos 4 points ayant leurs coordonnées exprimées dans le repere du monde on projette ! */
 	pPointProj0 = ProjectionTools_getPictureCoord(&(pRec->tPoint[0]),pCam);
 	pPointProj1 = ProjectionTools_getPictureCoord(&(pRec->tPoint[1]),pCam);
