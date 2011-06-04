@@ -21,10 +21,12 @@ Rectangle* Rectangle_createRectangle(tCoord tdCorner1,tCoord tdCorner2, tCoord t
 			Point_initGroup( &((pNewRect->tPoint)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
 
 			/* On met aussi à jour les coordonnées dans le repere du monde (necessaire pour la projection) */
+			/*
 			Point_init( &((pNewRect->tPoint)[0]), tdCorner1[0], tdCorner1[1], tdCorner1[2]);
 			Point_init( &((pNewRect->tPoint)[1]), tdCorner2[0], tdCorner1[1], tdCorner2[2]);
 			Point_init( &((pNewRect->tPoint)[2]), tdCorner2[0], tdCorner2[1], tdCorner2[2]);
 			Point_init( &((pNewRect->tPoint)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
+			*/
 
 
 			/* Init du centre du repere de la figure (centre de gravité du rectangle) dans le repere parent */
@@ -53,7 +55,8 @@ void Rectangle_destroyRectangle(Rectangle* pRect)
 	free(pRect);
 }
 
-void Rectangle_drawRectangleFinal( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
+
+void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 {
 	int i,j;
 	/* Coordonnées de points une fois projettés */
@@ -61,21 +64,21 @@ void Rectangle_drawRectangleFinal( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	tCoord2D* pPointProj1 = NULL;
 	tCoord2D* pPointProj2 = NULL;
 	tCoord2D* pPointProj3 = NULL;
-
-	Point tPoint[4];
-
 	tdMatrix tdMatPass;
 	tCoord tdCoordBefore;
 	tCoord tdCoordAfter; /* Va contenir les coordonnées de points màj après chaque itération */
+
 	/* On cherche à exprimer l'ensemble des coordonnées de points dans notre repere de la caméra --> pour projection */
-	Groupe* pFatherGroup = pObj->pFatherGroup; /* on récupère un pointeur vers le groupe pere */
+	Groupe* pFatherGroup = NULL;
 	Rectangle* pRec = pObj->type.rectangle; /* Récupération du pointeur sur notre objet d'un type plus précis que Objet* */
 
 	for(i=0;i<4;i++ )  /* On passe tous les points de l'objet en revue */
 	{
+		pFatherGroup = pObj->pFatherGroup; /* on récupère un pointeur vers le groupe pere */
 		for(j=0;j<4;j++)  /* initialisation du tableau de coordonnées avant tout changement de base */
 			tdCoordBefore[j] = pRec->tPoint[i].tdCoordGroup[j];
 
+		/* PREMIER CHANGEMENT DE BASE = PASSAGE REPERE OBJET --> GROUPE PERE */
 		/* Passage des coordonnées du point dans le premier groupe pere */
 		Matrix_initIdentityMatrix(tdMatPass); /* Initialisation de la matrice pour construction d'un matrice de passage */
 		/* COnstruction de la nouvelle matrice de passage grâce aux coordonnées du repere objet dans son groupe pere*/
@@ -84,28 +87,13 @@ void Rectangle_drawRectangleFinal( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 		tdMatPass[2][3] = pRec->Center.tdCoordGroup[2];
 
 		Matrix_multiMatrixVect(tdMatPass, tdCoordBefore, tdCoordAfter); /* tdCoordAfter contient les coordonnées du point après le premier changement de base*/
-		while( pFatherGroup->id != IDGROUPE0 ) /* tant qu'on est pas revenu à la racine on effectue un changement de base */
-		{
-			for(j=0;j<4;j++)
-				tdCoordBefore[j] = tdCoordAfter[j];
-
-			/* Construction nouvelle matrice de passage */
-			tdMatPass[0][3] = pFatherGroup->tCenterGroup.tdCoordGroup[0];
-			tdMatPass[1][3] = pFatherGroup->tCenterGroup.tdCoordGroup[1];
-			tdMatPass[2][3] = pFatherGroup->tCenterGroup.tdCoordGroup[2];
-
-			Matrix_multiMatrixVect(tdMatPass, tdCoordBefore, tdCoordAfter); /* Nouveau changement de base */
-			pFatherGroup = pFatherGroup->pere;
-		}
-		/* Ici on est en possession des coordonnées de notre point dans le repere du monde (groupe0) dans tdCoordAfter */
-		Point_initWorld(&(tPoint[i]), tdCoordAfter[0],tdCoordAfter[1],tdCoordAfter[2]);
-		Point_initWorld(&(pRec->tPoint[i]), tdCoordAfter[0],tdCoordAfter[1],tdCoordAfter[2]);
+		ProjectionTools_getCoordWorld(tdCoordAfter,pFatherGroup,&(pRec->tPoint[i]));
 	}
 	/* Grace à nos 4 points ayant leurs coordonnées exprimées dans le repere du monde on projette ! */
-	pPointProj0 = ProjectionTools_getPictureCoord(&(tPoint[0]),pCam);
-	pPointProj1 = ProjectionTools_getPictureCoord(&(tPoint[1]),pCam);
-	pPointProj2 = ProjectionTools_getPictureCoord(&(tPoint[2]),pCam);
-	pPointProj3 = ProjectionTools_getPictureCoord(&(tPoint[3]),pCam);
+	pPointProj0 = ProjectionTools_getPictureCoord(&(pRec->tPoint[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&(pRec->tPoint[1]),pCam);
+	pPointProj2 = ProjectionTools_getPictureCoord(&(pRec->tPoint[2]),pCam);
+	pPointProj3 = ProjectionTools_getPictureCoord(&(pRec->tPoint[3]),pCam);
 
 	/* Construction du path */
 	cairo_move_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]);
@@ -132,42 +120,18 @@ void Rectangle_drawRectangleFinal( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	free(pPointProj3);
 }
 
-
-void Rectangle_drawRectangle(Rectangle* pRectangle, cairo_t* cr, InfoCamera* pCam )
+void Rectangle_transfoCenter(Rectangle* pRec, tdMatrix tdTransfoMat)
 {
-	tCoord2D* pPointProj0 = NULL;
-	tCoord2D* pPointProj1 = NULL;
-	tCoord2D* pPointProj2 = NULL;
-	tCoord2D* pPointProj3 = NULL;
+	tCoord tCoordApTransfo;
 
-	pPointProj0 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[0]),pCam);
-	pPointProj1 = ProjectionTools_getPictureCoord(&((pRectangle->tPoint)[1]),pCam);
-	pPointProj2 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[2]),pCam);
-	pPointProj3 = ProjectionTools_getPictureCoord(&(pRectangle->tPoint[3]),pCam);
+	Point_initCoord(tCoordApTransfo, 0.0, 0.0, 0.0);
+	/*APplication de la transformation au centre du rectangle */
+	Matrix_multiMatrixVect(tdTransfoMat, pRec->Center.tdCoordGroup, tCoordApTransfo);
 
-	/* Construction du path */
-	cairo_move_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]);
-	cairo_line_to( cr, (*pPointProj1)[0], (*pPointProj1)[1]);
-	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
-	cairo_line_to( cr, (*pPointProj3)[0], (*pPointProj3)[1]);
-	cairo_close_path(cr);
-
-	/* Réglage de la couleur du rectangle */
-	cairo_set_source_rgba (cr, pRectangle->tColor[0], pRectangle->tColor[1], pRectangle->tColor[2] ,pRectangle->tColor[3]);
-	cairo_fill_preserve( cr );/*remplissage du rectangle avec path preservé*/
-	cairo_set_line_width(cr,0.8);/* réglage taille de la ligne*/
-
-	if( pRectangle->estSelectionne )
-	    cairo_set_source_rgb ( cr, 1.0, 0, 0);
-	else
-        cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
-
-	cairo_stroke(cr); /* dessin contour, perte du path */
-
-	free(pPointProj0);
-	free(pPointProj1);
-	free(pPointProj2);
-	free(pPointProj3);
+	pRec->Center.tdCoordGroup[0] = tCoordApTransfo[0];
+	pRec->Center.tdCoordGroup[1] = tCoordApTransfo[1];
+	pRec->Center.tdCoordGroup[2] = tCoordApTransfo[2];
+	pRec->Center.tdCoordGroup[3] = tCoordApTransfo[3];
 }
 
 void Rectangle_transfo(Rectangle* pRec, tdMatrix tdTransfoMat)
@@ -223,7 +187,7 @@ void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, dou
 	if(dAngleX != 0)
 	{
 		/*Récupération de la matrice de rotation qui va bien */
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, AXEX);
+		Transformation_getMatrixRotation(tdMatTransfo, dAngleX, AXEX);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<4 ;iLoop++)
@@ -248,7 +212,7 @@ void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, dou
 
 	if(dAngleY != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, AXEY);
+		Transformation_getMatrixRotation(tdMatTransfo, dAngleY, AXEY);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<4 ;iLoop++)
@@ -273,7 +237,7 @@ void Rectangle_rotate(Rectangle* pRectangle, double dAngleX, double dAngleY, dou
 
 	if(dAngleZ != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, AXEZ);
+		Transformation_getMatrixRotation(tdMatTransfo, dAngleZ, AXEZ);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<4 ;iLoop++)
@@ -305,7 +269,7 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
 	if(dAngleX != 0)
 	{
 		/*Récupération de la matrice de rotation qui va bien */
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleX, AXEX);
+		Transformation_getMatrixRotation(tdMatTransfo, dAngleX, AXEX);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
@@ -329,7 +293,7 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
 
 	if(dAngleY != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleY, AXEY);
+		Transformation_getMatrixRotation(tdMatTransfo, dAngleY, AXEY);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
@@ -352,7 +316,7 @@ void Rectangle_rotateWorld(Rectangle* pRectangle, double dAngleX, double dAngleY
 
 	if(dAngleZ != 0)
 	{
-		TransfoTools_getMatrixRotation(tdMatTransfo, dAngleZ, AXEZ);
+		Transformation_getMatrixRotation(tdMatTransfo, dAngleZ, AXEZ);
 
 		Point_initCoord(tdCoordApTransfo, 0.0, 0.0, 0.0);
 		/* On effectue la transformation pour tous  les points du rectangle */
@@ -393,7 +357,7 @@ void Rectangle_modSize(Rectangle* pRectangle, double dRatio)
 	if(dRatio != 1)
 	{
 		/*Récupération de la matrice d'homothétie*/
-		TransfoTools_getMatrixHomothety(tdMatTransfo, dRatio);
+		Transformation_getMatrixHomothety(tdMatTransfo, dRatio);
 
 		/* On effectue la transformation pour tous  les points du rectangle */
 		for(iLoop=0 ; iLoop<4 ;iLoop++)

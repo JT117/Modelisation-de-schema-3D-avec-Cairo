@@ -10,7 +10,7 @@ C_SRCS += \
 ../Cube.c \
 ../ExportWindow.c \
 ../FenPrincipale.c \
-../FenetreAjoutCube.c \
+../FenetreAjout.c \
 ../FenetrePropriete.c \
 ../Groupe.c \
 ../MatrixTools.c \
@@ -24,7 +24,7 @@ C_SRCS += \
 ../Selection.c \
 ../Sphere.c \
 ../Text.c \
-../TransfoTools.c \
+../Transformation.c \
 ../main.c 
 
 OBJS += \
@@ -34,7 +34,7 @@ OBJS += \
 ./Cube.o \
 ./ExportWindow.o \
 ./FenPrincipale.o \
-./FenetreAjoutCube.o \
+./FenetreAjout.o \
 ./FenetrePropriete.o \
 ./Groupe.o \
 ./MatrixTools.o \
@@ -48,7 +48,7 @@ OBJS += \
 ./Selection.o \
 ./Sphere.o \
 ./Text.o \
-./TransfoTools.o \
+./Transformation.o \
 ./main.o 
 
 C_DEPS += \
@@ -58,7 +58,7 @@ C_DEPS += \
 ./Cube.d \
 ./ExportWindow.d \
 ./FenPrincipale.d \
-./FenetreAjoutCube.d \
+./FenetreAjout.d \
 ./FenetrePropriete.d \
 ./Groupe.d \
 ./MatrixTools.d \
@@ -72,7 +72,7 @@ C_DEPS += \
 ./Selection.d \
 ./Sphere.d \
 ./Text.d \
-./TransfoTools.d \
+./Transformation.d \
 ./main.d 
 
 

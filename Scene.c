@@ -94,7 +94,7 @@ void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe )
     scene->nbObjet++;
 
     Groupe* groupe = Groupe_trouver_ById( scene, idGroupe );
-
+    objet->pFatherGroup = groupe;  /* On enregistre l'adresse du groupe pere */
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
@@ -110,6 +110,7 @@ void Scene_ajouter_segment( Scene* scene, Segment* pSeg, int idGroupe )
     scene->nbObjet++;
 
     Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    objet->pFatherGroup = groupe;  /* On enregistre l'adresse du groupe pere */
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
@@ -139,6 +140,7 @@ void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
     scene->nbObjet++;
 
     Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    objet->pFatherGroup = groupe;  /* On enregistre l'adresse du groupe pere */
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
@@ -222,6 +224,10 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
     	g_array_free(gtObjects,TRUE);
     }
     */
+    for( i = 0; i < scene->tGroupe->len; i++ )
+    {
+    	Groupe_drawMark(g_array_index(scene->tGroupe, Groupe*, i ), cr, scene->camera );
+    }
 
     for( i = 0; i < scene->nbObjet; i++ )
 	{
@@ -240,26 +246,6 @@ void Scene_clear_scene( Scene* scene, cairo_t* cr )
      cairo_set_source_rgb( cr, 0.190, 0.190, 0.190 );
      cairo_paint( cr );
 }
-
-/** Fonction qui indique si une selection multiple est en cours
- * @param scene, un pointeur sur une scene initialisée
- * @return TRUE si une selection multiple est en cours
- **/
-/*gboolean Scene_selection_Multiple( Scene* scene )
-{
-    int i = 0;
-
-    for( i = 0; i < scene->clavier->nbTouche; i++ )
-    {
-        printf(" %s \n", g_array_index( scene->clavier->tTouche, char*, i ) );
-        if( strcmp( g_array_index( scene->clavier->tTouche, char*, i ), "Shift_L") == 0 )
-        {
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}*/
 
 void Scene_creation_objet( Scene* scene, double x, double y )
 {

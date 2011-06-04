@@ -36,13 +36,26 @@ void Matrix_multiMatrices(tdMatrix mat1, tdMatrix mat2);
  * @param pRes Le resultat
  * \pre Taille matrice carrée == taille vecteur
  */
-void Matrix_multiMatrixVect(tdMatrix pMat, double* pVect, tCoord pRes );
+void Matrix_multiMatrixVect(tdMatrix pMat, double* pVect, double* pRes );
 
 /**
  * Temporaire : affichage matrice dans la console
  */
 void Matrix_printMatrix(tdMatrix mat);
 
+/**
+ * Initialise la matrice passée en paramètre en tant que matrice identité.
+ *
+ * @param mat Matrice concernée par le traitement
+ */
 void Matrix_initIdentityMatrix(tdMatrix mat);
+
+/**
+ * Copie le contenu de la matrice 2 dans la matrice 1.
+ *
+ * @param tdMat1 matrice dans laquelle les données seront copiées
+ * @param tdMat2 matrice à copier
+ */
+void Matrix_copy(tdMatrix tdMat1, tdMatrix tdMat2);
 
 #endif

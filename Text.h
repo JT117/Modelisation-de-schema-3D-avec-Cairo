@@ -5,7 +5,7 @@
 #include <gtk/gtk.h>
 
 #include "MatrixTools.h"
-#include "TransfoTools.h"
+#include "Transformation.h"
 #include "Point.h"
 #include "Color.h"
 #include "Camera.h"

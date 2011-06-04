@@ -1,13 +1,13 @@
 #ifndef OBJET_H
 #define OBJET_H
 
-#include <stdlib.h>
-#include <gtk/gtk.h>
-#include <string.h>
-
 #include "Cube.h"
 #include "Segment.h"
 #include "Sphere.h"
+
+#include <stdlib.h>
+#include <gtk/gtk.h>
+#include <string.h>
 
 struct Rectangle;
 struct Groupe;
@@ -27,6 +27,7 @@ struct Objet
 
     /** Pointeur vers groupe pere **/
     struct Groupe* pFatherGroup;
+
     /** Union contenant le pointeur sur le bon type de l'objet */
     union{
             Cube* cube;
@@ -51,7 +52,7 @@ void Objet_est_un_Cube( Objet* objet, Cube* cube );
 /** Initialise un Objet Rectangle */
 void Objet_est_un_Rectangle( Objet* pObj, struct Rectangle* pRect );
 void Objet_est_un_Segment( Objet* pObj, Segment* pSeg );
-void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph );
+void Objet_est_une_Sphere( Objet* pObj,struct Sphere* pSph );
 
 /** Fonction capable de dessiner n'importe quel objet */
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam);
@@ -87,5 +88,13 @@ void Objet_rotation( Objet* objet, double x, double y );
  */
 void Objet_rotationWorld( Objet* objet, double x, double y );
 void Objet_homothetie( Objet* objet, int ratio );
+
+/**
+ * Va permettre d'appliquer une transfoirmation donnée sur le centre d'un objet.
+ *
+ * @param objet L'objet concerné par la transformation
+ * @param tdTransfo La matrice de transformation qui nous intéresse
+ */
+void Objet_transfoCenter(Objet* objet, tdMatrix tdTransfo);
 
 #endif  // OBJET_H

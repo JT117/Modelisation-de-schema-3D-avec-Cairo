@@ -6,7 +6,7 @@
 
 #include "Point.h"
 #include "MatrixTools.h"
-#include "TransfoTools.h"
+#include "Transformation.h"
 #include "ProjectionTools.h"
 #include "Camera.h"
 #include "Color.h"
@@ -41,12 +41,11 @@ typedef struct Rectangle
  */
 Rectangle* Rectangle_createRectangle(tCoord tdCorner1,tCoord tdCorner2, tCoord tdCenter);
 
-void Rectangle_drawRectangleFinal( struct Objet* pObj, cairo_t* cr, InfoCamera* pCam);
-
 /**
  * Dessine le rectangle dans le plan de projection de la caméra passé en param
  */
-void Rectangle_drawRectangle(Rectangle* pRectangle, cairo_t* cr, InfoCamera* pCam);
+void Rectangle_drawRectangle( struct Objet* pObj, cairo_t* cr, InfoCamera* pCam);
+
 
 /**
  * Suppression d'une structure sRectangle allouée

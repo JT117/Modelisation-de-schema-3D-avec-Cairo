@@ -4,12 +4,14 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+struct Objet;
 #include "MatrixTools.h"
-#include "TransfoTools.h"
+#include "Transformation.h"
 #include "Point.h"
 #include "Color.h"
 #include "Camera.h"
 #include "Selection.h"
+
 
 typedef struct Cube Cube;
 struct Cube
@@ -25,7 +27,10 @@ struct Cube
 	Color tColor; /* Couleur de l'objet */
 };
 
-void Cube_drawCube(Cube* pCube, cairo_t* cr, InfoCamera* pCam);
+/**
+ * Contre toute attente cette fonction permet dessiner un cube à  l'écran.
+ */
+void Cube_drawCube(struct Objet* pObj,cairo_t* cr,InfoCamera* pCam);
 
 Cube* Cube_createCube(tCoord tCenter, double dHeight,double dWidth, double dDepth);
 
@@ -67,5 +72,13 @@ int scalaire_result( tCoord2D* a, tCoord2D* b, int x, int y );
 void Cube_modSize(Cube* pRectangle, double dRatio);
 
 GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam);
+
+/**
+ * Va appliquer la transformation de la matrice passée en paramètre à tous les points de l'objet.
+ *
+ * @param pRec L'objet Cube concerné
+ * @param tdTransfoMat La matrice de transformation à appliquer
+ */
+void Cube_transfo(Cube* pCube, tdMatrix tdTransfoMat);
 
 #endif //CUBE_H

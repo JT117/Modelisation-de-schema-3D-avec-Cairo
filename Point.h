@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#include "MatrixTools.h"
+
 typedef double tCoord[4];
 typedef double tCoord2D[2];
 
@@ -52,5 +54,8 @@ double Point_determinant(tCoord2D tP1, tCoord2D tP2);
 void Point_initGroup(Point* pPoint, double dX, double dY, double dZ);
 
 void Point_initWorld(Point* pPoint, double dX, double dY, double dZ);
+
+
+
 
 #endif // POINT_H

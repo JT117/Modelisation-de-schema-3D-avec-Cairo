@@ -1,7 +1,10 @@
+#include <math.h>
+
 #include "Objet.h"
 #include "Groupe.h"
 #include "Rectangle.h"
-#include <math.h>
+
+
 
 /** Fonction qui libère un objet selon son type
  * @param objet, l'objet à liberer
@@ -69,22 +72,21 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 {
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        Cube_drawCube( objet->type.cube, cr, cam );
+        Cube_drawCube( objet, cr, cam );
     }
     else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
 	{
-		Rectangle_drawRectangleFinal( objet, cr, cam);
+		Rectangle_drawRectangle( objet, cr, cam);
 	}
     else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
 	{
-		Segment_drawSegment( objet->type.segment, cr, cam);
+		Segment_drawSegment( objet, cr, cam);
 	}
 	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
 	{
-	    Sphere_drawSphere( objet->type.sphere, cr, cam );
+	    Sphere_drawSphere( objet, cr, cam );
 	}
 }
-
 
 /** Fonction qui indique si un point est contenu par un objet
  * @param objet, l'objet que l'on cherche à tester
@@ -154,6 +156,38 @@ void Objet_deselection( Objet* objet )
     }
 }
 
+void Objet_transfo(Objet* objet, tdMatrix tdTransfo)
+{
+	if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+	{
+		Cube_transfo(objet->type.cube, tdTransfo);
+	}
+	else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+	{
+		Rectangle_transfo(objet->type.rectangle, tdTransfo);
+	}
+	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+	{
+		Sphere_transfo(objet->type.sphere, tdTransfo);
+	}
+}
+
+void Objet_transfoCenter(Objet* objet, tdMatrix tdTransfo)
+{
+	if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+	{
+		Cube_transfoCenter(objet->type.cube, tdTransfo);
+	}
+	else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+	{
+		Rectangle_transfoCenter(objet->type.rectangle, tdTransfo);
+	}
+	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+	{
+		Sphere_transfoCenter(objet->type.sphere, tdTransfo);
+	}
+}
+
 void Objet_rotation( Objet* objet, double x, double y )
 {
 	tdMatrix tdTransfoMat, tdNewTransfo;
@@ -165,19 +199,19 @@ void Objet_rotation( Objet* objet, double x, double y )
 	/* On recherche la matrice de rotation qui va bien */
 	if(dAngleX != 0)
 	{
-		TransfoTools_getMatrixRotation(tdNewTransfo, dAngleX, AXEX);
+		Transformation_getMatrixRotation(tdNewTransfo, dAngleX, AXEX);
 		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 	}
 
 	if(dAngleY != 0)
 	{
-		TransfoTools_getMatrixRotation(tdNewTransfo, dAngleY, AXEY);
+		Transformation_getMatrixRotation(tdNewTransfo, dAngleY, AXEY);
 		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 	}
 
 	if(dAngleZ != 0)
 	{
-		TransfoTools_getMatrixRotation(tdNewTransfo, dAngleZ, AXEZ);
+		Transformation_getMatrixRotation(tdNewTransfo, dAngleZ, AXEZ);
 		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 	}
 
@@ -205,7 +239,7 @@ void Objet_rotationWorld( Objet* objet, double x, double y )
 	}
     else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
     {
-    	Sphere_rotateWorld(objet->type.sphere, 0, x/200, y/200);
+    	//Sphere_rotateWorld(objet->type.sphere, 0, x/200, y/200);
     }
 }
 

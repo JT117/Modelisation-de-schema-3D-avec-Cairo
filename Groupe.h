@@ -1,7 +1,7 @@
 #ifndef GROUPE_H
 #define GROUPE_H
 
-#define IDGROUPE0 0
+#define GROUPE0 0
 
 #include <stdlib.h>
 #include <gtk/gtk.h>
@@ -30,12 +30,14 @@ struct Groupe
     GArray* aTransfo;
     /** Matrice de transformation comprenant toutes les transfo du tableau aTransfo  Tfinale = T1*T2*...*Tn **/
     tdMatrix tTransfoMatrix;
+
+    gboolean bVisited;  /* Booléen utilisé lors du parcours de l'arbre dans le cas de transformation */
 };
 
 /**
  * Calcul une matrice de transformation à partir du tableau des matrices.
  */
-void Groupe_TransfoCalc(Groupe* pGroup );
+void Groupe_transfoCalc(Groupe* pGroup );
 
 /**
  * AJout d'une transformation devant s'appliquer à l'ensemble du groupe.
@@ -55,5 +57,12 @@ void Groupe_ajouter_Objet( Groupe* groupe, struct Objet* objet );
 void Groupe_detruire( Groupe* groupe );
 
 Groupe* Groupe_trouver( struct Scene* scene, char* nom );
+
+/**
+ * Va mettre le gboolean d'un groupe à FALSE.
+ *
+ *  @param pGroup Le groupe concerné
+ */
+void Groupe_unvisit(Groupe* pGroup);
 
 #endif //GROUPE_H

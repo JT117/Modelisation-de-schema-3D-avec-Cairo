@@ -1,4 +1,4 @@
-#include "FenetreAjoutCube.h"
+#include "FenetreAjout.h"
 #include "Cube.h"
 #include "Objet.h"
 #include "Scene.h"
@@ -7,6 +7,7 @@
 #include "ExportWindow.h"
 #include "Enum.h"
 #include "Selection.h"
+#include "Groupe.h"
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);

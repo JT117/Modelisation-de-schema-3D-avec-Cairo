@@ -399,17 +399,79 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     {
         if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
         {
-            int i = 0;
-            Point diff;
-            diff.x = scene->rotation.x - event->x;
-            diff.y = scene->rotation.y - event->y;
+            int i = 0,j;
+            tCoord2D tDifference;
+            Groupe* pSon;
+            Groupe* pGroupe;
+            tdMatrix tdTransfoMat;
+            tdMatrix tdNewTransfo;
+            Objet* pObj;
 
+            tDifference[0] = scene->rotation.x - event->x;
+            tDifference[1] = scene->rotation.y - event->y;
+
+            Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
+			/* On recherche la matrice de rotation qui va bien */
+			if(tDifference[0] != 0)
+			{
+				Transformation_getMatrixRotation(tdNewTransfo, tDifference[1]/200, AXEX);
+				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+			}
+
+			if(tDifference[1] != 0)
+			{
+				Transformation_getMatrixRotation(tdNewTransfo,tDifference[0]/200, AXEY);
+				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+			}
+			/*
+			if(dAngleZ != 0)
+			{
+				TransfoTools_getMatrixRotation(tdNewTransfo, dAngleZ, AXEZ);
+				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);
+			}
+			*/
+
+            /* On passe en revue tous les groupes de notre scene */
+            for( i = 0; i < scene->nbGroupe; i++ )
+			{
+				pGroupe = g_array_index( scene->tGroupe, Groupe*, i ); /*Récupération du groupe en question*/
+
+				if( gtk_tree_selection_iter_is_selected( scene->treeSelection, pGroupe->iter ) ) /* On test si le gorupe est selectionné*/
+				{
+					if( !pGroupe->bVisited)
+					{
+						/* TRANSFORMATIIIOOOONNN RECURSIVE !!! */
+						/* On applique la transfo pour tous les groupes fils */
+						for( j=0;j<pGroupe->tFils->len;++j)
+						{
+							pSon = g_array_index(pGroupe->tFils,Groupe*,j);
+							Groupe_transfo( pSon, tdTransfoMat);
+						}
+
+						/* et pour les objets du groupe */
+						for( j=0;j<pGroupe->tObjet->len;++j)
+						{
+							pObj = g_array_index(pGroupe->tObjet,Objet*,j);
+							Objet_transfoCenter(pObj, tdTransfoMat);
+							Objet_transfo( pObj , tdTransfoMat);
+						}
+					}
+				}
+			}
+
+            /*Une fois que tous les groupes sont visités on remet leur flag bVisited à false pour une prochaine utilisation*/
+            for( i = 0; i < scene->nbGroupe; i++ )
+			{
+				pGroupe = g_array_index( scene->tGroupe, Groupe*, i ); /*Récupération du groupe en question*/
+				Groupe_unvisit(pGroupe);
+			}
+            /*
             for( i = 0; i < scene->selection->nbSelection; i++ )
             {
                 Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
 
                 Objet_rotation( objet, diff.x, diff.y );
-            }
+            }*/
             scene->rotation.x = event->x;
             scene->rotation.y = event->y;
 
@@ -512,7 +574,7 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data; /*recupération de la scene courante*/
-    FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube) );
+    FenetreAjout* fao = (FenetreAjout*)malloc( 1 *sizeof( FenetreAjout) );
     initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
 
     return TRUE;
@@ -521,7 +583,7 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
-    FenetreAjoutCube* fao = (FenetreAjoutCube*)malloc( 1 *sizeof( FenetreAjoutCube) );
+    FenetreAjout* fao = (FenetreAjout*)malloc( 1 *sizeof( FenetreAjout) );
     initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
 
     return TRUE;
@@ -813,7 +875,7 @@ static gboolean selectionChanged(GtkTreeSelection *selection, gpointer data)
 
     int i = 0;
 
-    for( i = 0; i < scene->nbGroupe; i++ )                                  // Test si un groupe est selectionner
+    for( i = 0; i < scene->nbGroupe; i++ )                                  // Test si un groupe est selectionné
     {
         Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
 

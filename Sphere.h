@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+struct Objet;
 #include "MatrixTools.h"
-#include "TransfoTools.h"
+#include "Transformation.h"
 #include "Point.h"
 #include "Color.h"
 #include "Camera.h"
@@ -27,7 +28,7 @@ struct Sphere
 	double dRadius;  /* TODO : enlever ce long commentaire et le mettre dans le rapport */
 };
 
-void Sphere_drawSphere(Sphere* pSphere, cairo_t* cr, InfoCamera* pCam);
+void Sphere_drawSphere(struct Objet* pObj, cairo_t* cr, InfoCamera* pCam);
 
 Sphere* Sphere_createSphere(tCoord tCenter, double dRadius);
 

@@ -109,3 +109,14 @@ void Matrix_printMatrix(tdMatrix mat)
 		printf("\n");
 	}
 }
+
+void Matrix_copy(tdMatrix tdMat1, tdMatrix tdMat2)
+{
+	int i=0,j=0;
+
+	for(i=0;i<4;++i)
+	{
+		for(j=0;j<4;++j)
+			tdMat1[i][j]=tdMat2[i][j];
+	}
+}

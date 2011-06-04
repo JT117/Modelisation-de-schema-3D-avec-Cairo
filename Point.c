@@ -1,7 +1,6 @@
 #include <math.h>
 
 #include "Point.h"
-#include "MatrixTools.h"
 
 void Point_init(Point* pPoint, double dX, double dY, double dZ)  /* TODO: Enelver ce truc */
 {
