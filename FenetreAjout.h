@@ -34,11 +34,23 @@ struct FenetreAjout
     char* dernierLayout;
     GtkWidget* comboBoxGroupe;
 
+
+    /* Infos relatives au triangle et au quadrilatère*/
+    GtkWidget* hbox_point1;
+    GtkWidget* hbox_point2;
+    GtkWidget* hbox_point3;
+    GtkWidget* hbox_point4;
+
+    GtkWidget* xCoord[4]; // X
+	GtkWidget* yCoord[4]; // Y
+	GtkWidget* zCoord[4]; // Z
+
     double x, y, z;
     double L;
     double l;
 };
 
-void initialiser_FenetreAjoutCube( FenetreAjout* fao, Scene* scene );
+void initialiser_FenetreAjout( FenetreAjout* fao, Scene* scene );
+
 
 #endif //FENETRE_AJOUT_H

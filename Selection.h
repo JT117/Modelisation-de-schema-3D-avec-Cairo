@@ -51,7 +51,7 @@ void Selection_selectionner( struct Scene* scene,struct Objet* objet );
 /**
  * Calcul si un clique de souris est contune dans le quadrilatere convexe passé en paramètre.
  */
-gboolean Selection_inFace(tCoord2D tP1,tCoord2D tP2,tCoord2D tP3, tCoord2D tP4, double dXClick, double dYClick );
+gboolean Selection_inFace(tCoord2D* tdP[],int iEdgeCount ,double dXClick, double dYClick );
 
 #endif  //SELECTION_H
 

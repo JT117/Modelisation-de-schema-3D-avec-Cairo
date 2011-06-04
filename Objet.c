@@ -3,8 +3,7 @@
 #include "Objet.h"
 #include "Groupe.h"
 #include "Rectangle.h"
-
-
+#include "Pyramid.h"
 
 /** Fonction qui libère un objet selon son type
  * @param objet, l'objet à liberer
@@ -12,7 +11,7 @@
  **/
 void Objet_detruire( Objet* objet )
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         // Pas d'alloc dynamique
     }
@@ -26,18 +25,45 @@ void Objet_detruire( Objet* objet )
  **/
 void Objet_est_un_Cube( Objet* objet, Cube* cube )
 {
-    objet->typeObjet = (char*)malloc( 5 * sizeof(char) );
+	objet->eType = CUBE;
+    //objet->typeObjet = (char*)malloc( 5 * sizeof(char) );
     objet->type.cube = cube;
-    strcpy( objet->typeObjet, "Cube" );
+    //strcpy( objet->typeObjet, "Cube" );
+    objet->doitEtreDeselectionner = TRUE;
+    objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+}
+
+void Objet_est_un_Triangle( Objet* objet, Triangle* pTri )
+{
+	objet->eType = TRIANGLE;
+    //objet->typeObjet = (char*)malloc( 9 * sizeof(char) );
+    objet->type.triangle = pTri;
+   //strcpy( objet->typeObjet, "Triangle" );
+    objet->doitEtreDeselectionner = TRUE;
+    objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+}
+
+void Objet_est_un_Quadrilateral( Objet* objet, Quadrilateral* pQuadri )
+{
+	objet->eType = QUADRILATERAL;
+    objet->type.quadrilateral = pQuadri;
+    objet->doitEtreDeselectionner = TRUE;
+    objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+}
+
+void Objet_est_une_Pyramide( Objet* objet, Pyramid* pPyr )
+{
+    //objet->typeObjet = (char*)malloc( 5 * sizeof(char) );
+    objet->type.pyramid = pPyr;
+    //strcpy( objet->typeObjet, "Pyramide" );
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
 void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
 {
-    pObj->typeObjet = (char*)malloc( 10 * sizeof(char) ); /* allocation chaine de type */
+    pObj->eType = RECTANGLE;
     pObj->type.rectangle = pRect; /* sauvegarde pointeur sur objet */
-    strcpy( pObj->typeObjet, "Rectangle" );
     pObj->doitEtreDeselectionner = TRUE;
 
     /* Allocation des tableaux dynamiques contenant les transformations à appliquer sur l'objet */
@@ -48,18 +74,16 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
 
 void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
 {
-	pObj->typeObjet = (char*)malloc( 8 * sizeof(char) ); /* allocation chaine de type */
+	pObj->eType = SEGMENT;
 	pObj->type.segment = pSeg; /* sauvegarde pointeur sur objet */
-	strcpy( pObj->typeObjet, "Segment" );
 	pObj->doitEtreDeselectionner = TRUE;
 	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
 void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
 {
-	pObj->typeObjet = (char*)malloc( 6 * sizeof(char) ); /* allocation chaine de type */
+	pObj->eType = SPHERE;
 	pObj->type.sphere = pSph; /* sauvegarde pointeur sur objet */
-	strcpy( pObj->typeObjet, "Sphere" );
 	pObj->doitEtreDeselectionner = TRUE;
 	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
@@ -70,23 +94,35 @@ void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
  **/
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         Cube_drawCube( objet, cr, cam );
     }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( objet->eType == RECTANGLE )
 	{
 		Rectangle_drawRectangle( objet, cr, cam);
 	}
-    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    else if( objet->eType == SEGMENT )
 	{
 		Segment_drawSegment( objet, cr, cam);
 	}
-	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+	else if( objet->eType == SPHERE )
 	{
 	    Sphere_drawSphere( objet, cr, cam );
 	}
-	else if( strcmp( objet->typeObjet, "Texte" ) == 0 )
+	else if( objet->eType == TRIANGLE )
+	{
+		Triangle_drawTriangle( objet, cr, cam );
+	}
+	else if( objet->eType == PYRAMID )
+	{
+		Pyramid_drawPyramid( objet, cr, cam );
+	}
+	else if( objet->eType == QUADRILATERAL )
+	{
+		Quadrilateral_drawQuadrilateral( objet, cr, cam );
+	}
+	else if( objet->eType == TEXTE )
 	{
 	    cairo_set_source_rgb(cr, 0.9, 0.9, 0.0 );
 	    cairo_set_font_size( cr, 50 );
@@ -103,18 +139,30 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
  **/
 gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCam)
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         return Cube_Contient_Point( objet->type.cube, x, y, pCam );
     }
-    else if(strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( objet->eType == RECTANGLE)
     {
     	return Rectangle_Contient_Point( objet->type.rectangle, x, y,pCam);
     }
-    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    else if( objet->eType == SPHERE )
     {
         return Sphere_Contient_Point( objet->type.sphere, x, y,pCam);
     }
+    else if( objet->eType == TRIANGLE )
+	{
+    	return Triangle_Contient_Point( objet->type.triangle, x, y,pCam);
+	}
+    else if( objet->eType == QUADRILATERAL )
+	{
+    	return Quadrilateral_Contient_Point( objet->type.quadrilateral, x, y,pCam);
+	}
+    else if( objet->eType == PYRAMID )
+	{
+    	return Pyramid_Contient_Point( objet->type.pyramid, x, y,pCam);
+	}
     return TRUE;
 }
 
@@ -123,22 +171,34 @@ gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCa
  **/
 void Objet_selection( Objet* objet )
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         objet->type.cube->estSelectionne = TRUE;
     }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( objet->eType == RECTANGLE )
     {
         objet->type.rectangle->estSelectionne = TRUE;
     }
-    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    else if( objet->eType == SEGMENT )
     {
         objet->type.segment->estSelectionne = TRUE;
     }
-    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    else if( objet->eType == SPHERE )
     {
         objet->type.sphere->estSelectionne = TRUE;
     }
+    else if( objet->eType == TRIANGLE )
+    {
+	   objet->type.triangle->estSelectionne = TRUE;
+	}
+    else if( objet->eType == QUADRILATERAL )
+    {
+	   objet->type.quadrilateral->estSelectionne = TRUE;
+	}
+    else if( objet->eType == PYRAMID )
+    {
+	   objet->type.pyramid->estSelectionne = TRUE;
+	}
 }
 
 /** Fonction qui mets le flag de selection de l'objet à FALSE
@@ -146,130 +206,124 @@ void Objet_selection( Objet* objet )
  **/
 void Objet_deselection( Objet* objet )
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         objet->type.cube->estSelectionne = FALSE;
     }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( objet->eType == RECTANGLE )
     {
         objet->type.rectangle->estSelectionne = FALSE;
     }
-    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    else if( objet->eType == SEGMENT )
     {
         objet->type.segment->estSelectionne = FALSE;
     }
-    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    else if( objet->eType == SPHERE )
     {
         objet->type.sphere->estSelectionne = FALSE;
     }
+    else if( objet->eType == TRIANGLE )
+	{
+		objet->type.triangle->estSelectionne = FALSE;
+	}
+    else if( objet->eType == QUADRILATERAL )
+	{
+		objet->type.quadrilateral->estSelectionne = FALSE;
+	}
+    else if( objet->eType == PYRAMID )
+	{
+		objet->type.pyramid->estSelectionne = FALSE;
+	}
 }
 
-void Objet_updateCoordWorld(Objet* pObj)
+void Objet_updateCoordWorld(Objet* objet)
 {
-	if( strcmp( pObj->typeObjet, "Cube" ) == 0 )
+	if( objet->eType == CUBE )
 	{
-		Cube_updateCoordWolrd(pObj);
+		Cube_updateCoordWolrd(objet);
 	}
-	else if( strcmp( pObj->typeObjet, "Rectangle" ) == 0 )
+	else if( objet->eType == RECTANGLE )
 	{
-		Rectangle_updateCoordWolrd(pObj);
+		Rectangle_updateCoordWolrd(objet);
 	}
-	else if( strcmp( pObj->typeObjet, "Sphere" ) == 0 )
+	else if( objet->eType == SPHERE )
 	{
 		//Sphere_transfo(objet->type.sphere, tdTransfo);
+	}
+	else if( objet->eType == TRIANGLE )
+	{
+		Triangle_updateCoordWolrd(objet);
+	}
+	else if( objet->eType == QUADRILATERAL )
+	{
+		Quadrilateral_updateCoordWolrd(objet);
+	}
+	else if( objet->eType == PYRAMID )
+	{
+		Pyramid_updateCoordWolrd(objet);
 	}
 }
 
 void Objet_transfo(Objet* objet, tdMatrix tdTransfo)
 {
-	if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+	if( objet->eType == CUBE )
 	{
 		Cube_transfo(objet->type.cube, tdTransfo);
 	}
-	else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+	else if( objet->eType == RECTANGLE )
 	{
 		Rectangle_transfo(objet->type.rectangle, tdTransfo);
 	}
-	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+	else if( objet->eType == SPHERE)
 	{
 		Sphere_transfo(objet->type.sphere, tdTransfo);
 	}
+	else if( objet->eType == TRIANGLE )
+	{
+		Triangle_transfo(objet->type.triangle, tdTransfo);
+	}
+	else if( objet->eType == QUADRILATERAL )
+	{
+		Quadrilateral_transfo(objet->type.quadrilateral, tdTransfo);
+	}
+	else if( objet->eType == PYRAMID )
+	{
+		Pyramid_transfo(objet->type.pyramid, tdTransfo);
+	}
+
 }
 
 void Objet_transfoCenter(Objet* objet, tdMatrix tdTransfo)
 {
-	if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+	if( objet->eType == CUBE )
 	{
 		Cube_transfoCenter(objet->type.cube, tdTransfo);
 	}
-	else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+	else if( objet->eType == RECTANGLE )
 	{
 		Rectangle_transfoCenter(objet->type.rectangle, tdTransfo);
 	}
-	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+	else if( objet->eType == SPHERE )
 	{
 		Sphere_transfoCenter(objet->type.sphere, tdTransfo);
 	}
-}
-
-void Objet_rotation( Objet* objet, double x, double y )
-{
-	tdMatrix tdTransfoMat, tdNewTransfo;
-	double dAngleX = y/200;
-	double dAngleY = x/200;
-	double dAngleZ = 0.0;
-
-	Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
-	/* On recherche la matrice de rotation qui va bien */
-	if(dAngleX != 0)
+	else if( objet->eType == TRIANGLE )
 	{
-		Transformation_getMatrixRotation(tdNewTransfo, dAngleX, AXEX);
-		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+		Triangle_transfoCenter(objet->type.triangle, tdTransfo);
 	}
-
-	if(dAngleY != 0)
+	else if( objet->eType == QUADRILATERAL )
 	{
-		Transformation_getMatrixRotation(tdNewTransfo, dAngleY, AXEY);
-		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+		Quadrilateral_transfoCenter(objet->type.quadrilateral, tdTransfo);
 	}
-
-	if(dAngleZ != 0)
+	else if( objet->eType == PYRAMID )
 	{
-		Transformation_getMatrixRotation(tdNewTransfo, dAngleZ, AXEZ);
-		Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+		Pyramid_transfoCenter(objet->type.pyramid, tdTransfo);
 	}
-
-
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
-    {
-        Cube_rotateCube( objet->type.cube, y/200, x/200, 0 );
-    }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
-    {
-    	Rectangle_transfo(objet->type.rectangle, tdTransfoMat);
-        //Rectangle_rotate( objet->type.rectangle, 0, x/200, y/200 );
-    }
-}
-
-void Objet_rotationWorld( Objet* objet, double x, double y )
-{
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
-    {
-    	Cube_rotateCubeWorld(objet->type.cube, 0, x/200, y/200);
-    }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
-	{
-		Rectangle_rotateWorld(objet->type.rectangle, 0, x/200, y/200);
-	}
-    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
-    {
-    	//Sphere_rotateWorld(objet->type.sphere, 0, x/200, y/200);
-    }
 }
 
 void Objet_homothetie( Objet* objet, int ratio )
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         Cube_modSize( objet->type.cube, ratio );
     }
@@ -277,22 +331,22 @@ void Objet_homothetie( Objet* objet, int ratio )
 
 void Objet_get_Color( Objet* objet, Color tColor )
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         tColor[0] = objet->type.cube->tColor[0];
         tColor[1] = objet->type.cube->tColor[1];
         tColor[2] = objet->type.cube->tColor[2];
         tColor[3] = objet->type.cube->tColor[3];
     }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( objet->eType == RECTANGLE )
     {
         /* TODO pareil que ci dessus*/
     }
-    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    else if( objet->eType == SEGMENT )
     {
         /* TODO pareil que ci dessus*/
     }
-    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    else if( objet->eType == SPHERE )
     {
         /* TODO pareil que ci dessus*/
     }
@@ -300,19 +354,19 @@ void Objet_get_Color( Objet* objet, Color tColor )
 
 void Objet_set_Color( Objet* objet, double r, double g, double b, double a )
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
         Color_setColor( objet->type.cube->tColor,(r/255),(g/255),(b/255),a);
     }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( objet->eType == RECTANGLE )
     {
         /* TODO pareil que ci dessus*/
     }
-    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    else if( objet->eType == SEGMENT )
     {
         /* TODO pareil que ci dessus*/
     }
-    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    else if( objet->eType == SPHERE )
     {
         /* TODO pareil que ci dessus*/
     }
@@ -320,23 +374,23 @@ void Objet_set_Color( Objet* objet, double r, double g, double b, double a )
 
 void Objet_sauvegarde( Objet* objet, FILE* fichier )
 {
-    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    if( objet->eType == CUBE )
     {
-        fprintf( fichier, "%s\n%d %f %f %f %f\n", objet->typeObjet, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
+        fprintf( fichier, "%s\n%d %f %f %f %f\n", "Cube"/*objet->eType*/, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
                                               objet->type.cube->Center.tdCoordGroup[3],  abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
         fprintf( fichier, "%f %f %f %f\n", objet->type.cube->tColor[0]*255, objet->type.cube->tColor[1]*255, objet->type.cube->tColor[2]*255, objet->type.cube->tColor[3] );
     }
-    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    else if( objet->eType == RECTANGLE )
     {
-        fprintf( fichier, "%s\n%d %f %f %f %f %f\n", objet->typeObjet, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
+        fprintf( fichier, "%s\n%d %f %f %f %f %f\n", "Rectangle"/*objet->eType*/, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
           /*TODO calculer largeur hauteur*/                                    objet->type.rectangle->Center.tdCoordGroup[3], 250.0, 250.0 );
         fprintf( fichier, "%f %f %f %f\n", objet->type.rectangle->tColor[0]*255, objet->type.rectangle->tColor[1]*255, objet->type.rectangle->tColor[2]*255, objet->type.rectangle->tColor[3] );
     }
-    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    else if( objet->eType == SEGMENT )
     {
         /* TODO pareil que ci dessus*/
     }
-    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    else if( objet->eType == SPHERE )
     {
         /* TODO pareil que ci dessus*/
     }
@@ -349,9 +403,11 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
     tCoord tdCenter;
 
     char* typeObjet = (char*)malloc( 35 * sizeof( char ) );
-    fscanf( fichier, "%s", typeObjet );
+    //int typeObjet;
+    fscanf( fichier, "%e", typeObjet );
+    //fscanf( fichier, "%d", typeObjet );
 
-    if( strcmp( typeObjet, "Cube" ) ==0 )
+    if( strcmp(typeObjet,"Cube") == 0 )
     {
         fscanf( fichier, "%d %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth  );
         fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
@@ -366,7 +422,7 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
 
         Modification_modification_effectuer( scene );
     }
-    else if( strcmp( typeObjet, "Rectangle" ) == 0 )
+    else if( strcmp(typeObjet,"Rectangle") == 0 )
     {
         float dHeight;
         fscanf( fichier, "%d %f %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth, &dHeight  );
@@ -389,7 +445,4 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
         Scene_ajouter_rectangle( scene, pNewRect, groupe->id );
         Modification_modification_effectuer( scene );
     }
-
 }
-
-

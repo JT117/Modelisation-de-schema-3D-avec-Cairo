@@ -268,71 +268,37 @@ void Selection_dessiner_rectangle( Selection* selection, cairo_t* cr )
     }
 }
 
-gboolean Selection_inFace(tCoord2D tP1,tCoord2D tP2,tCoord2D tP3, tCoord2D tP4, double dXClick, double dYClick )
+gboolean Selection_inFace(tCoord2D* tdP[],int iEdgeCount ,double dXClick, double dYClick )
 {
-	int iNb = 0, iLoop = 0;
+	int iNb = 0, i = 0;
 	double tDistanceClick[2]; /* Distance (sur x et y) entre la position du curseur et chaque point  */
 	double tDistancePoints[2]; /* Distance entre deux points d'une arrête*/
 	double dDet = 0;
 	tCoord2D tCoordClick;
+	int iNextIndex = 0 ;
 
 	Point_initCoord2D(tCoordClick, dXClick, dYClick); /* Coordonnées du clique */
 
-	/* On passe chaque arrête en revue */
-	for(iLoop=0; iLoop<4; iLoop++)
+	for(i=0;i<iEdgeCount;i++)
 	{
-		switch(iLoop)
-		{
-			case 0:
-			{
-				tDistanceClick[0] =tCoordClick[0]-tP1[0];
-				tDistanceClick[1] = tCoordClick[1]-tP1[1];
-				tDistancePoints[0] = tP2[0]-tP1[0];
-				tDistancePoints[1] = tP2[1]-tP1[1];
-				break;
-			}
-			case 1:
-			{
-				tDistanceClick[0] = tCoordClick[0]-tP2[0];
-				tDistanceClick[1] = tCoordClick[1]-tP2[1];
-				tDistancePoints[0] = tP3[0]-tP2[0];
-				tDistancePoints[1] = tP3[1]-tP2[1];
-				break;
-			}
-			case 2:
-			{
-				tDistanceClick[0] = tCoordClick[0]-tP3[0];
-				tDistanceClick[1] = tCoordClick[1]-tP3[1];
-				tDistancePoints[0] = tP4[0]-tP3[0];
-				tDistancePoints[1] = tP4[1]-tP3[1];
-				break;
-			}
-			case 3:
-			{
-				tDistanceClick[0] = tCoordClick[0]-tP4[0];
-				tDistanceClick[1] = tCoordClick[1]-tP4[1];
-				tDistancePoints[0] = tP1[0]-tP4[0];
-				tDistancePoints[1] = tP1[1]-tP4[1];
-				break;
-			}
-		}
+		/* Calcul de  la distance entre le clique et le point considéré */
+		tDistanceClick[0] = tCoordClick[0]-(*tdP[i])[0];
+		tDistanceClick[1] = tCoordClick[1]-(*tdP[i])[1];
+
+		iNextIndex = (i+1)%iEdgeCount;
+		/* Calcul de la distance entre les points reliés par une arrête */
+		tDistancePoints[0] = (*tdP[iNextIndex])[0]-(*tdP[i])[0];
+		tDistancePoints[1] = (*tdP[iNextIndex])[1]-(*tdP[i])[1];
+
 		dDet = Point_determinant(tDistancePoints,tDistanceClick );
 
 		if( dDet > 0)
-				iNb++;
+			iNb++;
 		else if( dDet < 0)
-				iNb--;
+			iNb--;
 	}
-
-    if( iNb == 4 || iNb == -4 )
-        return TRUE;
-    else
-    	return FALSE;
+	 if( iNb == iEdgeCount || iNb == -iEdgeCount )
+		return TRUE;
+	else
+		return FALSE;
 }
-
-
-
-
-
-
-

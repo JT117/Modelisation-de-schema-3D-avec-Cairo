@@ -20,6 +20,8 @@ C_SRCS += \
 ../Objet.c \
 ../Point.c \
 ../ProjectionTools.c \
+../Pyramid.c \
+../Quadrilateral.c \
 ../Rectangle.c \
 ../Scene.c \
 ../Segment.c \
@@ -27,6 +29,7 @@ C_SRCS += \
 ../Sphere.c \
 ../Text.c \
 ../Transformation.c \
+../Triangle.c \
 ../main.c 
 
 OBJS += \
@@ -46,6 +49,8 @@ OBJS += \
 ./Objet.o \
 ./Point.o \
 ./ProjectionTools.o \
+./Pyramid.o \
+./Quadrilateral.o \
 ./Rectangle.o \
 ./Scene.o \
 ./Segment.o \
@@ -53,6 +58,7 @@ OBJS += \
 ./Sphere.o \
 ./Text.o \
 ./Transformation.o \
+./Triangle.o \
 ./main.o 
 
 C_DEPS += \
@@ -72,6 +78,8 @@ C_DEPS += \
 ./Objet.d \
 ./Point.d \
 ./ProjectionTools.d \
+./Pyramid.d \
+./Quadrilateral.d \
 ./Rectangle.d \
 ./Scene.d \
 ./Segment.d \
@@ -79,6 +87,7 @@ C_DEPS += \
 ./Sphere.d \
 ./Text.d \
 ./Transformation.d \
+./Triangle.d \
 ./main.d 
 
 

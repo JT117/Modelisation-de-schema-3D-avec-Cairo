@@ -107,12 +107,13 @@ void FenTrans_validation( GtkButton* button, gpointer data )
     else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )
     {
         int i = 0;
-
+        /*
         for( i = 0; i < ft->scene->selection->nbSelection; i++ )
         {
             Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, i );
             Objet_rotation( objet, dX, dY );
         }
+        */
     }
     else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2 ) ) )
     {

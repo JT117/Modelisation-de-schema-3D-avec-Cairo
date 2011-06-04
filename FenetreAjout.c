@@ -2,10 +2,10 @@
 #include "Config.h"
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data );
-static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpointer data );
-void FenetreAjoutCube_enlever_layout( FenetreAjout* fao );
+static gboolean FenetreAjout_change_affichage( GtkComboBox* comboBox, gpointer data );
+void FenetreAjout_enlever_layout( FenetreAjout* fao );
 
-void initialiser_FenetreAjoutCube( FenetreAjout* fao, Scene* scene )
+void initialiser_FenetreAjout( FenetreAjout* fao, Scene* scene )
 {
     fao->fenetre = gtk_window_new( GTK_WINDOW_TOPLEVEL );
     fao->scene = scene;
@@ -24,6 +24,8 @@ void initialiser_FenetreAjoutCube( FenetreAjout* fao, Scene* scene )
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Parallélépipède rectangle" );
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Sphere" );
     gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Rectangle" );
+    gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Triangle" );
+    gtk_combo_box_append_text( GTK_COMBO_BOX( comboBox ), "Quadrilatère" );
     gtk_widget_set_size_request( GTK_WIDGET( comboBox ), 250, -1 );
 
     GtkWidget* text = gtk_label_new("Type d'objet : ");
@@ -143,7 +145,7 @@ void initialiser_FenetreAjoutCube( FenetreAjout* fao, Scene* scene )
 
     g_signal_connect_object( G_OBJECT( fao->boutonAnnuler ), "clicked", G_CALLBACK( gtk_widget_destroy ), fao->fenetre, G_CONNECT_SWAPPED );
     g_signal_connect( G_OBJECT( fao->boutonOk ), "clicked", G_CALLBACK( nouvel_ajout ), fao );
-    g_signal_connect( G_OBJECT( comboBox ), "changed", G_CALLBACK( FenetreAjoutCube_change_affichage ), fao );
+    g_signal_connect( G_OBJECT( comboBox ), "changed", G_CALLBACK( FenetreAjout_change_affichage ), fao );
     g_signal_connect( G_OBJECT( fao->fenetre ), "delete-event", G_CALLBACK( gtk_widget_destroy ), NULL );
 
     //Layout temporaire
@@ -162,13 +164,13 @@ void initialiser_FenetreAjoutCube( FenetreAjout* fao, Scene* scene )
     gtk_widget_show_all(fao->fenetre);
 }
 
-static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpointer data )
+static gboolean FenetreAjout_change_affichage( GtkComboBox* comboBox, gpointer data )
 {
     FenetreAjout* fao = (FenetreAjout*)data;
 
     if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Cube" ) == 0 )
     {
-        FenetreAjoutCube_enlever_layout( fao );
+        FenetreAjout_enlever_layout( fao );
 
         fao->layout = gtk_vbutton_box_new();
         gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START );
@@ -200,7 +202,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
     else if( (strcmp( gtk_combo_box_get_active_text( comboBox ), "Parallélépipède rectangle" ) == 0)
 					|| (strcmp( gtk_combo_box_get_active_text( comboBox ), "Rectangle" ) == 0) )
     {
-        FenetreAjoutCube_enlever_layout( fao );
+        FenetreAjout_enlever_layout( fao );
 
         fao->layout = gtk_vbutton_box_new();
         gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START );
@@ -231,7 +233,7 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
     }
     else if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Sphere" ) == 0 )
     {
-        FenetreAjoutCube_enlever_layout( fao );
+        FenetreAjout_enlever_layout( fao );
 
         fao->layout = gtk_vbutton_box_new();
         gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START );
@@ -261,10 +263,65 @@ static gboolean FenetreAjoutCube_change_affichage( GtkComboBox* comboBox, gpoint
         gtk_widget_show_all(fao->fenetre);
 
     }
+    else if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Triangle" ) == 0 )
+    {
+    	int i;
+    	 FenetreAjout_enlever_layout( fao );
+
+    	 fao->layout = gtk_vbutton_box_new(); /* Création nouveau layout */
+    	 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START ); /* Précision du style de layout */
+
+    	 GtkWidget* wLabelP1 = gtk_label_new("Point 1 : ");
+    	 GtkWidget* wLabelP2 = gtk_label_new("Point 2 : ");
+    	 GtkWidget* wLabelP3 = gtk_label_new("Point 3 : ");
+    	 /* Allocation des input necessaires */
+    	 for(i=0;i<3;++i)
+    		 (fao->xCoord)[i] = gtk_entry_new();
+
+    	 /* COnfiguration des layouts*/
+    	 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point1 ), GTK_BUTTONBOX_START );
+    	 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point2 ), GTK_BUTTONBOX_START );
+    	 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point3 ), GTK_BUTTONBOX_START );
+
+    	 gtk_container_add( GTK_CONTAINER( fao->hbox_point3 ), wLabelP3 );
+    	 gtk_container_add( GTK_CONTAINER( fao->hbox_point3 ), (fao->xCoord)[2] );
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point3 ), (fao->yCoord)[2] );
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point3 ), (fao->zCoord)[2] );
+
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point2 ), wLabelP2 );
+    	 gtk_container_add( GTK_CONTAINER( fao->hbox_point2 ), (fao->xCoord)[1] );
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point2 ), (fao->yCoord)[1] );
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point2 ), (fao->zCoord)[1] );
+
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), wLabelP1 );
+    	 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), (fao->xCoord)[0] );
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), (fao->yCoord)[0] );
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), (fao->zCoord)[0] );
+
+    	 /* Ajout des elements à la fenêtre */
+    	 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreSelection );
+		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barrePosition );
+		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
+		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->hbox_point1 );
+		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->hbox_point2 );
+		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->hbox_point3 );
+		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreBouton );
+
+		 gtk_container_add( GTK_CONTAINER( fao->fenetre ), fao->layout );
+
+		 fao->dernierLayout = strcpy( fao->dernierLayout, "Triangle" );
+
+		 gtk_widget_draw( fao->fenetre, NULL );
+		 gtk_widget_show_all(fao->fenetre);
+    }
+    else if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Quadrilatère" ) == 0 )
+	{
+
+	}
     return TRUE;
 }
 
-void FenetreAjoutCube_enlever_layout( FenetreAjout* fao )
+void FenetreAjout_enlever_layout( FenetreAjout* fao )
 {
     if( strcmp( fao->dernierLayout, "Initialisation" ) == 0 )
     {
@@ -299,6 +356,28 @@ void FenetreAjoutCube_enlever_layout( FenetreAjout* fao )
         gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->hbox_cube );
         gtk_container_remove( GTK_CONTAINER( fao->fenetre ), fao->layout );
     }
+    else if( strcmp( fao->dernierLayout, "Triangle" ) == 0 )
+	{
+    	/*
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreSelection );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreBouton );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barrePosition );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->hbox_cube );
+		gtk_container_remove( GTK_CONTAINER( fao->fenetre ), fao->layout );
+		*/
+	}
+    else if( strcmp( fao->dernierLayout, "Quadrilatère" ) == 0 )
+	{
+    	/*
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreSelection );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreBouton );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barrePosition );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
+		gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->hbox_cube );
+		gtk_container_remove( GTK_CONTAINER( fao->fenetre ), fao->layout );
+		*/
+	}
 }
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data )
@@ -422,6 +501,77 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 
             }
         }
+    }
+    else if( strcmp( fao->dernierLayout, "Triangle" ) == 0 )
+    {
+    	if( dWidth > 0  )
+		{
+			Triangle* pNewTri =NULL;
+			/* Declaration de chaque coord */
+			tCoord2D tCoord1,tCoord2,tCoord3;
+			Point_initCoord2D(tCoord1,-100,-100);
+			Point_initCoord2D(tCoord2,0,100);
+			Point_initCoord2D(tCoord3,100,-100);
+
+			Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
+
+			Point_initCoord( tdCenter, dX-groupe->tCenterGroup.tdCoordWorld[0], dY-groupe->tCenterGroup.tdCoordWorld[1], dZ-groupe->tCenterGroup.tdCoordWorld[2]); /* Récupération des coordonées du centre (par rapport au groupe)*/
+			pNewTri = Triangle_createTriangle(tdCenter,tCoord1,tCoord2,tCoord3);
+			Color_setColor(pNewTri->tColor,(dR/255),(dG/255),(dB/255),dA);
+
+			Scene_ajouter_triangle( fao->scene, pNewTri, groupe->id );
+
+			gtk_widget_queue_draw( scene->zoneDeDessin );
+			Modification_modification_effectuer( scene );
+			g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
+		}
+		else
+		{
+			GtkWidget* avertissement =
+			gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer une taille !" );
+
+			if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+			{
+				gtk_widget_destroy( avertissement );
+
+			}
+		}
+    }
+    else if( strcmp( fao->dernierLayout, "Quadilatère" ) == 0 )
+    {
+    	if( dWidth > 0  )
+		{
+			Quadrilateral* pNewQuadri =NULL;
+			/* Declaration de chaque coord */
+			tCoord2D tCoord1,tCoord2,tCoord3,tCoord4;
+			Point_initCoord2D(tCoord1,-100,-100);
+			Point_initCoord2D(tCoord2,0,100);
+			Point_initCoord2D(tCoord3,100,-100);
+			Point_initCoord2D(tCoord4,0,-100);
+
+			Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(fao->comboBoxGroupe) ) ) ;
+
+			Point_initCoord( tdCenter, dX-groupe->tCenterGroup.tdCoordWorld[0], dY-groupe->tCenterGroup.tdCoordWorld[1], dZ-groupe->tCenterGroup.tdCoordWorld[2]); /* Récupération des coordonées du centre (par rapport au groupe)*/
+			pNewQuadri = Quadrilateral_createQuadrilateral(tdCenter,tCoord1,tCoord2,tCoord3,tCoord4);
+			Color_setColor(pNewQuadri->tColor,(dR/255),(dG/255),(dB/255),dA);
+
+			Scene_ajouter_quadrilateral( fao->scene, pNewQuadri, groupe->id );
+
+			gtk_widget_queue_draw( scene->zoneDeDessin );
+			Modification_modification_effectuer( scene );
+			g_signal_emit_by_name( G_OBJECT(fao->boutonAnnuler), "clicked" );
+		}
+		else
+		{
+			GtkWidget* avertissement =
+			gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez entrer une taille !" );
+
+			if( gtk_dialog_run ( GTK_DIALOG ( avertissement ) ) == GTK_RESPONSE_OK )
+			{
+				gtk_widget_destroy( avertissement );
+
+			}
+		}
     }
 
     return TRUE;

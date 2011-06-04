@@ -69,4 +69,6 @@ Groupe* Groupe_trouver( struct Scene* scene, char* nom );
  */
 void Groupe_unvisit(Groupe* pGroup);
 
+Groupe* Groupe_trouver_ById(struct Scene* scene, int id );
+
 #endif //GROUPE_H

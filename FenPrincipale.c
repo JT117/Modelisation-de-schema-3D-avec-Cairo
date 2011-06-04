@@ -460,11 +460,15 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 			{
 				pObj = g_array_index(scene->tObjet,Objet*,i);
 				bSelected = FALSE;
-				if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.cube->estSelectionne)
+				if( pObj->eType == CUBE && pObj->type.cube->estSelectionne)
 					bSelected = TRUE;
-				else if( strcmp(pObj->typeObjet,"Rectangle" ) == 0 && pObj->type.rectangle->estSelectionne)
+				else if( pObj->eType == RECTANGLE && pObj->type.rectangle->estSelectionne)
 					bSelected = TRUE;
-				else if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.sphere->estSelectionne)
+				else if( pObj->eType == SPHERE && pObj->type.sphere->estSelectionne)
+					bSelected = TRUE;
+				else if( pObj->eType == TRIANGLE && pObj->type.triangle->estSelectionne)
+					bSelected = TRUE;
+				else if( pObj->eType == QUADRILATERAL && pObj->type.quadrilateral->estSelectionne)
 					bSelected = TRUE;
 
 				if( bSelected && !pObj->pFatherGroup->bVisited) /* Si l'objet est selectionné et qu'il n'est pas dans un groupe qui a été visité */
@@ -522,13 +526,6 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 				Transformation_getMatrixRotation(tdNewTransfo,tMove[0]/200, AXEY);
 				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 			}
-			/*
-			if(dAngleZ != 0)
-			{
-				TransfoTools_getMatrixRotation(tdNewTransfo, dAngleZ, AXEZ);
-				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);
-			}
-			*/
 
 			/* On passe en revue tous les groupes de notre scene */
 			for( i = 0; i < scene->nbGroupe; i++ )
@@ -564,11 +561,15 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 			{
 				pObj = g_array_index(scene->tObjet,Objet*,i);
 				bSelected = FALSE;
-				if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.cube->estSelectionne)
+				if( pObj->eType == CUBE && pObj->type.cube->estSelectionne)
 					bSelected = TRUE;
-				else if( strcmp(pObj->typeObjet,"Rectangle" ) == 0 && pObj->type.rectangle->estSelectionne)
+				else if( pObj->eType == RECTANGLE && pObj->type.rectangle->estSelectionne)
 					bSelected = TRUE;
-				else if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.sphere->estSelectionne)
+				else if( pObj->eType == SPHERE && pObj->type.sphere->estSelectionne)
+					bSelected = TRUE;
+				else if( pObj->eType == TRIANGLE && pObj->type.triangle->estSelectionne)
+					bSelected = TRUE;
+				else if( pObj->eType == QUADRILATERAL && pObj->type.quadrilateral->estSelectionne)
 					bSelected = TRUE;
 
 				if( bSelected && !pObj->pFatherGroup->bVisited) /* Si l'objet est selectionné et qu'il n'est pas dans un groupe qui a été visité */
@@ -654,7 +655,7 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data; /*recupération de la scene courante*/
     FenetreAjout* fao = (FenetreAjout*)malloc( 1 *sizeof( FenetreAjout) );
-    initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
+    initialiser_FenetreAjout( fao, scene );/* création de la fenêtre*/
 
     return TRUE;
 }
@@ -663,7 +664,7 @@ static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
     FenetreAjout* fao = (FenetreAjout*)malloc( 1 *sizeof( FenetreAjout) );
-    initialiser_FenetreAjoutCube( fao, scene );/* création de la fenêtre*/
+    initialiser_FenetreAjout( fao, scene );/* création de la fenêtre*/
 
     return TRUE;
 }
@@ -1246,7 +1247,8 @@ static gboolean suppression_Groupe( GtkButton* button, gpointer data )
 
             gtk_tree_store_remove( scene->store, objet->iter);
             gtk_tree_store_append (scene->store, objet->iter, pere->iter);
-            gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->typeObjet, -1);
+            gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->eType, -1); // TODO OULAH OULAH
+            //gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->typeObjet, -1); // TODO OULAH OULAH
         }
 
         for( i = 0; i < groupe->nbFils; i++ )

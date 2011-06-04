@@ -607,6 +607,7 @@ void Cube_modSize(Cube* pCube, double dRatio)
 gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam)
 {
     gboolean est_contenu = FALSE;
+    tCoord2D* tCoordTab[4]; /* Tableauq qui va contenir les points relatifs à une face donnée */
 	tCoord2D* pPointProj0 = NULL;tCoord2D* pPointProj4 = NULL;
 	tCoord2D* pPointProj1 = NULL;tCoord2D* pPointProj5 = NULL;
 	tCoord2D* pPointProj2 = NULL;tCoord2D* pPointProj6 = NULL;
@@ -622,12 +623,36 @@ gboolean Cube_Contient_Point( Cube* pCube, double x, double y, InfoCamera* pCam)
 	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
 	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
 
-    est_contenu = est_contenu || Selection_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj2), (*pPointProj3), x, y )
-                              || Selection_inFace( (*pPointProj1), (*pPointProj5), (*pPointProj6), (*pPointProj2), x, y )
-                              || Selection_inFace( (*pPointProj4), (*pPointProj5), (*pPointProj6), (*pPointProj7), x, y )
-                              || Selection_inFace( (*pPointProj0), (*pPointProj4), (*pPointProj7), (*pPointProj3), x, y )
-                              || Selection_inFace( (*pPointProj0), (*pPointProj1), (*pPointProj5), (*pPointProj4), x, y )
-                              || Selection_inFace( (*pPointProj3), (*pPointProj2), (*pPointProj6), (*pPointProj7), x, y );
+	tCoordTab[0] = pPointProj0;
+	tCoordTab[1] = pPointProj1;
+	tCoordTab[2] = pPointProj2;
+	tCoordTab[3] = pPointProj3;
+	est_contenu = est_contenu || Selection_inFace(tCoordTab,4,x,y);
+	tCoordTab[0] = pPointProj1;
+	tCoordTab[1] = pPointProj5;
+	tCoordTab[2] = pPointProj6;
+	tCoordTab[3] = pPointProj2;
+	est_contenu = est_contenu || Selection_inFace(tCoordTab,4,x,y);
+	tCoordTab[0] = pPointProj4;
+	tCoordTab[1] = pPointProj5;
+	tCoordTab[2] = pPointProj6;
+	tCoordTab[3] = pPointProj7;
+	est_contenu = est_contenu || Selection_inFace(tCoordTab,4,x,y);
+	tCoordTab[0] = pPointProj0;
+	tCoordTab[1] = pPointProj4;
+	tCoordTab[2] = pPointProj7;
+	tCoordTab[3] = pPointProj3;
+	est_contenu = est_contenu || Selection_inFace(tCoordTab,4,x,y);
+	tCoordTab[0] = pPointProj0;
+	tCoordTab[1] = pPointProj1;
+	tCoordTab[2] = pPointProj5;
+	tCoordTab[3] = pPointProj4;
+	est_contenu = est_contenu || Selection_inFace(tCoordTab,4,x,y);
+	tCoordTab[0] = pPointProj3;
+	tCoordTab[1] = pPointProj2;
+	tCoordTab[2] = pPointProj6;
+	tCoordTab[3] = pPointProj7;
+	est_contenu = est_contenu || Selection_inFace(tCoordTab,4,x,y);
 
     free(pPointProj0);	free(pPointProj4);
 	free(pPointProj1);	free(pPointProj5);

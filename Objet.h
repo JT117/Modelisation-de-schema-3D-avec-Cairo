@@ -4,14 +4,20 @@
 #include "Cube.h"
 #include "Segment.h"
 #include "Sphere.h"
+#include "Triangle.h"
+#include "Quadrilateral.h"
 
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <string.h>
 
 struct Scene;
+struct Quadrilateral;
 struct Rectangle;
+struct Pyramid;
 struct Groupe;
+
+typedef enum{ CUBE, RECTANGLE, QUADRILATERAL, TRIANGLE, SPHERE, SEGMENT, TEXTE, PYRAMID} typeObjet;
 
 /** Structure representant un objet dans l'interface graphique, servant à masquer l'implementation des differents objets à la GUI */
 typedef struct Objet Objet;
@@ -22,7 +28,9 @@ struct Objet
     int x, y;
 
     /** Un string contenant le type d'objet */
-    char* typeObjet;
+    //char* typeObjet;
+    typeObjet eType;
+
     /** Un flag indiquant si l'objet est à selectionner */
     gboolean doitEtreDeselectionner;
     /** Un int indiquant l'id du dernier groupe dont l'objet fait partie */
@@ -39,6 +47,9 @@ struct Objet
             struct Rectangle* rectangle;
             Segment* segment;
             Sphere* sphere;
+            Triangle* triangle;
+            struct Quadrilateral* quadrilateral;
+            struct Pyramid* pyramid;
          }type;
 
 	 /** Tableau des transformation à appliquer sur les objets du groupe concerné ainsi que tous les groupes fils **/
@@ -62,6 +73,7 @@ void Objet_est_un_Cube( Objet* objet, Cube* cube );
 void Objet_est_un_Rectangle( Objet* pObj, struct Rectangle* pRect );
 void Objet_est_un_Segment( Objet* pObj, Segment* pSeg );
 void Objet_est_une_Sphere( Objet* pObj,struct Sphere* pSph );
+void Objet_est_un_Triangle( Objet* objet, Triangle* cube );
 
 /** Fonction capable de dessiner n'importe quel objet */
 void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam);

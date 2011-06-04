@@ -134,6 +134,21 @@ void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect, int idGroupe )
     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Pavé droit", -1);
 }
 
+void Scene_ajouter_triangle( Scene* scene, Triangle* pTri, int idGroupe )
+{
+    Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
+    Objet_est_un_Triangle( objet, pTri );
+    g_array_append_val( scene->tObjet, objet );
+    scene->nbObjet++;
+
+    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    objet->pFatherGroup = groupe;  /* On enregistre l'adresse du groupe pere */
+    Groupe_ajouter_Objet( groupe, objet );
+
+    gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Triangle", -1);
+}
+
 void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
 {
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
@@ -149,6 +164,20 @@ void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Sphère", -1);
 }
 
+void Scene_ajouter_quadrilateral(Scene* scene, Quadrilateral* pQuadri, int idGroupe )
+{
+    Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
+    Objet_est_un_Quadrilateral( objet, pQuadri);
+    g_array_append_val( scene->tObjet, objet );
+    scene->nbObjet++;
+
+    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, idGroupe );
+    objet->pFatherGroup = groupe;  /* On enregistre l'adresse du groupe pere */
+    Groupe_ajouter_Objet( groupe, objet );
+
+    gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Sphère", -1);
+}
 
 /**
  * Face enregistrer dans un nouveau tableau GArray alloué sur le tas les adresses des objets dans l'ordre dans lequel ils doivent être dessinés.
@@ -178,8 +207,7 @@ GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 		pToInsert->pGroup = NULL; /* ce qu'on enregistre n'est pas un groupe */
 		pToInsert->pObj = NULL;
 	}
-	else
-		printf("Raaaaaah c'est le chaos !");
+
 
 	g_array_insert_val(gtOrderedElements,0,pToInsert);
 	/* Création d'un point ayant pour coordonées le centre du repere de la caméra*/
@@ -189,14 +217,18 @@ GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 	{
 		pObj =  (Objet*)g_array_index(tObj,Objet*,i);
 		/* calcul de la distance entre le centre de gravité de l'objet et le centre de repere de la caméra */
-		if( strcmp( pObj->typeObjet, "Cube") == 0 )  /* Si l'objet est un cube */
+		if( pObj->eType == CUBE )  /* Si l'objet est un cube */
 			dDistance = Point_euclideanDistance( &(pObj->type.cube->Center), &sCamPoint);
-		else if(strcmp( pObj->typeObjet, "Rectangle") == 0 )
+		else if( pObj->eType == RECTANGLE )
 			dDistance = Point_euclideanDistance( &(pObj->type.rectangle->Center), &sCamPoint);
-		else if(strcmp( pObj->typeObjet, "Sphere") == 0 )
+		else if( pObj->eType == SPHERE )
 			dDistance = Point_euclideanDistance( &(pObj->type.sphere->Center), &sCamPoint);
-		else if(strcmp( pObj->typeObjet, "Segment") == 0 )
+		else if( pObj->eType == SEGMENT )
 			dDistance = Point_euclideanDistance( &(pObj->type.segment->Center), &sCamPoint);
+		else if( pObj->eType == TRIANGLE )
+					dDistance = Point_euclideanDistance( &(pObj->type.triangle->Center), &sCamPoint);
+		else if( pObj->eType == QUADRILATERAL )
+					dDistance = Point_euclideanDistance( &(pObj->type.quadrilateral->Center), &sCamPoint);
 
 		/* Insertion là où il faut ! */
 		iLoopInsert=0;
@@ -218,10 +250,7 @@ GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 			pToInsert->pGroup =NULL; /* ce qu'on enregistre n'est pas un groupe */
 			pToInsert->pObj = pObj;
 		}
-		else
-		{
-			printf("Raaaaaah c'est le chaos !");
-		}
+
 		g_array_insert_val(gtOrderedElements,iLoopInsert,pToInsert);
 	}
 
