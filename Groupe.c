@@ -231,6 +231,22 @@ void Groupe_sauvegarde( Groupe* groupe, FILE* fichier )
     {
         fprintf( fichier, "%d %s %d %f %f %f\n", groupe->id, groupe->nom, groupe->pere->id, groupe->tCenterGroup.tdCoordGroup[0],
                                                  groupe->tCenterGroup.tdCoordGroup[0], groupe->tCenterGroup.tdCoordGroup[0] );
+        fprintf( fichier , "%d\n", groupe->aTransfo->len );
+
+        int i = 0;
+        for( i = 0; i < groupe->aTransfo->len; i++ )
+        {
+            Transfo* transfo = g_array_index( groupe->aTransfo, Transfo*, i );
+            if( transfo->eTransfoType == ROTATION_RECU )
+            {
+                fprintf( fichier, "Rotation_RECU %f %f %f\n", transfo->x, transfo->y, transfo->z );
+            }
+            else if( transfo->eTransfoType == TRANSLATION_RECU )
+            {
+                fprintf( fichier, "Translation_RECU %f %f %f\n", transfo->x, transfo->y, transfo->z );
+            }
+        }
+
     }
     /* TODO mettre un avertissement d'echec de sauvegarde */
 }
@@ -262,4 +278,33 @@ void Groupe_restaure( FILE* fichier, Scene* scene )
 
     g_array_append_val( scene->tGroupe, groupe );
     scene->nbGroupe++;
+
+    int nb,i =0;
+    fscanf( fichier , "%d", &nb );
+
+    for( i = 0; i < nb; i++ )
+    {
+        float a,b,c;
+        char* temp = (char*)malloc( 20 * sizeof( char ) );
+        Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+        fscanf( fichier, "%s %f %f %f", temp, &a, &b, &c );
+
+        transfo->x = a;
+        transfo->y = b;
+        transfo->z = c;
+
+        if( strcmp( temp, "Rotation_RECU") == 0 )
+        {
+            transfo->eTransfoType = ROTATION_RECU;    //Ne sera effectuer qu'apres creation de l'arbre des groupes en entier
+        }
+        else if( strcmp( temp, "Translation") == 0  )
+        {
+            transfo->eTransfoType = TRANSLATION_RECU;
+        }
+
+        g_array_append_val( groupe->aTransfo, transfo ); //Ne sera effectuer qu'apres creation de l'arbre des groupes en entier
+        free(temp);
+    }
+
+    Modification_modification_effectuer( scene );
 }
