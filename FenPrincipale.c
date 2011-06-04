@@ -454,6 +454,26 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 				}
 			}
 
+			gboolean bSelected = FALSE;
+			/* On considère tous les objets, si un objet est selectionné et que nous n'avons pas déjà appliqué la transfo on applique la rotation*/
+			for(i=0; i<scene->tObjet->len;++i)
+			{
+				pObj = g_array_index(scene->tObjet,Objet*,i);
+				bSelected = FALSE;
+				if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.cube->estSelectionne)
+					bSelected = TRUE;
+				else if( strcmp(pObj->typeObjet,"Rectangle" ) == 0 && pObj->type.rectangle->estSelectionne)
+					bSelected = TRUE;
+				else if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.sphere->estSelectionne)
+					bSelected = TRUE;
+
+				if( bSelected && !pObj->pFatherGroup->bVisited) /* Si l'objet est selectionné et qu'il n'est pas dans un groupe qui a été visité */
+				{
+					/* On applique la rotation à l'objet*/
+					Objet_transfo(pObj,tdTransfoMat);
+				}
+			}
+
 			/*Une fois que tous les groupes sont visités on remet leur flag bVisited à false pour une prochaine utilisation*/
 			for( i = 0; i < scene->nbGroupe; i++ )
 			{
@@ -535,6 +555,26 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 							Objet_transfo( pObj , tdTransfoMat);
 						}
 					}
+				}
+			}
+
+			gboolean bSelected = FALSE;
+			/* On considère tous les objets, si un objet est selectionné et que nous n'avons pas déjà appliqué la transfo on applique la rotation*/
+			for(i=0; i<scene->tObjet->len;++i)
+			{
+				pObj = g_array_index(scene->tObjet,Objet*,i);
+				bSelected = FALSE;
+				if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.cube->estSelectionne)
+					bSelected = TRUE;
+				else if( strcmp(pObj->typeObjet,"Rectangle" ) == 0 && pObj->type.rectangle->estSelectionne)
+					bSelected = TRUE;
+				else if( strcmp(pObj->typeObjet,"Cube" ) == 0 && pObj->type.sphere->estSelectionne)
+					bSelected = TRUE;
+
+				if( bSelected && !pObj->pFatherGroup->bVisited) /* Si l'objet est selectionné et qu'il n'est pas dans un groupe qui a été visité */
+				{
+					/* On applique la rotation à l'objet*/
+					Objet_transfoCenter(pObj,tdTransfoMat);
 				}
 			}
 

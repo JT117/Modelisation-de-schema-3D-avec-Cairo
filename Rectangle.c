@@ -55,6 +55,10 @@ void Rectangle_destroyRectangle(Rectangle* pRect)
 	free(pRect);
 }
 
+void Rectangle_updateCoordWolrd(Objet* pObj,cairo_t* cr,InfoCamera* pCam)
+{
+
+}
 
 void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 {
