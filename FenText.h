@@ -13,6 +13,7 @@ struct FenText
     GtkWidget* fontSelection;
     char* texte;
     char* font;
+    gboolean fontPerso;
 
 };
 

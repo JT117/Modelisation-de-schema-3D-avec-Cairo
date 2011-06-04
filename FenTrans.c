@@ -112,11 +112,19 @@ void FenTrans_validation( GtkButton* button, gpointer data )
         {
             Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, i );
             Objet_rotation( objet, dX, dY );
+
+            Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+            transfo->eTransfoType = ROTATION;
+            transfo->x = dX;
+            transfo->y = dY;
+
+            g_array_append_val( objet->aTransfo, transfo );
+
         }
     }
     else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2 ) ) )
     {
-
+        /*TODO translation d'objet */
     }
     gtk_widget_queue_draw( ft->scene->zoneDeDessin );
     gtk_widget_destroy( ft->fenetre );

@@ -4,6 +4,8 @@
 #include <gtk/gtk.h>
 #include "Scene.h"
 
+#include "Transformation.h"
+
 typedef struct FenTrans FenTrans;
 struct FenTrans
 {

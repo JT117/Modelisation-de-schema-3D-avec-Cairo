@@ -414,6 +414,8 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
         {
         	int i = 0;
+        	scene->creation->x = event->x;
+        	scene->creation->y = event->y;
 			tCoord2D tMove;  /* Mouvement = différence entre l'endroit ou l'utilisateur a commencé son clique et la position actuelle du curseur */
 			Point_initCoord2D(tMove, scene->rotation.x-event->x, scene->rotation.y-event->y);
 			Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
@@ -587,6 +589,9 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         if( event->type == GDK_BUTTON_PRESS && event->button == 1 ) /* Clique gauche utilisateur */
         {
             /* Création fenetre de création de texte */
+            scene->creation->x = event->x;
+            scene->creation->y = event->y;
+
             newText(scene);
         }
         if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel

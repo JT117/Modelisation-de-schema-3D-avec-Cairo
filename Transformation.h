@@ -18,6 +18,8 @@ typedef struct Transfo
 	transfoType eTransfoType;
 	/** Définit la matrice de transformation **/
 	tdMatrix tdMatrixTransfo;
+	/** Necessaire pour la sauvegarde */
+	double x, y, z;
 }Transfo;
 
 

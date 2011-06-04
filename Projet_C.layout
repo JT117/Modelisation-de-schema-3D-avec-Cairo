@@ -13,43 +13,40 @@
 	<File name="Cube.c" open="0" top="0" tabpos="3">
 		<Cursor position="7608" topLine="206" />
 	</File>
-	<File name="Cube.h" open="1" top="0" tabpos="10">
-		<Cursor position="1513" topLine="0" />
+	<File name="Cube.h" open="1" top="0" tabpos="8">
+		<Cursor position="112" topLine="3" />
 	</File>
 	<File name="FenPrincipale.c" open="1" top="0" tabpos="3">
-		<Cursor position="26530" topLine="543" />
+		<Cursor position="21718" topLine="441" />
 	</File>
-	<File name="FenPrincipale.h" open="1" top="0" tabpos="2">
+	<File name="FenPrincipale.h" open="1" top="1" tabpos="2">
 		<Cursor position="1771" topLine="0" />
 	</File>
-	<File name="FenetreAjoutCube.c" open="1" top="0" tabpos="7">
-		<Cursor position="14733" topLine="294" />
-	</File>
-	<File name="FenetreAjoutCube.h" open="1" top="0" tabpos="6">
-		<Cursor position="360" topLine="0" />
+	<File name="FenTrans.c" open="1" top="0" tabpos="13">
+		<Cursor position="0" topLine="80" />
 	</File>
 	<File name="FenetrePropriete.c" open="0" top="0" tabpos="0">
 		<Cursor position="52" topLine="0" />
 	</File>
-	<File name="Groupe.c" open="1" top="0" tabpos="14">
+	<File name="Groupe.c" open="1" top="0" tabpos="12">
 		<Cursor position="3184" topLine="72" />
 	</File>
-	<File name="Groupe.h" open="1" top="0" tabpos="12">
+	<File name="Groupe.h" open="1" top="0" tabpos="10">
 		<Cursor position="138" topLine="12" />
 	</File>
 	<File name="MatrixTools.h" open="0" top="0" tabpos="0">
 		<Cursor position="691" topLine="0" />
 	</File>
-	<File name="Objet.c" open="1" top="1" tabpos="9">
+	<File name="Objet.c" open="1" top="0" tabpos="7">
 		<Cursor position="9489" topLine="0" />
 	</File>
-	<File name="Objet.h" open="1" top="0" tabpos="8">
+	<File name="Objet.h" open="1" top="0" tabpos="6">
 		<Cursor position="168" topLine="45" />
 	</File>
 	<File name="Point.c" open="0" top="0" tabpos="7">
 		<Cursor position="454" topLine="7" />
 	</File>
-	<File name="Point.h" open="1" top="0" tabpos="11">
+	<File name="Point.h" open="1" top="0" tabpos="9">
 		<Cursor position="410" topLine="0" />
 	</File>
 	<File name="Rectangle.c" open="0" top="0" tabpos="5">
@@ -67,7 +64,7 @@
 	<File name="Selection.c" open="0" top="0" tabpos="8">
 		<Cursor position="6859" topLine="192" />
 	</File>
-	<File name="Selection.h" open="1" top="0" tabpos="13">
+	<File name="Selection.h" open="1" top="0" tabpos="11">
 		<Cursor position="1166" topLine="0" />
 	</File>
 	<File name="main.c" open="1" top="0" tabpos="1">

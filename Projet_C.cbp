@@ -71,10 +71,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FenTrans.h" />
-		<Unit filename="FenetreAjoutCube.c">
+		<Unit filename="FenetreAjout.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="FenetreAjoutCube.h" />
+		<Unit filename="FenetreAjout.h" />
 		<Unit filename="FenetrePropriete.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -123,10 +123,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Sphere.h" />
-		<Unit filename="TransfoTools.c">
+		<Unit filename="Transformation.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="TransfoTools.h" />
+		<Unit filename="Transformation.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

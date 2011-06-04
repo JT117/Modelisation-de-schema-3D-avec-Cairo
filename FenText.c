@@ -4,6 +4,7 @@ void FenText_init( FenText* ft, Scene* scene )
 {
     ft->fenetre = gtk_window_new( GTK_WINDOW_TOPLEVEL );
     ft->scene = scene;
+    ft->fontPerso = FALSE;
 
     gtk_window_set_position( GTK_WINDOW( ft->fenetre ), GTK_WIN_POS_CENTER );
     gtk_window_set_title( GTK_WINDOW( ft->fenetre ), "Ajout de texte" );
@@ -48,8 +49,6 @@ void FenText_propriete( GtkButton* button, gpointer data )
 
     g_signal_connect_object( G_OBJECT( gtk_font_selection_dialog_get_cancel_button( GTK_FONT_SELECTION_DIALOG(ft->fontSelection)) ), "clicked", G_CALLBACK( gtk_widget_destroy ), ft->fontSelection, G_CONNECT_SWAPPED );
     g_signal_connect( G_OBJECT(  gtk_font_selection_dialog_get_ok_button( GTK_FONT_SELECTION_DIALOG(ft->fontSelection) ) ), "clicked", G_CALLBACK( FenText_changement ), ft );
-  //  g_signal_connect( G_OBJECT(  gtk_font_selection_dialog_get_apply_button( GTK_FONT_SELECTION_DIALOG(ft->fontSelection) ) ), "clicked", G_CALLBACK( FenText_changement ), ft );
-
 
     gtk_widget_show_all( ft->fontSelection );
 }
@@ -57,6 +56,7 @@ void FenText_propriete( GtkButton* button, gpointer data )
 void FenText_changement( GtkButton* button, gpointer data )
 {
     FenText* ft = (FenText*)data;
+    ft->fontPerso = TRUE;
     ft->font = (char*)malloc( 60 * sizeof( char ) );
     ft->font = gtk_font_selection_dialog_get_font_name( GTK_FONT_SELECTION_DIALOG(ft->fontSelection) );
     gtk_widget_destroy( ft->fontSelection );
@@ -70,8 +70,19 @@ void FenText_validation( GtkButton* button, gpointer data )
     strcpy( objet->typeObjet, "Texte" );
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
-    objet->font = ft->font;
     objet->texte = (char*)malloc( 60 * sizeof( char ) );
+    objet->x = ft->scene->creation->x;
+    objet->y = ft->scene->creation->y;
+
+   if( ft->fontPerso )
+    {
+        objet->font = ft->font;
+    }
+    else
+    {
+         objet->font = NULL;
+    }
+
     GtkWidget* label = gtk_label_new( gtk_entry_get_text( GTK_ENTRY(ft->entry1) ) );
     objet->texte = (char*)gtk_label_get_text( GTK_LABEL(label) );
 
@@ -85,5 +96,6 @@ void FenText_validation( GtkButton* button, gpointer data )
     gtk_tree_store_append (ft->scene->store, objet->iter, groupe->iter );
     gtk_tree_store_set (ft->scene->store, objet->iter, GROUPE, objet->texte, -1);
 
+    gtk_widget_queue_draw( ft->scene->zoneDeDessin );
     gtk_widget_destroy( ft->fenetre );
 }
