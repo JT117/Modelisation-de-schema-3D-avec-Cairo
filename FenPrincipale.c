@@ -414,6 +414,7 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
         {
         	int i = 0;
+
 			tCoord2D tMove;  /* Mouvement = différence entre l'endroit ou l'utilisateur a commencé son clique et la position actuelle du curseur */
 			Point_initCoord2D(tMove, scene->rotation.x-event->x, scene->rotation.y-event->y);
 			Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
@@ -494,6 +495,8 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         {
             scene->rotation.x = event->x;
             scene->rotation.y = event->y;
+            scene->creation->x = event->x;
+        	scene->creation->y = event->y;
 
             scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main_fermer.png") ) ), 4, 4 );
             gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
@@ -502,6 +505,38 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         {
             scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
             gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+
+            gboolean groupeMangeTrans = FALSE;
+            for( i = 0; i < scene->nbGroupe; i++ )
+            {
+                Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+                if( gtk_tree_selection_iter_is_selected( scene->treeSelection, groupe->iter ) )
+                {
+                    Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+                    transfo->eTransfoType = ROTATION_RECU;
+                    transfo->x = scene->creation->x - event->x;
+                    transfo->y = scene->creation->y - event->y;
+
+                    g_array_append_val( groupe->aTransfo, transfo );
+                    i = scene->nbGroupe;
+                    groupeMangeTrans =TRUE;
+                }
+            }
+            if( !groupeMangeTrans )
+            {
+                for( i = 0; i < scene->selection->nbSelection; i++ )
+                {
+                    Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
+                    Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+                    transfo->eTransfoType = ROTATION;
+                    transfo->x = scene->creation->x - event->y;
+                    transfo->y = scene->creation->y - event->x;
+
+                    g_array_append_val( objet->aTransfo, transfo );
+                }
+            }
+
         }
     }
     else if( scene->souris == MAINWORLD )
@@ -628,6 +663,9 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
         if( event->type == GDK_BUTTON_PRESS && event->button == 1 ) /* Clique gauche utilisateur */
         {
             /* Création fenetre de création de texte */
+            scene->creation->x = event->x;
+            scene->creation->y = event->y;
+
             newText(scene);
         }
         if( event->type == GDK_BUTTON_PRESS && event->button == 3 )                          //Click droit on affiche le menu contextuel
@@ -716,6 +754,43 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
                 {
                     Objet_restaure( fichier, scene );
                 }
+
+                for( i = 0; i < nbGroupe; i++ ) //Application des tranfos des groupes
+                {
+                    int j = 0;
+                    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+                    for( j = 0; j < groupe->aTransfo->len; j++ )
+                    {
+                        Transfo* transfo = g_array_index( groupe->aTransfo, Transfo*, j );
+                        if( transfo->eTransfoType == ROTATION_RECU )
+                        {
+                           tdMatrix tdTransfoMat;
+                            if( transfo->x > 0 )
+                            {
+                                Transformation_getMatrixRotation( tdTransfoMat, transfo->x, AXEY );
+                            }
+                            if( transfo->y > 0 )
+                            {
+                                Transformation_getMatrixRotation( tdTransfoMat, transfo->y, AXEX );
+                            }
+                                    /* On applique la transfo pour tous les groupes fils */
+                            for( j=0;j<groupe->tFils->len;++j)
+                            {
+                                    Groupe* pSon = g_array_index(groupe->tFils,Groupe*,j);   // pSon est un pointeur sur un groupe fils
+                                    Groupe_transfo( pSon, tdTransfoMat);   // appel recursif de Groupe_transfo jusqu'à la fin de l'arbre
+                            }
+                            /* et pour les objets du groupe */
+                            for( j=0;j<groupe->tObjet->len;++j)
+                            {
+                                    Objet* pObj = g_array_index(groupe->tObjet,Objet*,j);
+                                    Objet_transfoCenter(pObj, tdTransfoMat);   // on fait tourner le centre du repre objet
+                                    Objet_transfo( pObj , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+                            }
+                        } /*TODO meme chose avec les translations*/
+                    }
+                }
+
             }
              else
             {

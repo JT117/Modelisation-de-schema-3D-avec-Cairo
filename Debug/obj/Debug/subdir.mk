@@ -12,6 +12,7 @@ O_SRCS += \
 ../obj/Debug/FenPrincipale.o \
 ../obj/Debug/FenText.o \
 ../obj/Debug/FenTrans.o \
+../obj/Debug/FenetreAjout.o \
 ../obj/Debug/FenetreAjoutCube.o \
 ../obj/Debug/FenetrePropriete.o \
 ../obj/Debug/Groupe.o \
@@ -26,6 +27,7 @@ O_SRCS += \
 ../obj/Debug/Selection.o \
 ../obj/Debug/Sphere.o \
 ../obj/Debug/TransfoTools.o \
+../obj/Debug/Transformation.o \
 ../obj/Debug/main.o 
 
 

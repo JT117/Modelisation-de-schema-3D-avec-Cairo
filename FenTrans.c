@@ -87,14 +87,43 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 {
     FenTrans* ft = (FenTrans*)data;
 
-    double dX, dY, dZ = 0;
+    int i,j=0;
+    double dX = 0; double dY = 0; double dZ = 0;
     dX = atof( gtk_entry_get_text( GTK_ENTRY( ft->entry1 ) ) );
 	dY = atof( gtk_entry_get_text( GTK_ENTRY( ft->entry2 ) ) );
 	dZ = atof( gtk_entry_get_text( GTK_ENTRY( ft->entry3 ) ) );
 
     if( ft->unGroupeEstSelectionner &&  gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )
     {
-        /* TODO rotation sur un groupe */
+        tdMatrix tdTransfoMat;
+        if( dX > 0 )
+        {
+            Transformation_getMatrixRotation( tdTransfoMat, dX, AXEY );
+        }
+        if( dY > 0 )
+        {
+            Transformation_getMatrixRotation( tdTransfoMat, dY, AXEX );
+        }
+                /* On applique la transfo pour tous les groupes fils */
+        for( j=0;j<ft->groupeSelectionne->tFils->len;++j)
+        {
+                Groupe* pSon = g_array_index(ft->groupeSelectionne->tFils,Groupe*,j);   // pSon est un pointeur sur un groupe fils
+                Groupe_transfo( pSon, tdTransfoMat);   // appel recursif de Groupe_transfo jusqu'à la fin de l'arbre
+        }
+        /* et pour les objets du groupe */
+        for( j=0;j<ft->groupeSelectionne->tObjet->len;++j)
+        {
+                Objet* pObj = g_array_index(ft->groupeSelectionne->tObjet,Objet*,j);
+                Objet_transfoCenter(pObj, tdTransfoMat);   // on fait tourner le centre du repre objet
+                Objet_transfo( pObj , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+        }
+
+        Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+        transfo->eTransfoType = ROTATION_RECU;
+        transfo->x = dX;
+        transfo->y = dY;
+
+        g_array_append_val( ft->groupeSelectionne->aTransfo, transfo );
     }
     else if( ft->unGroupeEstSelectionner && gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2) ) )
     {
@@ -112,12 +141,20 @@ void FenTrans_validation( GtkButton* button, gpointer data )
         {
             Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, i );
             Objet_rotation( objet, dX, dY );
+
+            Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+            transfo->eTransfoType = ROTATION;
+            transfo->x = dX;
+            transfo->y = dY;
+
+            g_array_append_val( objet->aTransfo, transfo );
+
         }
         */
     }
     else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2 ) ) )
     {
-
+        /*TODO translation d'objet */
     }
     gtk_widget_queue_draw( ft->scene->zoneDeDessin );
     gtk_widget_destroy( ft->fenetre );

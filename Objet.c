@@ -1,9 +1,10 @@
-#include <math.h>
-
 #include "Objet.h"
 #include "Groupe.h"
 #include "Rectangle.h"
 #include "Pyramid.h"
+#include "Scene.h"
+
+#include <math.h>
 
 /** Fonction qui libère un objet selon son type
  * @param objet, l'objet à liberer
@@ -68,6 +69,7 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
 
     /* Allocation des tableaux dynamiques contenant les transformations à appliquer sur l'objet */
     Matrix_initIdentityMatrix(pObj->tTransfoMatrix);
+    pObj->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
 
     pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
@@ -104,7 +106,7 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 	}
     else if( objet->eType == SEGMENT )
 	{
-		Segment_drawSegment( objet, cr, cam);
+		Segment_drawSegment( objet->type.segment, cr, cam);
 	}
 	else if( objet->eType == SPHERE )
 	{
@@ -124,10 +126,84 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 	}
 	else if( objet->eType == TEXTE )
 	{
-	    cairo_set_source_rgb(cr, 0.9, 0.9, 0.0 );
-	    cairo_set_font_size( cr, 50 );
-	    cairo_select_font_face(cr, "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
-	    cairo_move_to(cr, 50, 50 );
+	    if( objet->font == NULL )
+	    {
+	        cairo_set_source_rgb(cr, 0.0, 0.0, 0.9 );
+            cairo_set_font_size( cr, 22 );
+            cairo_select_font_face(cr, "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
+            cairo_move_to(cr, objet->x, objet->y );
+	    }
+	    else
+	    {
+	        char* dup = NULL;
+	        dup = (char*)malloc( strlen(objet->font)+1 * sizeof( char ));
+	        strcpy( dup, objet->font );
+	        char delimit[1] = " ";
+	        char* chaine = strtok( dup, delimit );
+	        int i = 1;
+	        char* font = NULL;
+	        char* param1 = NULL;
+	        char* param2 = NULL;
+	        char* param3 = NULL;
+
+	        while( chaine != NULL )
+	        {
+                if( i == 1 )
+                {
+                    font = (char*)malloc( strlen(chaine)+1 * sizeof(char) );
+                    strcpy( font, chaine );
+                }
+                else if( i == 2 )
+                {
+                    param1 = (char*)malloc( strlen(chaine)+1 * sizeof(char) );
+                    strcpy( param1, chaine);
+                }
+                else if( i == 3 )
+                {
+                    param2 = (char*)malloc( strlen(chaine)+1 * sizeof(char) );
+                    strcpy( param2, chaine);
+                }
+                else if( i == 4 )
+                {
+                    param3 = (char*)malloc( strlen(chaine)+1 * sizeof(char) );
+                    strcpy( param3, chaine);
+                }
+                chaine = strtok( NULL, delimit );
+                i++;
+
+	        }
+
+            if( i == 3 )
+            {
+                cairo_select_font_face(cr, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL );
+                cairo_set_font_size( cr, atof(param1) );
+                free( font );
+                free( param1 );
+            }
+            else if( i == 4 )
+            {
+                cairo_select_font_face(cr, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
+                cairo_set_font_size( cr, atof(param2) );
+                free( font );
+                free( param1 );
+                free( param2 );
+            }
+            else if( i == 5 )
+            {
+                cairo_select_font_face(cr, font, CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_BOLD );
+                cairo_set_font_size( cr, atof(param3) );
+                free( font );
+                free( param1 );
+                free( param2 );
+                free( param3 );
+            }
+
+            cairo_set_source_rgb(cr, 0.0, 0.0, 0.9 );
+
+            cairo_move_to(cr, objet->x, objet->y );
+            free( dup );
+	    }
+
         cairo_show_text(cr, objet->texte );
 	}
 }
@@ -385,6 +461,21 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier )
         fprintf( fichier, "%s\n%d %f %f %f %f %f\n", "Rectangle"/*objet->eType*/, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
           /*TODO calculer largeur hauteur*/                                    objet->type.rectangle->Center.tdCoordGroup[3], 250.0, 250.0 );
         fprintf( fichier, "%f %f %f %f\n", objet->type.rectangle->tColor[0]*255, objet->type.rectangle->tColor[1]*255, objet->type.rectangle->tColor[2]*255, objet->type.rectangle->tColor[3] );
+        fprintf( fichier , "%d\n", objet->aTransfo->len );
+
+        int i = 0;
+        for( i = 0; i < objet->aTransfo->len; i++ )
+        {
+            Transfo* transfo = g_array_index( objet->aTransfo, Transfo*, i );
+            if( transfo->eTransfoType == ROTATION )
+            {
+                fprintf( fichier, "Rotation %f %f %f\n", transfo->x, transfo->y, transfo->z );
+            }
+            else if( transfo->eTransfoType == TRANSLATION )
+            {
+                fprintf( fichier, "Translation %f %f %f\n", transfo->x, transfo->y, transfo->z );
+            }
+        }
     }
     else if( objet->eType == SEGMENT )
     {
@@ -443,6 +534,37 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
         Color_setColor(pNewRect->tColor,(r/255),(g/255),(b/255),a);
 
         Scene_ajouter_rectangle( scene, pNewRect, groupe->id );
+        Objet* objet = g_array_index( scene->tObjet, Objet*, scene->nbObjet-1 );
+
+        int nb,i =0;
+        fscanf( fichier , "%d", &nb );
+
+        for( i = 0; i < nb; i++ )
+        {
+            float a,b,c;
+            char* temp = (char*)malloc( 20 * sizeof( char ) );
+            Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+            fscanf( fichier, "%s %f %f %f", temp, &a, &b, &c );
+
+            transfo->x = a;
+            transfo->y = b;
+            transfo->z = c;
+
+            if( strcmp( temp, "Rotation") == 0 )
+            {
+                transfo->eTransfoType = ROTATION;
+                //Objet_rotation(objet, transfo->x, transfo->y ); TODO : réparer ça
+            }
+            else if( strcmp( temp, "Translation") == 0  )
+            {
+                transfo->eTransfoType = TRANSLATION;
+                /*TODO TRANSLATION */
+            }
+
+            g_array_append_val( objet->aTransfo, transfo );
+            free(temp);
+        }
+
         Modification_modification_effectuer( scene );
     }
 }
