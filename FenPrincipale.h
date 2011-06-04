@@ -8,6 +8,8 @@
 #include "Enum.h"
 #include "Selection.h"
 #include "Groupe.h"
+#include "FenTrans.h"
+#include "FenText.h"
 
 static gboolean realize_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data);
 static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
@@ -20,6 +22,7 @@ static gboolean main_annuler( GtkWidget *menuItem, gpointer data );
 static gboolean main_refaire( GtkWidget *menuItem, gpointer data );
 static gboolean main_quitter( GtkWidget *menuItem, gpointer data );
 static gboolean main_nouveau( GtkWidget *menuItem, gpointer data );
+static gboolean nouvelle_transformation( GtkWidget *menuItem, gpointer data );
 static gboolean main_supprimer( GtkWidget *menuItem, gpointer data );
 static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data );
 static gboolean selectionChanged(GtkTreeSelection *selection, gpointer data);

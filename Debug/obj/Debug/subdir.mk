@@ -10,6 +10,8 @@ O_SRCS += \
 ../obj/Debug/Cube.o \
 ../obj/Debug/ExportWindow.o \
 ../obj/Debug/FenPrincipale.o \
+../obj/Debug/FenText.o \
+../obj/Debug/FenTrans.o \
 ../obj/Debug/FenetreAjoutCube.o \
 ../obj/Debug/FenetrePropriete.o \
 ../obj/Debug/Groupe.o \

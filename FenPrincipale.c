@@ -307,9 +307,11 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
 
 static gboolean newText(gpointer data)
 {
-	/*
-	 * TODO : à compléter, appel à la fenêtre d'ajout texte
-	 */
+    Scene* scene = (Scene*)data;
+
+	FenText* ft = (FenText*)malloc( 1 * sizeof( FenText ) );
+	FenText_init(ft, scene);
+
 	return TRUE;
 }
 
@@ -349,10 +351,14 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 
             GtkWidget *pItem2 = gtk_menu_item_new_with_label("Propriete");
             GtkWidget *pItem3 = gtk_menu_item_new_with_label("Supprimer");
+            GtkWidget *pItem4 = gtk_menu_item_new_with_label("Nouveau Groupe");
+            GtkWidget *pItem5 = gtk_menu_item_new_with_label("Transformation");
 
             gtk_menu_attach( GTK_MENU(menu), pItem, 0, 1, 0, 1 );
             gtk_menu_attach( GTK_MENU(menu), pItem2, 0, 1, 1, 2 );
             gtk_menu_attach( GTK_MENU(menu), pItem3, 0, 1, 2, 3 );
+            gtk_menu_attach( GTK_MENU(menu), pItem4, 0, 1, 3, 4 );
+            gtk_menu_attach( GTK_MENU(menu), pItem5, 0, 1, 4, 5 );
 
             gtk_widget_show_all(menu);
 
@@ -365,6 +371,8 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
             g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_cube), scene);
             g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK(main_supprimer), scene);
             g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK(nouveau_propriete), scene);
+            g_signal_connect( G_OBJECT( pItem4 ), "activate", G_CALLBACK(nouveau_groupe), scene);
+            g_signal_connect( G_OBJECT( pItem5 ), "activate", G_CALLBACK(nouvelle_transformation), scene);
 
             gboolean temp = scene->selection->selection_multiple;
             scene->selection->selection_multiple = TRUE;
@@ -620,27 +628,21 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
 
             if( strcmp( deb, "DEBUT" ) == 0 )
             {
-                char typeObjet[20];
-                fscanf( fichier, "%s", typeObjet );
+                int i = 0;
+                int nbGroupe = 0;
+                int nbObjet = 0;
+                fscanf( fichier, "%d", &nbGroupe );
 
-                while( strcmp( typeObjet, "FIN") != 0 )
+                for( i = 0; i < nbGroupe; i++ )
                 {
-                    int groupe = 0;
-                    float x,y,z = 0;
-                    float taille = 0;
-                    float r,g,b,a = 0;
+                    Groupe_restaure( fichier, scene );
+                }
 
-                    fscanf( fichier, "%s", typeObjet );
-                    fscanf( fichier, "%f %f %f", &x, &y, &z );
-                    fscanf( fichier, "%f", &taille );
-                    fscanf( fichier, "%f %f %f %f", &r, &g, &b, &a );
+                fscanf( fichier, "%d", &nbObjet );
 
-                    Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
-                    //initialiser_Cube( cube, x, y, z, taille );
-                    Scene_ajouter_cube( scene, cube, 0 );
-                    Modification_modification_effectuer( scene );
-
-                    fscanf( fichier, "%s", typeObjet );
+                for( i = 0; i < nbObjet; i++ )
+                {
+                    Objet_restaure( fichier, scene );
                 }
             }
              else
@@ -705,18 +707,20 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
             {
                 int i = 0;
                 fprintf( fichier, "DEBUT\n");
+                fprintf( fichier, "%d\n", scene->nbGroupe-1 );
+
+                for( i = 1; i < scene->nbGroupe; i++ )
+                {
+                    Groupe* groupe = (Groupe*)g_array_index( scene->tGroupe, Groupe*, i );
+                    Groupe_sauvegarde( groupe, fichier );
+                }
+
+                fprintf( fichier, "%d\n", scene->nbObjet );
 
                 for( i = 0; i < scene->nbObjet; i++ )
                 {
                     Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-                    fprintf( fichier, "%s\n%d\n", objet->typeObjet, 0 ); // A changer quand l'implementation du groupe sera faite
-
-                    if( strcmp( objet->typeObjet, "Cube") == 0 )
-                    {
-                        fprintf( fichier, "%f %f %f\n", objet->type.cube->tPoint[0].x, objet->type.cube->tPoint[0].y, objet->type.cube->tPoint[0].z );
-                        fprintf( fichier, "%f\n", objet->type.cube->tPoint[1].x - objet->type.cube->tPoint[0].x );
-                        fprintf( fichier, "%f %f %f %f\n", 0.150, 0.150, 0.150, 0.150 );
-                    }
+                    Objet_sauvegarde( objet, fichier );
                 }
                 fprintf( fichier, "FIN");
                 fclose( fichier );
@@ -921,21 +925,36 @@ static gboolean clickDroitGroupe(GtkWidget *window, GdkEventButton* event, gpoin
          GtkWidget *menu = gtk_menu_new();
          GtkWidget *pItem = gtk_menu_item_new_with_label("Ajouter un groupe");
          GtkWidget *pItem2 = gtk_menu_item_new_with_label("Supprimer un groupe");
+         GtkWidget *pItem3 = gtk_menu_item_new_with_label("Appliquer une transformation");
 
          gtk_menu_attach( GTK_MENU(menu), pItem, 0, 1, 0, 1 );
          gtk_menu_attach( GTK_MENU(menu), pItem2, 0, 1, 1, 2 );
+         gtk_menu_attach( GTK_MENU(menu), pItem3, 0, 1, 2, 3 );
 
          gtk_widget_show_all(menu);
 
          gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
 
          /*Mise en place des signaux*/
-         g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_groupe), scene);
-         g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK( supprimer_Groupe), scene);
+         g_signal_connect( G_OBJECT( pItem ), "activate", G_CALLBACK(nouveau_groupe), scene );
+         g_signal_connect( G_OBJECT( pItem2 ), "activate", G_CALLBACK( supprimer_Groupe), scene );
+         g_signal_connect( G_OBJECT( pItem3 ), "activate", G_CALLBACK( nouvelle_transformation ), scene );
          gtk_widget_queue_draw( window );
 
      }
      return FALSE;
+}
+
+static gboolean nouvelle_transformation( GtkWidget *menuItem, gpointer data )
+{
+    Scene* scene = (Scene*)data;
+
+    if( scene->selection->nbSelection > 0 )
+    {
+        FenTrans* ft = (FenTrans*)malloc( 1 * sizeof( FenTrans ) );
+        FenTrans_init( ft, scene );
+    }
+	return TRUE;
 }
 
 static gboolean nouveau_groupe(GtkWidget *menuItem, gpointer data )
@@ -1157,8 +1176,27 @@ static gboolean suppression_Groupe( GtkButton* button, gpointer data )
             gtk_tree_store_remove( scene->store, objet->iter);
             gtk_tree_store_append (scene->store, objet->iter, pere->iter);
             gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->typeObjet, -1);
-
         }
+
+        for( i = 0; i < groupe->nbFils; i++ )
+        {
+            Groupe* fils = g_array_index( groupe->tFils, Groupe*, i );
+
+            gtk_tree_store_remove( scene->store, fils->iter);
+            gtk_tree_store_append (scene->store, fils->iter, pere->iter);
+            gtk_tree_store_set (scene->store, fils->iter, GROUPE, fils->nom, -1);
+        }
+
+        for( i = 0; i < scene->nbGroupe; i++ )
+        {
+            Groupe* current = g_array_index( scene->tGroupe, Groupe*, i );
+            if( groupe == current )
+            {
+                g_array_remove_index( scene->tGroupe, i );
+                scene->nbGroupe--;
+            }
+        }
+
         gtk_tree_store_remove( scene->store, groupe->iter);
         Groupe_detruire( groupe );
         gtk_widget_destroy( scene->fenetre );

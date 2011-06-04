@@ -56,6 +56,10 @@ void Groupe_ajouter_Objet( Groupe* groupe, struct Objet* objet );
 
 void Groupe_detruire( Groupe* groupe );
 
+void Groupe_sauvegarde( Groupe* groupe, FILE* fichier );
+
+void Groupe_restaure( FILE* fichier, struct Scene* scene );
+
 Groupe* Groupe_trouver( struct Scene* scene, char* nom );
 
 /**

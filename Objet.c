@@ -16,7 +16,7 @@ void Objet_detruire( Objet* objet )
     {
         // Pas d'alloc dynamique
     }
-    //free( objet->iter );
+    //g_free( objet->texte );
 }
 
 /** Fonction qui initialise un objet de type Cube
@@ -85,6 +85,14 @@ void Objet_dessiner_objet( Objet* objet, cairo_t* cr, InfoCamera* cam)
 	else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
 	{
 	    Sphere_drawSphere( objet, cr, cam );
+	}
+	else if( strcmp( objet->typeObjet, "Texte" ) == 0 )
+	{
+	    cairo_set_source_rgb(cr, 0.9, 0.9, 0.0 );
+	    cairo_set_font_size( cr, 50 );
+	    cairo_select_font_face(cr, "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
+	    cairo_move_to(cr, 50, 50 );
+        cairo_show_text(cr, objet->texte );
 	}
 }
 
@@ -218,7 +226,7 @@ void Objet_rotation( Objet* objet, double x, double y )
 
     if( strcmp( objet->typeObjet, "Cube" ) == 0 )
     {
-        Cube_rotateCube( objet->type.cube, 0, x/200, y/200 );
+        Cube_rotateCube( objet->type.cube, y/200, x/200, 0 );
     }
     else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
     {
@@ -292,6 +300,80 @@ void Objet_set_Color( Objet* objet, double r, double g, double b, double a )
     {
         /* TODO pareil que ci dessus*/
     }
+}
+
+void Objet_sauvegarde( Objet* objet, FILE* fichier )
+{
+    if( strcmp( objet->typeObjet, "Cube" ) == 0 )
+    {
+        fprintf( fichier, "%s\n%d %f %f %f %f\n", objet->typeObjet, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
+                                              objet->type.cube->Center.tdCoordGroup[3],  abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
+        fprintf( fichier, "%f %f %f %f\n", objet->type.cube->tColor[0]*255, objet->type.cube->tColor[1]*255, objet->type.cube->tColor[2]*255, objet->type.cube->tColor[3] );
+    }
+    else if( strcmp( objet->typeObjet, "Rectangle" ) == 0 )
+    {
+        fprintf( fichier, "%s\n%d %f %f %f %f %f\n", objet->typeObjet, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
+          /*TODO calculer largeur hauteur*/                                    objet->type.rectangle->Center.tdCoordGroup[3], 250.0, 250.0 );
+        fprintf( fichier, "%f %f %f %f\n", objet->type.rectangle->tColor[0]*255, objet->type.rectangle->tColor[1]*255, objet->type.rectangle->tColor[2]*255, objet->type.rectangle->tColor[3] );
+    }
+    else if( strcmp( objet->typeObjet, "Segment" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+    else if( strcmp( objet->typeObjet, "Sphere" ) == 0 )
+    {
+        /* TODO pareil que ci dessus*/
+    }
+}
+
+void Objet_restaure( FILE* fichier, struct Scene* scene )
+{
+    int idGroupe = 0;
+    float r, g, b, a, dWidth, x, y, z = 0;
+    tCoord tdCenter;
+
+    char* typeObjet = (char*)malloc( 35 * sizeof( char ) );
+    fscanf( fichier, "%s", typeObjet );
+
+    if( strcmp( typeObjet, "Cube" ) ==0 )
+    {
+        fscanf( fichier, "%d %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth  );
+        fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
+
+        Point_initCoord( tdCenter, x, y, z);
+        Cube* pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
+
+        Groupe* groupe = Groupe_trouver_ById( scene, idGroupe );
+
+        Scene_ajouter_cube( scene, pNewCube, groupe->id );
+        Color_setColor(pNewCube->tColor,(r/255),(g/255),(b/255),a);
+
+        Modification_modification_effectuer( scene );
+    }
+    else if( strcmp( typeObjet, "Rectangle" ) == 0 )
+    {
+        float dHeight;
+        fscanf( fichier, "%d %f %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth, &dHeight  );
+        fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
+
+        Rectangle* pNewRect;
+        tCoord coord;
+        tCoord coord1;
+
+        /* On recupere le groupe concerné par la création */
+        Groupe* groupe = Groupe_trouver_ById( scene, idGroupe ) ;
+
+        Point_initCoord( tdCenter, x, y, z); /* Récupération des coordonées du centre (par rapport au groupe)*/
+        /* Initialisation des points aux coordonées qui vont bien pour le repere objet */
+        Point_initCoord( coord, -dWidth/2, dHeight/2, 0 );         //Point_initCoord( coord, dX-dWidth/2, dY+dHeight/2, dZ );
+        Point_initCoord( coord1, dWidth/2, -dHeight/2, 0 );    // Point_initCoord( coord1, dX + dWidth/2, dY - dHeight/2, dZ );
+        pNewRect = Rectangle_createRectangle( coord, coord1, tdCenter );
+        Color_setColor(pNewRect->tColor,(r/255),(g/255),(b/255),a);
+
+        Scene_ajouter_rectangle( scene, pNewRect, groupe->id );
+        Modification_modification_effectuer( scene );
+    }
+
 }
 
 

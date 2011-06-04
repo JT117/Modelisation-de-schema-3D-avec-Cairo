@@ -63,6 +63,14 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FenPrincipale.h" />
+		<Unit filename="FenText.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="FenText.h" />
+		<Unit filename="FenTrans.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="FenTrans.h" />
 		<Unit filename="FenetreAjoutCube.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -71,7 +79,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FenetrePropriete.h" />
-		<Unit filename="Group.h" />
 		<Unit filename="Groupe.c">
 			<Option compilerVar="CC" />
 		</Unit>

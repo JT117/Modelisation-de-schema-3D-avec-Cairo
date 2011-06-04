@@ -138,10 +138,12 @@ gboolean Sphere_Contient_Point( Sphere* pSphere, double x, double y, InfoCamera*
 	tCoord2D tClickCoord;
 	double dRadius, dDistClick;
 
-	Point_initCoord2D(tClickCoord, x, y);
+	Point_initCoord2D(tClickCoord, x, y); /* Vecteur de la position du clique de l'utilisateur */
+	Point sTempPoint; /* Point temporaire qui va nous servir à calculer la distance sur la surface de projection du rayon*/
+	Point_initWorld(&sTempPoint, (pSphere->tPoint->tdCoordWorld)[0],((pSphere->tPoint->tdCoordWorld)[1]+pSphere->dRadius),(pSphere->tPoint->tdCoordWorld)[2]);
 
-	pPointProj0 = ProjectionTools_getPictureCoord(&(pSphere->Center),pCam);
-	pPointProj1 = ProjectionTools_getPictureCoord(&((pSphere->tPoint)[0]),pCam);
+	pPointProj0 = ProjectionTools_getPictureCoord(&((pSphere->tPoint)[0]),pCam);
+	pPointProj1 = ProjectionTools_getPictureCoord(&sTempPoint,pCam);
 
 	dRadius = Point_euclideanDistance2D((*pPointProj0),(*pPointProj1));
 	dDistClick = Point_euclideanDistance2D((*pPointProj0), tClickCoord);

@@ -10,6 +10,8 @@ C_SRCS += \
 ../Cube.c \
 ../ExportWindow.c \
 ../FenPrincipale.c \
+../FenText.c \
+../FenTrans.c \
 ../FenetreAjout.c \
 ../FenetrePropriete.c \
 ../Groupe.c \
@@ -34,6 +36,8 @@ OBJS += \
 ./Cube.o \
 ./ExportWindow.o \
 ./FenPrincipale.o \
+./FenText.o \
+./FenTrans.o \
 ./FenetreAjout.o \
 ./FenetrePropriete.o \
 ./Groupe.o \
@@ -58,6 +62,8 @@ C_DEPS += \
 ./Cube.d \
 ./ExportWindow.d \
 ./FenPrincipale.d \
+./FenText.d \
+./FenTrans.d \
 ./FenetreAjout.d \
 ./FenetrePropriete.d \
 ./Groupe.d \

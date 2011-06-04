@@ -9,6 +9,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+struct Scene;
 struct Rectangle;
 struct Groupe;
 
@@ -16,6 +17,10 @@ struct Groupe;
 typedef struct Objet Objet;
 struct Objet
 {
+    char* texte;
+    char* font;
+    int x, y;
+
     /** Un string contenant le type d'objet */
     char* typeObjet;
     /** Un flag indiquant si l'objet est à selectionner */
@@ -96,5 +101,13 @@ void Objet_homothetie( Objet* objet, int ratio );
  * @param tdTransfo La matrice de transformation qui nous intéresse
  */
 void Objet_transfoCenter(Objet* objet, tdMatrix tdTransfo);
+
+/**
+ *  Sauvegarde d'un objet dans le fichier de suvegarde.
+ **/
+void Objet_sauvegarde( Objet* objet, FILE* fichier );
+
+void Objet_restaure( FILE* fichier, struct Scene* scene);
+
 
 #endif  // OBJET_H
