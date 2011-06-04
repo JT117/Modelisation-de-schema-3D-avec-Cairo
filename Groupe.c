@@ -110,6 +110,23 @@ Groupe* Groupe_trouver_ById( Scene* scene, int id )
     return NULL;
 }
 
+
+void Groupe_transfoCenter(Groupe* pGroup, tdMatrix tdTransfo)
+{
+	tCoord tCoordApTransfo;
+
+	Point_initCoord(tCoordApTransfo, 0.0, 0.0, 0.0);
+	/*APplication de la transformation au centre du groupe */
+	Matrix_multiMatrixVect(tdTransfo, pGroup->tCenterGroup.tdCoordGroup, tCoordApTransfo);
+
+	pGroup->tCenterGroup.tdCoordGroup[0] = tCoordApTransfo[0];
+	pGroup->tCenterGroup.tdCoordGroup[1] = tCoordApTransfo[1];
+	pGroup->tCenterGroup.tdCoordGroup[2] = tCoordApTransfo[2];
+	pGroup->tCenterGroup.tdCoordGroup[3] = tCoordApTransfo[3];
+
+	pGroup->bVisited = TRUE;
+}
+
 void Groupe_transfo(Groupe* pGroup, tdMatrix tdTransfo)
 {
 	int i;
@@ -133,6 +150,7 @@ void Groupe_transfo(Groupe* pGroup, tdMatrix tdTransfo)
 	for(i=0;i<pGroup->tObjet->len;++i)  /* On applique la transformation sur tous les objets du groupe */
 	{
 		pObj = g_array_index( pGroup->tObjet, Objet*, i ); /* Récupération de l'adresse de l'objet */
+		Objet_transfoCenter(pObj, tdNewTransfo);
 		Objet_transfo(pObj, tdNewTransfo); /*on applique la transformation à l'objet*/
 	}
 

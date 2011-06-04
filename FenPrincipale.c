@@ -332,7 +332,13 @@ static gboolean main_export(GtkWidget *menuItem, gpointer data )
  **/
 static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event, gpointer data)
 {
+	int i,j;
+	Objet* pObj; /* Va pointer sur les objets d'un groupe */
     Scene* scene = (Scene*)data;
+	tdMatrix tdTransfoMat; /* Matrix de transformation */
+	tdMatrix tdNewTransfo; /* Matrix utilisée dans le cas de transformations multiples */
+	Groupe* pSon; /* Pointeur vers un fils de groupe */
+	Groupe* pGroupe; /* Pointeur vers un groupe sleectionné par l'utilisateur */
 
     if( scene->souris == NORMAL )
     {
@@ -407,28 +413,93 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
     {
         if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
         {
-            int i = 0,j;
-            tCoord2D tDifference;
-            Groupe* pSon;
-            Groupe* pGroupe;
-            tdMatrix tdTransfoMat;
-            tdMatrix tdNewTransfo;
-            Objet* pObj;
-
-            tDifference[0] = scene->rotation.x - event->x;
-            tDifference[1] = scene->rotation.y - event->y;
-
-            Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
-			/* On recherche la matrice de rotation qui va bien */
-			if(tDifference[0] != 0)
+        	int i = 0;
+			tCoord2D tMove;  /* Mouvement = différence entre l'endroit ou l'utilisateur a commencé son clique et la position actuelle du curseur */
+			Point_initCoord2D(tMove, scene->rotation.x-event->x, scene->rotation.y-event->y);
+			Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
+			if(tMove[0] != 0)
 			{
-				Transformation_getMatrixRotation(tdNewTransfo, tDifference[1]/200, AXEX);
+				Transformation_getMatrixRotation(tdNewTransfo, tMove[1]/200, AXEX);
 				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 			}
 
-			if(tDifference[1] != 0)
+			if(tMove[1] != 0)
 			{
-				Transformation_getMatrixRotation(tdNewTransfo,tDifference[0]/200, AXEY);
+				Transformation_getMatrixRotation(tdNewTransfo,tMove[0]/200, AXEY);
+				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+			}
+
+
+			for( i = 0; i < scene->nbGroupe; i++ )
+			{
+				pGroupe = g_array_index( scene->tGroupe, Groupe*, i ); /*Récupération du groupe en question*/
+
+				if( gtk_tree_selection_iter_is_selected( scene->treeSelection, pGroupe->iter ) ) /* On test si le gorupe est selectionné*/
+				{
+					if( !pGroupe->bVisited)
+					{
+						for( j=0;j<pGroupe->tFils->len;++j) /* Modification uniquement du centre des groupes fils */
+						{
+							pSon = g_array_index(pGroupe->tFils,Groupe*,j);
+							Groupe_transfoCenter( pSon, tdTransfoMat);
+						}
+
+						/* MOdification sur les objets */
+						for( j=0;j<pGroupe->tObjet->len;++j)
+						{
+							pObj = g_array_index(pGroupe->tObjet,Objet*,j);
+							Objet_transfoCenter(pObj, tdTransfoMat);
+						}
+					}
+				}
+			}
+
+			/*Une fois que tous les groupes sont visités on remet leur flag bVisited à false pour une prochaine utilisation*/
+			for( i = 0; i < scene->nbGroupe; i++ )
+			{
+				pGroupe = g_array_index( scene->tGroupe, Groupe*, i ); /*Récupération du groupe en question*/
+				Groupe_unvisit(pGroupe);
+			}
+			scene->rotation.x = event->x;
+			scene->rotation.y = event->y;
+
+			gtk_widget_queue_draw( widget );
+
+        }
+        else if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
+        {
+            scene->rotation.x = event->x;
+            scene->rotation.y = event->y;
+
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main_fermer.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+        }
+        else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
+        {
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
+            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+        }
+    }
+    else if( scene->souris == MAINWORLD )
+	{
+		if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
+		{
+			tCoord2D tMove;
+
+			tMove[0] = scene->rotation.x - event->x;
+			tMove[1] = scene->rotation.y - event->y;
+
+			Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
+			/* On recherche la matrice de rotation qui va bien */
+			if(tMove[0] != 0)
+			{
+				Transformation_getMatrixRotation(tdNewTransfo, tMove[1]/200, AXEX);
+				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+			}
+
+			if(tMove[1] != 0)
+			{
+				Transformation_getMatrixRotation(tdNewTransfo,tMove[0]/200, AXEY);
 				Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 			}
 			/*
@@ -439,8 +510,8 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 			}
 			*/
 
-            /* On passe en revue tous les groupes de notre scene */
-            for( i = 0; i < scene->nbGroupe; i++ )
+			/* On passe en revue tous les groupes de notre scene */
+			for( i = 0; i < scene->nbGroupe; i++ )
 			{
 				pGroupe = g_array_index( scene->tGroupe, Groupe*, i ); /*Récupération du groupe en question*/
 
@@ -467,51 +538,11 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 				}
 			}
 
-            /*Une fois que tous les groupes sont visités on remet leur flag bVisited à false pour une prochaine utilisation*/
-            for( i = 0; i < scene->nbGroupe; i++ )
+			/*Une fois que tous les groupes sont visités on remet leur flag bVisited à false pour une prochaine utilisation*/
+			for( i = 0; i < scene->nbGroupe; i++ )
 			{
 				pGroupe = g_array_index( scene->tGroupe, Groupe*, i ); /*Récupération du groupe en question*/
 				Groupe_unvisit(pGroupe);
-			}
-            /*
-            for( i = 0; i < scene->selection->nbSelection; i++ )
-            {
-                Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
-
-                Objet_rotation( objet, diff.x, diff.y );
-            }*/
-            scene->rotation.x = event->x;
-            scene->rotation.y = event->y;
-
-            gtk_widget_queue_draw( widget );
-        }
-        else if( event->type == GDK_BUTTON_PRESS && event->button == 1 )                          //Click droit on affiche le menu contextuel
-        {
-            scene->rotation.x = event->x;
-            scene->rotation.y = event->y;
-
-            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main_fermer.png") ) ), 4, 4 );
-            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
-        }
-        else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
-        {
-            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
-            gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
-        }
-    }
-    else if( scene->souris == MAINWORLD )
-	{
-		if(event->type == GDK_MOTION_NOTIFY && event->button == 1 )
-		{
-			int i = 0;
-			tCoord2D tMove;  /* Mouvement = différence entre l'endroit ou l'utilisateur a commencé son clique et la position actuelle du curseur */
-			Point_initCoord2D(tMove, scene->rotation.x-event->x, scene->rotation.y-event->y);
-
-			for( i = 0; i < scene->selection->nbSelection; i++ )
-			{
-				Objet* objet = g_array_index( scene->selection->tSelection, Objet*, i );
-
-				Objet_rotationWorld(objet,tMove[0],tMove[1]);
 			}
 			scene->rotation.x = event->x;
 			scene->rotation.y = event->y;
