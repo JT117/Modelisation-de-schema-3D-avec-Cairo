@@ -164,6 +164,22 @@ void Objet_deselection( Objet* objet )
     }
 }
 
+void Objet_updateCoordWorld(Objet* pObj)
+{
+	if( strcmp( pObj->typeObjet, "Cube" ) == 0 )
+	{
+		Cube_updateCoordWolrd(pObj);
+	}
+	else if( strcmp( pObj->typeObjet, "Rectangle" ) == 0 )
+	{
+		Rectangle_updateCoordWolrd(pObj);
+	}
+	else if( strcmp( pObj->typeObjet, "Sphere" ) == 0 )
+	{
+		//Sphere_transfo(objet->type.sphere, tdTransfo);
+	}
+}
+
 void Objet_transfo(Objet* objet, tdMatrix tdTransfo)
 {
 	if( strcmp( objet->typeObjet, "Cube" ) == 0 )

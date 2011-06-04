@@ -30,6 +30,8 @@ typedef struct Rectangle
 } Rectangle;
 
 
+void Rectangle_updateCoordWolrd(struct Objet* pObj);
+
 /**
  * Crée un rectangle à partir de 2 points
  *

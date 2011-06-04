@@ -50,6 +50,10 @@ struct Objet
 /** Libere la memoire allouer dynamiquement pour un objet */
 void Objet_detruire( Objet* objet );
 
+/**
+ * Va appeler la fonction updateCoordWorld spécifique à un objet  donné.
+ */
+void Objet_updateCoordWorld(Objet* pObj);
 
 /** Initialise un Objet Cube */
 void Objet_est_un_Cube( Objet* objet, Cube* cube );

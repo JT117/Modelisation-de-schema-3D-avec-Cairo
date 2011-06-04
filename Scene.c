@@ -155,28 +155,39 @@ void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe )
  * @param tObjects Les objets à dessiner
  * @return Le tableau des adresses sur objets dans l'ordre
  */
-GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
+GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 {
 	Point sCamPoint;
-	GArray* gtOrderedObjects=NULL; /* Tableau des index des faces à dessiner, c'est cette structure qui sera retournée*/
-	GArray* gtDistances=NULL; /*Tableau des distance entre la caméra et le centre de gravité de chaque face, servira pour classer les indexs de face*/
+	GArray* gtOrderedElements=NULL; /* Tableau des index des faces à dessiner, c'est cette structure qui sera retournée*/
 	Objet* pObj = NULL;
-	int iObjectIndex = 0;
+	Groupe* pGroup = NULL;
+	int i = 0;
 	int iLoopInsert = 0;
-	double dDistance= 0.0, dDistanceArray=0.0;
+	double dDistance= 0.0, dDistancePrev=0.0;
+	GArray* tObj = pScene->tObjet;
+	GArray* tGroup = pScene->tGroupe;
+	ClassifyObj* pToInsert;
+	ClassifyObj* pPrevious;
 
 	/*Allocation des GArray */
-	gtOrderedObjects = g_array_sized_new(FALSE,TRUE,sizeof(Objet),tObjects->len);
-	gtDistances = g_array_sized_new(FALSE,TRUE,sizeof(double),tObjects->len);
+	gtOrderedElements = g_array_sized_new(FALSE,TRUE,sizeof(ClassifyObj*),(tObj->len+tGroup->len)+1 );
 
-	//g_array_insert_val(gtIndexFaces,,iFaceIndex);
-	g_array_insert_val(gtDistances,0,dDistanceArray);
+	if( (pToInsert = (ClassifyObj*)malloc(sizeof(ClassifyObj)) ) != NULL ) /* Initiliasation */
+	{
+		pToInsert->dDistance = 0.0;
+		pToInsert->pGroup = NULL; /* ce qu'on enregistre n'est pas un groupe */
+		pToInsert->pObj = NULL;
+	}
+	else
+		printf("Raaaaaah c'est le chaos !");
 
+	g_array_insert_val(gtOrderedElements,0,pToInsert);
 	/* Création d'un point ayant pour coordonées le centre du repere de la caméra*/
 	Point_init(&sCamPoint, pCam->CoordCam[0], pCam->CoordCam[1], pCam->CoordCam[2]);
-	for(iObjectIndex=0;iObjectIndex<tObjects->len;iObjectIndex++) /* Pour chaque objet */
+	/* On commence par passer en revue les objets */
+	for( i=0; i<tObj->len ; i++) /* Pour chaque objet */
 	{
-		pObj =  (Objet*)g_array_index(tObjects,Objet*,iObjectIndex);
+		pObj =  (Objet*)g_array_index(tObj,Objet*,i);
 		/* calcul de la distance entre le centre de gravité de l'objet et le centre de repere de la caméra */
 		if( strcmp( pObj->typeObjet, "Cube") == 0 )  /* Si l'objet est un cube */
 			dDistance = Point_euclideanDistance( &(pObj->type.cube->Center), &sCamPoint);
@@ -184,25 +195,80 @@ GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
 			dDistance = Point_euclideanDistance( &(pObj->type.rectangle->Center), &sCamPoint);
 		else if(strcmp( pObj->typeObjet, "Sphere") == 0 )
 			dDistance = Point_euclideanDistance( &(pObj->type.sphere->Center), &sCamPoint);
-
+		else if(strcmp( pObj->typeObjet, "Segment") == 0 )
+			dDistance = Point_euclideanDistance( &(pObj->type.segment->Center), &sCamPoint);
 
 		/* Insertion là où il faut ! */
 		iLoopInsert=0;
-		dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
+		pPrevious = g_array_index(gtOrderedElements,ClassifyObj*,iLoopInsert);
+		dDistancePrev = pPrevious->dDistance;
 		/* Insertion de l'index de la face là où il faut*/
-		while(dDistanceArray!= 0 && dDistanceArray>dDistance)
+		while(dDistancePrev != 0 && dDistancePrev>dDistance)
 		{
 			iLoopInsert++;
-			dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
+			pPrevious = (ClassifyObj*)g_array_index(gtOrderedElements,ClassifyObj*,iLoopInsert);
+			dDistancePrev = pPrevious->dDistance;
 		}
 
 		/*Emplacement d'insertion retrouvé...*/
-		g_array_insert_val(gtOrderedObjects,iLoopInsert,pObj);
-		g_array_insert_val(gtDistances,iLoopInsert,dDistance);
+		/* On insère une nouvelle structure */
+		if( (pToInsert = (ClassifyObj*)malloc(sizeof(ClassifyObj)) ) != NULL )
+		{
+			pToInsert->dDistance = dDistance;
+			pToInsert->pGroup =NULL; /* ce qu'on enregistre n'est pas un groupe */
+			pToInsert->pObj = pObj;
+		}
+		else
+		{
+			printf("Raaaaaah c'est le chaos !");
+		}
+		g_array_insert_val(gtOrderedElements,iLoopInsert,pToInsert);
 	}
 
-	g_array_free(gtDistances, TRUE);
-	return gtOrderedObjects;
+	/* Une fois les objets classés on continue avec les groupes */
+	for( i=0; i<tGroup->len ; i++) /* Pour chaque groupe */
+	{
+		pGroup =  (Groupe*)g_array_index(tGroup,Groupe*,i);
+		/* calcul de la distance entre le centre du groupe et le centre de repere de la caméra */
+		dDistance = Point_euclideanDistance( &(pGroup->tCenterGroup), &sCamPoint);
+
+		/* Insertion là où il faut ! */
+		iLoopInsert=0;
+		pPrevious = g_array_index(gtOrderedElements,ClassifyObj*,iLoopInsert);
+		dDistancePrev = pPrevious->dDistance;
+		/* Insertion de l'index de la face là où il faut*/
+		while(dDistancePrev != 0 && dDistancePrev>dDistance)
+		{
+			iLoopInsert++;
+			pPrevious = (ClassifyObj*)g_array_index(gtOrderedElements,ClassifyObj*,iLoopInsert);
+			dDistancePrev = pPrevious->dDistance;
+		}
+
+		/*Emplacement d'insertion retrouvé...*/
+		/* On insère une nouvelle structure */
+		if( (pToInsert = (ClassifyObj*)malloc(sizeof(ClassifyObj)) )  != NULL )
+		{
+			pToInsert->dDistance = dDistance;
+			pToInsert->pGroup = pGroup; /* ce qu'on enregistre n'est pas un groupe */
+			pToInsert->pObj = NULL;
+		}
+		else
+			printf("Raaaaaah c'est le chaos !");
+
+		g_array_insert_val(gtOrderedElements,iLoopInsert,pToInsert);
+	}
+
+	return gtOrderedElements;
+}
+
+Scene_deleteClassifiedElements(GArray* tToDelete)
+{
+	int i;
+	for( i = 0; i < tToDelete->len; i++ )
+	{
+		free( g_array_index(tToDelete,ClassifyObj*,i));
+	}
+	g_array_free(tToDelete,FALSE);
 }
 
 /** Fonction qui dessiner tout les objets de la scene
@@ -212,29 +278,38 @@ GArray* Scene_objectsOrder( GArray* tObjects, InfoCamera* pCam)
 void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
 {
     int i = 0;
-    GArray* gtObjects = NULL;/* va contenir le tableau des objets dans l'ordre dans lequel il faut les dessiner */
-/*
-    if( scene->nbObjet != 0 )
-    {
-    	gtObjects = Scene_objectsOrder(scene->tObjet, scene->camera);
+    GArray* gtOrderedElements = NULL;/* va contenir le tableau des objets dans l'ordre dans lequel il faut les dessiner */
+    ClassifyObj* pElement = NULL;
+    int iToDrawNb = (scene->tGroupe->len+scene->tObjet->len);
 
-    	for( i = 0; i < scene->nbObjet; i++ )
+    /* Mise à jour des coordonnées dans le repere du monde de chaque objet et de chaque groupe*/
+    if( (scene->tObjet->len + scene->tGroupe->len)!= 0)
+	{
+    	for(i=0; i<scene->tObjet->len; ++i)
     	{
-    		Objet_dessiner_objet(g_array_index( gtObjects, Objet*, i ) , cr, scene->camera );
+    		Objet_updateCoordWorld(g_array_index(scene->tObjet,Objet*,i));
     	}
 
-    	g_array_free(gtObjects,TRUE);
-    }
-    */
-    for( i = 0; i < scene->tGroupe->len; i++ )
+    	for(i=0; i<scene->tGroupe->len; ++i)
+		{
+			Groupe_updateCoordWorld(g_array_index(scene->tGroupe,Groupe*,i));
+		}
+	}
+
+    gtOrderedElements = Scene_drawOrder(scene,scene->camera); /* Récupération du tableau ordonné des elements */
+
+    for( i = 0; i < iToDrawNb; i++ )
     {
-    	Groupe_drawMark(g_array_index(scene->tGroupe, Groupe*, i ), cr, scene->camera );
+    	pElement = g_array_index(gtOrderedElements,ClassifyObj*,i); /* Récupération de l'element à dessiner*/
+
+    	if( pElement->pGroup != NULL)
+    		Groupe_drawMark(pElement->pGroup,cr,scene->camera);
+    	else
+			Objet_dessiner_objet(pElement->pObj,cr,scene->camera);
     }
 
-    for( i = 0; i < scene->nbObjet; i++ )
-	{
-		Objet_dessiner_objet(g_array_index( scene->tObjet, Objet*, i ) , cr, scene->camera );
-	}
+    /* On libère la mémoire */
+    Scene_deleteClassifiedElements(gtOrderedElements);
 }
 
 /**

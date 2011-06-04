@@ -133,15 +133,9 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 	return gtIndexFaces;
 }
 
-void Cube_drawCube( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
+void Cube_updateCoordWolrd(Objet* pObj)
 {
 	int i,j;
-	GArray* gtTabFacesOrder=NULL; /* Tableau indiquant dans quel ordre il faut dessiner les faces du cube */
-	/* Coordonnées de points une fois projettés */
-	tCoord2D* pPointProj0 = NULL;tCoord2D* pPointProj4 = NULL;
-	tCoord2D* pPointProj1 = NULL;tCoord2D* pPointProj5 = NULL;
-	tCoord2D* pPointProj2 = NULL;tCoord2D* pPointProj6 = NULL;
-	tCoord2D* pPointProj3 = NULL;tCoord2D* pPointProj7 = NULL;
 	tdMatrix tdMatPass;
 	tCoord tdCoordBefore;
 	tCoord tdCoordAfter; /* Va contenir les coordonnées de points màj après chaque itération */
@@ -167,6 +161,24 @@ void Cube_drawCube( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 		Matrix_multiMatrixVect(tdMatPass, tdCoordBefore, tdCoordAfter); /* tdCoordAfter contient les coordonnées du point après le premier changement de base*/
 		ProjectionTools_getCoordWorld(tdCoordAfter,pFatherGroup,&(pCube->tPoint[i]));
 	}
+
+	pFatherGroup = pObj->pFatherGroup;
+	/* On met aussi à jour les coordonnées du centre de l'objet */
+	ProjectionTools_getCoordWorld(pCube->Center.tdCoordGroup,pFatherGroup,&(pCube->Center));
+}
+
+void Cube_drawCube( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
+{
+	GArray* gtTabFacesOrder=NULL; /* Tableau indiquant dans quel ordre il faut dessiner les faces du cube */
+	/* Coordonnées de points une fois projettés */
+	tCoord2D* pPointProj0 = NULL;tCoord2D* pPointProj4 = NULL;
+	tCoord2D* pPointProj1 = NULL;tCoord2D* pPointProj5 = NULL;
+	tCoord2D* pPointProj2 = NULL;tCoord2D* pPointProj6 = NULL;
+	tCoord2D* pPointProj3 = NULL;tCoord2D* pPointProj7 = NULL;
+	Cube* pCube = pObj->type.cube;
+
+	Cube_updateCoordWolrd(pObj);
+
 	/* Projection de tous les point du cube */
 	pPointProj0 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[0]),pCam);
 	pPointProj1 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[1]),pCam);

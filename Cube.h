@@ -54,6 +54,9 @@ void Cube_rotateCube(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ
  */
 void Cube_rotateCubeWorld(Cube* pCube, double dAngleX, double dAngleY, double dAngleZ);
 
+
+void Cube_updateCoordWolrd(struct Objet* pObj);
+
 void initialiser_Cube( Cube* cCube, double dX, double dY, double dZ, double dCote );
 
 void dessiner_Cube( Cube* cCube, cairo_t* cr, InfoCamera* cam);
