@@ -46,7 +46,7 @@ void ExportWindow_init( ExportWindow* ew, Scene* scene )
             }
             else if(strcmp( gtk_combo_box_get_active_text( GTK_COMBO_BOX( ew->comboBox ) ), "pdf" ) == 0 )
             {
-                surface = cairo_pdf_surface_create( filename, scene->dWidth, scene->dHeight);
+                surface  = cairo_pdf_surface_create( filename, scene->dWidth, scene->dHeight);
                 cr = cairo_create(surface);
                 Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
                 Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/

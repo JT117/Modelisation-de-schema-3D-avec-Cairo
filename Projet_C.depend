@@ -2,7 +2,7 @@
 1299146539 source:/home/julien/Documents/Projet_C/main.c
 	<cairo.h>
 
-1307205650 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.c
 	<gtk/gtk.h>
 	<math.h>
 	"Cube.h"
@@ -2243,7 +2243,7 @@
 	"Scene.h"
 	"Color.h"
 
-1307205650 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
+1307274551 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2259,37 +2259,40 @@
 	"Enum.h"
 	"Camera.h"
 
-1307205650 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
+1307274396 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	"Cube.h"
 	"Segment.h"
 	"Sphere.h"
+	"Triangle.h"
+	"Quadrilateral.h"
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
 
-1307205650 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
-	<math.h>
+1307273851 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 	"Groupe.h"
 	"Rectangle.h"
+	"Pyramid.h"
 	"Scene.h"
+	<math.h>
 
 1306659857 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/main.c
 	<stdlib.h>
 	<stdio.h>
 	"FenPrincipale.h"
 
-1307205650 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
 	"Scene.h"
 	"Selection.h"
 
-1307205625 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.h
+1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
 	"Point.h"
 
-1307205625 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.c
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Selection.c
 	"Selection.h"
 	"Config.h"
 	"Objet.h"
@@ -2312,7 +2315,7 @@
 	<gtk/gtk.h>
 	<string.h>
 
-1306659856 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
 	"Modification.h"
 	"Config.h"
 
@@ -2323,7 +2326,7 @@
 1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.h
 	<gtk/gtk.h>
 
-1307205625 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
 	"FenetrePropriete.h"
 	"Selection.h"
 
@@ -2331,10 +2334,11 @@
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307205625 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.h
+1307274837 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
+	"Modification.h"
 
 1307211042 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
 	"Groupe.h"
@@ -2437,7 +2441,7 @@
 	<math.h>
 	"ProjectionTools.h"
 
-1307205650 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Rectangle.c
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Rectangle.c
 	<stdio.h>
 	<stdlib.h>
 	"Rectangle.h"
@@ -2703,20 +2707,20 @@
 	"FenTrans.h"
 	"FenText.h"
 
-1307207359 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
+1307274491 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
 	"FenPrincipale.h"
 
 1307205625 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307205625 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
+1307274220 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
 	"ExportWindow.h"
 
-1307210180 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.c
+1307274487 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.c
 	"FenTrans.h"
 
-1307205643 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.h
+1307267568 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.h
 	<gtk/gtk.h>
 	"Scene.h"
 	"Transformation.h"
@@ -2725,23 +2729,76 @@
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307205643 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.c
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.c
 	"FenText.h"
 
 1307211063 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Transformation.h
 	"MatrixTools.h"
 	"Groupe.h"
 
-1307205625 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjout.h
+1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjout.h
 	<gtk/gtk.h>
 	"Scene.h"
 	"Color.h"
 
-1307205625 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjout.c
+1307274592 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetreAjout.c
 	"FenetreAjout.h"
 	"Config.h"
 
 1307205625 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Transformation.c
 	<math.h>
 	"Transformation.h"
+
+1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Triangle.h
+	<stdlib.h>
+	<gtk/gtk.h>
+	"MatrixTools.h"
+	"Transformation.h"
+	"Point.h"
+	"Color.h"
+	"Camera.h"
+	"Selection.h"
+
+1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Quadrilateral.h
+	<cairo.h>
+	<gtk/gtk.h>
+	"Point.h"
+	"MatrixTools.h"
+	"Transformation.h"
+	"ProjectionTools.h"
+	"Camera.h"
+	"Color.h"
+	"Groupe.h"
+
+1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Pyramid.h
+	<stdlib.h>
+	<gtk/gtk.h>
+	"MatrixTools.h"
+	"Transformation.h"
+	"Point.h"
+	"Color.h"
+	"Camera.h"
+	"Selection.h"
+
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Pyramid.c
+	<gtk/gtk.h>
+	<math.h>
+	"Pyramid.h"
+	"ProjectionTools.h"
+	"Point.h"
+	"Objet.h"
+
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Quadrilateral.c
+	<stdio.h>
+	<stdlib.h>
+	"Quadrilateral.h"
+	"Objet.h"
+
+1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Triangle.c
+	<gtk/gtk.h>
+	<math.h>
+	"Triangle.h"
+	"ProjectionTools.h"
+	"Point.h"
+	"Objet.h"
 

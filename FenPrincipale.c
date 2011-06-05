@@ -698,14 +698,6 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
-static gboolean nouveau_rectangle( GtkWidget *menuItem, gpointer data )
-{
-    Scene* scene = (Scene*)data;
-    FenetreAjout* fao = (FenetreAjout*)malloc( 1 *sizeof( FenetreAjout) );
-    initialiser_FenetreAjout( fao, scene );/* création de la fenêtre*/
-
-    return TRUE;
-}
 
 /** Fonction gérant l'ouverture d'un fichier de sauvegarde
  * @param menuItem, l'element du menu ayant ete cliqué
@@ -1402,4 +1394,5 @@ static gboolean changementCurseur( GtkButton* bouton, gpointer data )
         scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "texte.png") ) ), 4, 4 );
         gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 	}
+	return TRUE;
 }

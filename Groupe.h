@@ -7,6 +7,7 @@
 #include <gtk/gtk.h>
 
 #include "MatrixTools.h"
+#include "Modification.h"
 
 struct Objet;
 struct Scene;
@@ -71,4 +72,7 @@ void Groupe_unvisit(Groupe* pGroup);
 
 Groupe* Groupe_trouver_ById(struct Scene* scene, int id );
 
+void Groupe_transfoCenter(Groupe* pGroup, tdMatrix tdTransfo);
+
+void Groupe_transfo(Groupe* pGroup, tdMatrix tdTransfo);
 #endif //GROUPE_H

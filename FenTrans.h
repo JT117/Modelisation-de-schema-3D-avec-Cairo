@@ -17,6 +17,8 @@ struct FenTrans
     GtkWidget* radio1;
     GtkWidget* radio2;
     GtkWidget* radio3;
+    GtkWidget* radio4;
+    GtkWidget* radio5;
     Groupe* groupeSelectionne;
     gboolean unGroupeEstSelectionner;
 };

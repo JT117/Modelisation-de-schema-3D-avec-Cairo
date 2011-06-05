@@ -265,18 +265,27 @@ static gboolean FenetreAjout_change_affichage( GtkComboBox* comboBox, gpointer d
     }
     else if( strcmp( gtk_combo_box_get_active_text( comboBox ), "Triangle" ) == 0 )
     {
-    	int i;
+        int i;
     	 FenetreAjout_enlever_layout( fao );
 
     	 fao->layout = gtk_vbutton_box_new(); /* Création nouveau layout */
     	 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START ); /* Précision du style de layout */
+    	 fao->hbox_point1 = gtk_hbutton_box_new();
+    	 fao->hbox_point2 = gtk_hbutton_box_new();
+    	 fao->hbox_point3 = gtk_hbutton_box_new();
+    	 fao->hbox_point4 = gtk_hbutton_box_new();
 
     	 GtkWidget* wLabelP1 = gtk_label_new("Point 1 : ");
     	 GtkWidget* wLabelP2 = gtk_label_new("Point 2 : ");
     	 GtkWidget* wLabelP3 = gtk_label_new("Point 3 : ");
     	 /* Allocation des input necessaires */
     	 for(i=0;i<3;++i)
-    		 (fao->xCoord)[i] = gtk_entry_new();
+    	 {
+    	     (fao->xCoord)[i] = gtk_entry_new();
+    	     (fao->yCoord)[i] = gtk_entry_new();
+    	     (fao->zCoord)[i] = gtk_entry_new();
+    	 }
+
 
     	 /* COnfiguration des layouts*/
     	 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point1 ), GTK_BUTTONBOX_START );
@@ -382,7 +391,8 @@ void FenetreAjout_enlever_layout( FenetreAjout* fao )
 
 static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 {
-	double dWidth, dHeight ;/* TODO : modifier les noms pour avoir hauteur + profondeur */
+	double dWidth = 0;
+	double dHeight = 0;/* TODO : modifier les noms pour avoir hauteur + profondeur */
 	double dX, dY,dZ; /*Coordonnées du centre de gravité du nouvel objet dans le repere pere*/
 	tCoord tdCenter;
     FenetreAjout* fao = (FenetreAjout*)data;

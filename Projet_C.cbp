@@ -103,6 +103,14 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="ProjectionTools.h" />
+		<Unit filename="Pyramid.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pyramid.h" />
+		<Unit filename="Quadrilateral.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Quadrilateral.h" />
 		<Unit filename="Rectangle.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -127,6 +135,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Transformation.h" />
+		<Unit filename="Triangle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Triangle.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
