@@ -92,6 +92,8 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     GtkWidget* imageRotation = gtk_image_new_from_file( "rotation.png" );
     gtk_button_set_image( GTK_BUTTON( boutonMainWorld ), imageRotation );
 
+    GtkWidget* boutonSegment = gtk_button_new_with_label("Segment");
+
     GtkWidget* boutonText = gtk_button_new_with_label("Texte");
     GtkWidget* imageText = gtk_image_new_from_file( "texte.png" );
     gtk_button_set_image( GTK_BUTTON( boutonText ), imageText );
@@ -113,6 +115,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonNormal );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonMainWorld );
     gtk_container_add( GTK_CONTAINER( vbarre ), boutonText );
+    gtk_container_add( GTK_CONTAINER( vbarre ), boutonSegment );
     gtk_container_add( GTK_CONTAINER( vbarre ), hbarre );
 
     gtk_button_box_set_layout( GTK_BUTTON_BOX( hbarre ), GTK_BUTTONBOX_CENTER );
@@ -152,6 +155,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     g_signal_connect( G_OBJECT( boutonNormal ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonZoom ), "clicked", G_CALLBACK( changementCurseur ), scene);
     g_signal_connect( G_OBJECT( boutonText ), "clicked", G_CALLBACK( changementCurseur ), scene);
+    g_signal_connect( G_OBJECT( boutonSegment ), "clicked", G_CALLBACK( changementCurseur ), scene);
 
     g_signal_connect( G_OBJECT( mainWindow ), "delete-event", G_CALLBACK( main_quitter ), NULL );
     g_signal_connect( G_OBJECT( mainWindow ), "key-press-event", G_CALLBACK(gestion_clavier), scene);
@@ -471,6 +475,9 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
 					bSelected = TRUE;
 				else if( pObj->eType == QUADRILATERAL && pObj->type.quadrilateral->estSelectionne)
 					bSelected = TRUE;
+				//else if( pObj->eType == PYRAMID && pObj->type.pyramid->estSelectionne)
+				//	bSelected = TRUE;
+
 
 				if( bSelected && !pObj->pFatherGroup->bVisited) /* Si l'objet est selectionné et qu'il n'est pas dans un groupe qui a été visité */
 				{
@@ -681,6 +688,13 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
             }
         }
     }
+    else if( scene->souris == CURSORSEGMENT )
+	{
+    	if( event->type == GDK_BUTTON_PRESS && event->button == 1 ) /* Clique gauche utilisateur */
+		{
+			MouseInterface_segment(scene,event);
+		}
+	}
     return TRUE;
 }
 
@@ -1393,6 +1407,12 @@ static gboolean changementCurseur( GtkButton* bouton, gpointer data )
 		scene->souris = TEXT;
         scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "texte.png") ) ), 4, 4 );
         gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
+	}
+    else if( strcmp( gtk_button_get_label( bouton ), "Segment" ) == 0 )
+	{
+		scene->souris = CURSORSEGMENT;
+        /*scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "texte.png") ) ), 4, 4 );
+        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );*/
 	}
 	return TRUE;
 }

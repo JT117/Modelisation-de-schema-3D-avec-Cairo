@@ -17,6 +17,7 @@ struct FenetreAjout
     GtkWidget* entry2; // Y
     GtkWidget* entry3; // Z
 
+    GtkWidget* barreCouleur;
     GtkWidget* entryR; // R
     GtkWidget* entryG; // G
     GtkWidget* entryB; // B
@@ -26,7 +27,7 @@ struct FenetreAjout
     GtkWidget* boutonAnnuler;
     GtkWidget* barreSelection;
     GtkWidget* barrePosition;
-    GtkWidget* barreCouleur;
+
     GtkWidget* barreBouton;
     GtkWidget* layout;
     GtkWidget* hbox_cube;
@@ -44,6 +45,11 @@ struct FenetreAjout
     GtkWidget* xCoord[4]; // X
 	GtkWidget* yCoord[4]; // Y
 	GtkWidget* zCoord[4]; // Z
+
+	/* Infos relatives au segment */
+	GtkWidget* hbox_checkSegment;
+	GtkWidget* wArrowed;
+	GtkWidget* wDashed;
 
     double x, y, z;
     double L;

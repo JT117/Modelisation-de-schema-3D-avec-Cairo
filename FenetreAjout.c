@@ -387,6 +387,8 @@ static gboolean FenetreAjout_change_affichage( GtkComboBox* comboBox, gpointer d
 		 fao->layout = gtk_vbutton_box_new(); /* Création nouveau layout */
 		 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->layout ), GTK_BUTTONBOX_START ); /* Précision du style de layout */
 		 fao->hbox_point1 = gtk_hbutton_box_new();
+		 fao->hbox_checkSegment = gtk_hbutton_box_new();
+		 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_checkSegment ), GTK_BUTTONBOX_CENTER ); /* Précision du style de layout */
 
 		 GtkWidget* wLabelP1 = gtk_label_new("Extrémité : ");
 		 /* Allocation des input necessaires */
@@ -402,11 +404,18 @@ static gboolean FenetreAjout_change_affichage( GtkComboBox* comboBox, gpointer d
 		 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), (fao->yCoord)[0] );
 		 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), (fao->zCoord)[0] );
 
+
+		 fao->wDashed = gtk_check_button_new_with_label("Pointillé");
+		 fao->wArrowed = gtk_check_button_new_with_label("Flêche");
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_checkSegment ), fao->wArrowed );
+		 gtk_container_add( GTK_CONTAINER( fao->hbox_checkSegment ), fao->wDashed );
+
 		 /* Ajout des elements à la fenêtre */
 		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreSelection );
 		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barrePosition );
 		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
 		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->hbox_point1 );
+		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->hbox_checkSegment );
 		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreBouton );
 		 gtk_container_add( GTK_CONTAINER( fao->fenetre ), fao->layout );
 
@@ -484,6 +493,7 @@ void FenetreAjout_enlever_layout( FenetreAjout* fao )
 		 gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreCouleur );
 		 gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->hbox_point1 );
 		 gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreBouton );
+		 gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->hbox_checkSegment );
 		 gtk_container_remove( GTK_CONTAINER( fao->fenetre ), fao->layout );
 	}
 }
@@ -701,7 +711,7 @@ void FenetreAjout_addSegment(FenetreAjout* pFao )
 	Scene* scene = pFao->scene;
 	tCoord tCoord1,tCoord2,tCenter;
 	Point sP1,sP2,sMiddle;
-	/* Récupération des coudes couleurs */
+	/* Récupération des codes couleurs */
 	dR = atof( gtk_entry_get_text( GTK_ENTRY( pFao->entryR ) ) );
 	dG = atof( gtk_entry_get_text( GTK_ENTRY( pFao->entryG ) ) );
 	dB = atof( gtk_entry_get_text( GTK_ENTRY( pFao->entryB ) ) );
@@ -718,14 +728,14 @@ void FenetreAjout_addSegment(FenetreAjout* pFao )
 	Groupe* groupe = Groupe_trouver( scene, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(pFao->comboBoxGroupe) ) ) ;
 
 	Point_initWorld(&sP1,dX1,dY1,dZ1);
-	Point_initWorld(&sP1,dX2,dY2,dZ2);
+	Point_initWorld(&sP2,dX2,dY2,dZ2);
 	/* Recherche du mileu du segment dans le repere du monde -> centre du segment */
 	Point_middlePoint(&sMiddle,&sP1, &sP2);
 
 	/* Initialisation des coordonnées dans son propre repère*/
 	Point_initCoord(tCoord1,dX1 - sMiddle.tdCoordWorld[0],dY1 - sMiddle.tdCoordWorld[1],
 							dZ1 - sMiddle.tdCoordWorld[2]);
-	Point_initCoord(tCoord1,dX2 - sMiddle.tdCoordWorld[0],dY2 - sMiddle.tdCoordWorld[1],
+	Point_initCoord(tCoord2,dX2 - sMiddle.tdCoordWorld[0],dY2 - sMiddle.tdCoordWorld[1],
 							dZ2 - sMiddle.tdCoordWorld[2]);
 
 	/* Renseignement du tableau tdCenter */
@@ -735,6 +745,13 @@ void FenetreAjout_addSegment(FenetreAjout* pFao )
 
 	pNewSeg = Segment_createSegment(tCenter,tCoord1,tCoord2);
 	Color_setColor(pNewSeg->tColor,(dR/255),(dG/255),(dB/255),dA);
+
+	if(gtk_toggle_button_get_active(pFao->wArrowed))
+		Segment_setArrowed(pNewSeg);
+
+	if(gtk_toggle_button_get_active(pFao->wDashed))
+		Segment_setDashed(pNewSeg);
+
 
 	Scene_ajouter_segment( pFao->scene, pNewSeg, groupe->id );
 	gtk_widget_queue_draw( scene->zoneDeDessin );

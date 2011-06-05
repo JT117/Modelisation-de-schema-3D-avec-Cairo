@@ -33,6 +33,15 @@ struct Objet
 
     /** Un flag indiquant si l'objet est à selectionner */
     gboolean doitEtreDeselectionner;
+
+    /** Indique si l'objet a été selectionné pour la création d'un segment, dans ce cas il faut entouré ses points d'intérêt
+     * Peut prendre les valeurs suivantes :
+     * -2 l'objet n'a pas été seletionné pour créer un segment
+     * -1 L'objet a été selectionné mais aucun point n'a été choisi
+     * [0..+inf] Un point de l'objet a été choisi
+     **/
+    int iSelectedForSegment;
+
     /** Un int indiquant l'id du dernier groupe dont l'objet fait partie */
     int numeroGroupe;
     /** iteration de l'arbre pour placement dans l'arbre d'objet */

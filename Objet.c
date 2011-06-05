@@ -27,9 +27,10 @@ void Objet_detruire( Objet* objet )
 void Objet_est_un_Cube( Objet* objet, Cube* cube )
 {
 	objet->eType = CUBE;
-    //objet->typeObjet = (char*)malloc( 5 * sizeof(char) );
+
     objet->type.cube = cube;
-    //strcpy( objet->typeObjet, "Cube" );
+    objet->iSelectedForSegment = -2; /* objet non selectionné pour création d'un segment */
+
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
@@ -37,9 +38,9 @@ void Objet_est_un_Cube( Objet* objet, Cube* cube )
 void Objet_est_un_Triangle( Objet* objet, Triangle* pTri )
 {
 	objet->eType = TRIANGLE;
-    //objet->typeObjet = (char*)malloc( 9 * sizeof(char) );
     objet->type.triangle = pTri;
-   //strcpy( objet->typeObjet, "Triangle" );
+    objet->iSelectedForSegment = -2; /* objet non selectionné pour création d'un segment */
+
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
     objet->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
@@ -48,6 +49,8 @@ void Objet_est_un_Triangle( Objet* objet, Triangle* pTri )
 void Objet_est_un_Quadrilateral( Objet* objet, Quadrilateral* pQuadri )
 {
 	objet->eType = QUADRILATERAL;
+    objet->iSelectedForSegment = -2; /* objet non selectionné pour création d'un segment */
+
     objet->type.quadrilateral = pQuadri;
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
@@ -56,9 +59,9 @@ void Objet_est_un_Quadrilateral( Objet* objet, Quadrilateral* pQuadri )
 
 void Objet_est_une_Pyramide( Objet* objet, Pyramid* pPyr )
 {
-    //objet->typeObjet = (char*)malloc( 5 * sizeof(char) );
     objet->type.pyramid = pPyr;
-    //strcpy( objet->typeObjet, "Pyramide" );
+    objet->iSelectedForSegment = -2; /* objet non selectionné pour création d'un segment */
+
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
     objet->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
@@ -69,6 +72,7 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     pObj->eType = RECTANGLE;
     pObj->type.rectangle = pRect; /* sauvegarde pointeur sur objet */
     pObj->doitEtreDeselectionner = TRUE;
+    pObj->iSelectedForSegment = -2; /* objet non selectionné pour création d'un segment */
 
     /* Allocation des tableaux dynamiques contenant les transformations à appliquer sur l'objet */
     Matrix_initIdentityMatrix(pObj->tTransfoMatrix);
@@ -80,6 +84,8 @@ void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
 {
 	pObj->eType = SEGMENT;
 	pObj->type.segment = pSeg; /* sauvegarde pointeur sur objet */
+    pObj->iSelectedForSegment = -2; /* objet non selectionné pour création d'un segment */
+
 	pObj->doitEtreDeselectionner = TRUE;
 	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
     pObj->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
@@ -90,6 +96,8 @@ void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
 {
 	pObj->eType = SPHERE;
 	pObj->type.sphere = pSph; /* sauvegarde pointeur sur objet */
+    pObj->iSelectedForSegment = -2; /* objet non selectionné pour création d'un segment */
+
 	pObj->doitEtreDeselectionner = TRUE;
 	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
     pObj->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
@@ -376,6 +384,10 @@ void Objet_transfo(Objet* objet, tdMatrix tdTransfo)
 	{
 		Pyramid_transfo(objet->type.pyramid, tdTransfo);
 	}
+	else if( objet->eType == SEGMENT )
+	{
+		Segment_transfo(objet->type.segment, tdTransfo);
+	}
 
 }
 
@@ -404,6 +416,10 @@ void Objet_transfoCenter(Objet* objet, tdMatrix tdTransfo)
 	else if( objet->eType == PYRAMID )
 	{
 		Pyramid_transfoCenter(objet->type.pyramid, tdTransfo);
+	}
+	else if( objet->eType == SEGMENT )
+	{
+		Segment_transfoCenter(objet->type.segment, tdTransfo);
 	}
 }
 

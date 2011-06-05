@@ -1,9 +1,6 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include <cairo.h>
-#include <gtk/gtk.h>
-
 #include "Point.h"
 #include "MatrixTools.h"
 #include "Transformation.h"
@@ -11,6 +8,10 @@
 #include "Camera.h"
 #include "Color.h"
 #include "Groupe.h"
+
+#include <cairo.h>
+#include <gtk/gtk.h>
+#include <math.h>
 
 struct Objet;
 

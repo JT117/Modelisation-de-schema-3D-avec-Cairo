@@ -10,6 +10,7 @@ C_SRCS += \
 ../Cube.c \
 ../ExportWindow.c \
 ../FenPrincipale.c \
+../FenSeg.c \
 ../FenText.c \
 ../FenTrans.c \
 ../FenetreAjout.c \
@@ -17,6 +18,7 @@ C_SRCS += \
 ../Groupe.c \
 ../MatrixTools.c \
 ../Modification.c \
+../MouseInterface.c \
 ../Objet.c \
 ../Point.c \
 ../ProjectionTools.c \
@@ -39,6 +41,7 @@ OBJS += \
 ./Cube.o \
 ./ExportWindow.o \
 ./FenPrincipale.o \
+./FenSeg.o \
 ./FenText.o \
 ./FenTrans.o \
 ./FenetreAjout.o \
@@ -46,6 +49,7 @@ OBJS += \
 ./Groupe.o \
 ./MatrixTools.o \
 ./Modification.o \
+./MouseInterface.o \
 ./Objet.o \
 ./Point.o \
 ./ProjectionTools.o \
@@ -68,6 +72,7 @@ C_DEPS += \
 ./Cube.d \
 ./ExportWindow.d \
 ./FenPrincipale.d \
+./FenSeg.d \
 ./FenText.d \
 ./FenTrans.d \
 ./FenetreAjout.d \
@@ -75,6 +80,7 @@ C_DEPS += \
 ./Groupe.d \
 ./MatrixTools.d \
 ./Modification.d \
+./MouseInterface.d \
 ./Objet.d \
 ./Point.d \
 ./ProjectionTools.d \

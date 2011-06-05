@@ -52,7 +52,7 @@ void Modification_modification_effectuer( Scene* scene )
             for( i = 0; i < scene->nbObjet; i++ )
             {
                 Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-                fprintf( fichier, "%s\n%d\n", objet->eType, 0 ); // A changer quand l'implementation du groupe sera faite TODO
+                //fprintf( fichier, "%s\n%d\n", objet->eType, 0 ); // A changer quand l'implementation du groupe sera faite TODO
 
                 if( objet->eType == CUBE )
                 {

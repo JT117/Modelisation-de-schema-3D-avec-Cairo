@@ -1,9 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "Rectangle.h"
 #include "Objet.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 
 Rectangle* Rectangle_createRectangle(tCoord tdCorner1,tCoord tdCorner2, tCoord tdCenter)
 {
@@ -82,6 +81,7 @@ void Rectangle_updateCoordWolrd(Objet* pObj)
 
 void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 {
+	int i;
 	Rectangle* pRec = NULL;
 	/* Coordonnées de points une fois projettés */
 	tCoord2D* pPointProj0 = NULL;
@@ -97,6 +97,12 @@ void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	pPointProj1 = ProjectionTools_getPictureCoord(&(pRec->tPoint[1]),pCam);
 	pPointProj2 = ProjectionTools_getPictureCoord(&(pRec->tPoint[2]),pCam);
 	pPointProj3 = ProjectionTools_getPictureCoord(&(pRec->tPoint[3]),pCam);
+
+	/* Mise à jour des coordonnées un fois projettées */
+	Point_initCoord2D(pRec->tPoint[0].tCoordProjection,(*pPointProj0)[0], (*pPointProj0)[1]);
+	Point_initCoord2D(pRec->tPoint[1].tCoordProjection,(*pPointProj1)[0], (*pPointProj1)[1]);
+	Point_initCoord2D(pRec->tPoint[2].tCoordProjection,(*pPointProj2)[0], (*pPointProj2)[1]);
+	Point_initCoord2D(pRec->tPoint[3].tCoordProjection,(*pPointProj3)[0], (*pPointProj3)[1]);
 
 	/* Construction du path */
 	cairo_move_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]);
@@ -116,6 +122,23 @@ void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 		cairo_set_source_rgb ( cr, 0, 0, 0); /* couleur contour */
 
 	cairo_stroke(cr); /* dessin contour, perte du path */
+
+	/* On dessine les points d'intérêts si il le faut*/
+	if( pObj->iSelectedForSegment == -1 )
+	{
+		for(i=0;i<4;i++)
+		{
+			cairo_arc(cr, pRec->tPoint[i].tCoordProjection[0], pRec->tPoint[i].tCoordProjection[1], 5, 0.0, 2*M_PI);
+			cairo_set_source_rgba (cr,1.0, 0.0, 0.0 , 1.0); /*Couleur */
+			cairo_stroke(cr);
+		}
+	}
+	else if ( pObj->iSelectedForSegment >= 0)
+	{  /* On dessine le point selectionné rempli en rouge */
+		cairo_arc(cr, pRec->tPoint[pObj->iSelectedForSegment].tCoordProjection[0], pRec->tPoint[pObj->iSelectedForSegment].tCoordProjection[1], 3, 0.0, 2*M_PI);
+		cairo_set_source_rgba (cr,1.0, 0.0, 0.0 , 1.0); /*Couleur */
+		cairo_fill(cr);
+	}
 
 	free(pPointProj0);
 	free(pPointProj1);

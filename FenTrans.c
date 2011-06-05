@@ -86,7 +86,6 @@ void FenTrans_init( FenTrans* ft, Scene* scene )
 
     g_signal_connect_object( G_OBJECT( boutonAnnuler ), "clicked", G_CALLBACK( gtk_widget_destroy ), ft->fenetre, G_CONNECT_SWAPPED );
     g_signal_connect( G_OBJECT( boutonOk ), "clicked", G_CALLBACK( FenTrans_validation ), ft );
-
 }
 
 

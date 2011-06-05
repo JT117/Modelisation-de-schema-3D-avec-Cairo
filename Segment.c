@@ -49,7 +49,7 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 
 	if( pSeg->bArrowed == TRUE ) /* On trace la tête de la flêche */
 	{
-		/* Recherche des points constituants les deux extrémités(gauche et droite) de la fléche */
+		/* Recherche des points constituants les deux extrémités(gauche et droite) de la flêche */
 		dArrowAngle = atan2 ( (*pPointProj2)[1] - (*pPointProj1)[1], (*pPointProj2)[0] - (*pPointProj1)[0] ) + M_PI;
 
 		tArrow1[0] = (*pPointProj2)[0]  + 15 * cos(dArrowAngle - 0.5); /* 15 correspond à la taille de la flêche */
@@ -60,7 +60,7 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 
 		cairo_move_to( cr, tArrow1[0], tArrow1[1]);
 		cairo_line_to( cr, (*pPointProj2)[0],(*pPointProj2)[1]);
-		cairo_move_to( cr, tArrow1[0], tArrow1[1]);
+		cairo_line_to( cr, tArrow2[0], tArrow2[1]);
 	}
 	cairo_set_line_width(cr, 0.8);
 	cairo_stroke(cr); /* dessin contour, perte du path */
@@ -98,6 +98,40 @@ void Segment_updateCoordWolrd(Objet* pObj)
 	pFatherGroup = pObj->pFatherGroup;
 	/* On met aussi à jour les coordonnées du centre de l'objet */
 	ProjectionTools_getCoordWorld(pSeg->Center.tdCoordGroup,pFatherGroup,&(pSeg->Center));
+}
+
+void Segment_transfoCenter(Segment* pSeg, tdMatrix tdTransfoMat)
+{
+	tCoord tCoordApTransfo;
+
+	Point_initCoord(tCoordApTransfo, 0.0, 0.0, 0.0);
+	/*APplication de la transformation au centre du Segment */
+	Matrix_multiMatrixVect(tdTransfoMat, pSeg->Center.tdCoordGroup, tCoordApTransfo);
+
+	pSeg->Center.tdCoordGroup[0] = tCoordApTransfo[0];
+	pSeg->Center.tdCoordGroup[1] = tCoordApTransfo[1];
+	pSeg->Center.tdCoordGroup[2] = tCoordApTransfo[2];
+	pSeg->Center.tdCoordGroup[3] = tCoordApTransfo[3];
+}
+
+void Segment_transfo(Segment* pSeg, tdMatrix tdTransfoMat)
+{
+	tCoord tCoordApTransfo;
+	int i;
+
+	Point_initCoord(tCoordApTransfo, 0.0, 0.0, 0.0);
+	for(i=0 ; i<2 ;i++)
+	{
+		Matrix_multiMatrixVect(tdTransfoMat, pSeg->tPoint[i].tdCoordGroup, tCoordApTransfo);
+
+		/* Modification des coordonées dans le repere objet */
+		pSeg->tPoint[i].tdCoordGroup[0] = tCoordApTransfo[0];
+		pSeg->tPoint[i].tdCoordGroup[1] = tCoordApTransfo[1];
+		pSeg->tPoint[i].tdCoordGroup[2] = tCoordApTransfo[2];
+		pSeg->tPoint[i].tdCoordGroup[3] = tCoordApTransfo[3];
+
+		Point_initCoord(tCoordApTransfo, 0.0, 0.0, 0.0);  /* Reinitialisation de la matrice de coordonnées après transformation*/
+	}
 }
 
 void Segment_destroySegment(Segment* pSeg)

@@ -15,7 +15,7 @@ typedef struct Point
     double x;
     double y;
     double z;
-
+    tCoord2D tCoordProjection;
     /**Coordonnées du point dans le repère de l'univers**/
 	tCoord tdCoordWorld;
 	/** Coordonnées du point dans le repere du groupe parent **/

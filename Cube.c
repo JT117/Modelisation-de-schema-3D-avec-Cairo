@@ -169,6 +169,7 @@ void Cube_drawCube( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	tCoord2D* pPointProj1 = NULL;tCoord2D* pPointProj5 = NULL;
 	tCoord2D* pPointProj2 = NULL;tCoord2D* pPointProj6 = NULL;
 	tCoord2D* pPointProj3 = NULL;tCoord2D* pPointProj7 = NULL;
+	int i;
 	Cube* pCube = pObj->type.cube;
 
 	Cube_updateCoordWolrd(pObj);
@@ -182,6 +183,16 @@ void Cube_drawCube( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	pPointProj5 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[5]),pCam);
 	pPointProj6 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[6]),pCam);
 	pPointProj7 = ProjectionTools_getPictureCoord(&((pCube->tPoint)[7]),pCam);
+
+	/* Mise à jour des coordonnées un fois projettées */
+	Point_initCoord2D(pCube->tPoint[0].tCoordProjection,(*pPointProj0)[0], (*pPointProj0)[1]);
+	Point_initCoord2D(pCube->tPoint[1].tCoordProjection,(*pPointProj1)[0], (*pPointProj1)[1]);
+	Point_initCoord2D(pCube->tPoint[2].tCoordProjection,(*pPointProj2)[0], (*pPointProj2)[1]);
+	Point_initCoord2D(pCube->tPoint[3].tCoordProjection,(*pPointProj3)[0], (*pPointProj3)[1]);
+	Point_initCoord2D(pCube->tPoint[4].tCoordProjection,(*pPointProj4)[0], (*pPointProj4)[1]);
+	Point_initCoord2D(pCube->tPoint[5].tCoordProjection,(*pPointProj5)[0], (*pPointProj5)[1]);
+	Point_initCoord2D(pCube->tPoint[6].tCoordProjection,(*pPointProj6)[0], (*pPointProj6)[1]);
+	Point_initCoord2D(pCube->tPoint[7].tCoordProjection,(*pPointProj7)[0], (*pPointProj7)[1]);
 
 	/* Recherche de l'ordre dans lequel on doit dessiner les faces */
 	gtTabFacesOrder = Cube_facesOrder(pCube,pCam);
@@ -269,6 +280,23 @@ void Cube_drawCube( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 			cairo_set_source_rgb ( cr, 0, 0, 0);
 
 		cairo_stroke(cr); /* dessin contour, perte du path */
+	}
+
+	/* On dessine les points d'intérêts si il le faut*/
+	if( pObj->iSelectedForSegment == -1 )
+	{
+		for(i=0;i<8;i++)
+		{
+			cairo_arc(cr, pCube->tPoint[i].tCoordProjection[0], pCube->tPoint[i].tCoordProjection[1], 5, 0.0, 2*M_PI);
+			cairo_set_source_rgba (cr,1.0, 0.0, 0.0 , 1.0); /*Couleur */
+			cairo_stroke(cr);
+		}
+	}
+	else if ( pObj->iSelectedForSegment >= 0)
+	{  /* On dessine le point selectionné rempli en rouge */
+		cairo_arc(cr, pCube->tPoint[pObj->iSelectedForSegment].tCoordProjection[0], pCube->tPoint[pObj->iSelectedForSegment].tCoordProjection[1], 3, 0.0, 2*M_PI);
+		cairo_set_source_rgba (cr,1.0, 0.0, 0.0 , 1.0); /*Couleur */
+		cairo_fill(cr);
 	}
 
 	/* Libération mémoire */
