@@ -205,7 +205,7 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
  * @param data, pointer générique contenant la scene qui elle contient toutes les informations necessaire au dessin
  * @return TRUE pour que l'expose event soit propagé dans l'application
  */
-static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event, gpointer data)
+gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
     Scene* scene = (Scene*)data;                                     //Cast du pointeur generique en Scene*
 
@@ -222,7 +222,7 @@ static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,
     return TRUE;
 }
 
-static gboolean realize_callback( GtkWidget *widget, GdkEventExpose *event, gpointer data )
+ gboolean realize_callback( GtkWidget *widget, GdkEventExpose *event, gpointer data )
 {
     printf("realize event \n");
     return TRUE;
@@ -234,7 +234,7 @@ static gboolean realize_callback( GtkWidget *widget, GdkEventExpose *event, gpoi
  * @param data, pointeur générique sur la scene, qui contient toutes les informations sur l'etat du clavier
  * @return TRUE pour propager les evenements dans l'application
  */
-static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data)
+ gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer data)
 {
     Scene* scene = (Scene*) data;                                                               //Cast du pointeur generique en Scene*
 
@@ -305,7 +305,7 @@ static gboolean gestion_clavier(GtkWidget *window, GdkEventKey* event, gpointer 
     return TRUE;
 }
 
-static gboolean newText(gpointer data)
+ gboolean newText(gpointer data)
 {
     Scene* scene = (Scene*)data;
 
@@ -315,7 +315,7 @@ static gboolean newText(gpointer data)
 	return TRUE;
 }
 
-static gboolean main_export(GtkWidget *menuItem, gpointer data )
+ gboolean main_export(GtkWidget *menuItem, gpointer data )
 {
 	Scene* scene = (Scene*)data;
 
@@ -330,7 +330,7 @@ static gboolean main_export(GtkWidget *menuItem, gpointer data )
  * @param data, pointeur générique sur la scene, qui contient toutes les informations sur l'etat de la souris
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event, gpointer data)
+ gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event, gpointer data)
 {
 	int i,j;
 	Objet* pObj; /* Va pointer sur les objets d'un groupe */
@@ -689,7 +689,7 @@ static gboolean gestion_souris_callback(GtkWidget *widget, GdkEventButton* event
  * @param data, pointeur générique sur la scene, qui contient la represantation de la scene a laquelle il faudra ajouter le nouvel objet
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
+ gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data; /*recupération de la scene courante*/
     FenetreAjout* fao = (FenetreAjout*)malloc( 1 *sizeof( FenetreAjout) );
@@ -704,7 +704,7 @@ static gboolean nouveau_cube( GtkWidget *menuItem, gpointer data )
  * @param data, pointeur générique sur la scene, qui sera reecrite selon le ficier de sauvegarde lu
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
+ gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
     Scene_reset( scene, scene->zoneDeDessin );
@@ -819,7 +819,7 @@ static gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
  * @param data, pointeur générique sur la scene, qui sera lu et ecrite dans un fichier
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
+ gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -888,7 +888,7 @@ static gboolean main_sauvegarder( GtkWidget *menuItem, gpointer data )
  * @param data, pointeur générique sur la scene, qui contient un pointeur sur le module Modification
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean main_annuler( GtkWidget *menuItem, gpointer data )
+ gboolean main_annuler( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -902,7 +902,7 @@ static gboolean main_annuler( GtkWidget *menuItem, gpointer data )
  * @param data, pointeur générique sur la scene, qui contient un pointeur sur le module Modification
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean main_refaire( GtkWidget *menuItem, gpointer data )
+ gboolean main_refaire( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -916,7 +916,7 @@ static gboolean main_refaire( GtkWidget *menuItem, gpointer data )
  * @param data, NULL
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean main_quitter( GtkWidget *menuItem, gpointer data )
+ gboolean main_quitter( GtkWidget *menuItem, gpointer data )
 {
     GtkWidget* avertissement =
     gtk_message_dialog_new( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_OK_CANCEL, "Etes-vous sur de vouloir quitter ? Tout travail non sauvegardé sera perdu !" );
@@ -939,7 +939,7 @@ static gboolean main_quitter( GtkWidget *menuItem, gpointer data )
  * @param data, pointeur générique sur la scene, qui sera detruite et reconstruite vierge
  * @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean main_nouveau( GtkWidget *menuItem, gpointer data )
+ gboolean main_nouveau( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
     GtkWidget* avertissement =
@@ -964,7 +964,7 @@ static gboolean main_nouveau( GtkWidget *menuItem, gpointer data )
  *  @param data, la scene contenant le/les elements à supprimer
  *  @return TRUE pour propager les evenements dans l'application
  **/
-static gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
+ gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -996,7 +996,7 @@ static gboolean main_supprimer( GtkWidget *menuItem, gpointer data )
   * @param menuItem, l'element du menu ayant ete cliqué
   * @param data, la scene
   */
-static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data )
+ gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -1011,7 +1011,7 @@ static gboolean nouveau_propriete( GtkWidget *menuItem, gpointer data )
 
 //static gboolean clickZoneGroupe(GtkWidget *widget, GdkEventButton* event, gpointer data)
 /** Fonction synchronisant la selection d'elements dans le volet groupe et la scene */
-static gboolean selectionChanged(GtkTreeSelection *selection, gpointer data)
+ gboolean selectionChanged(GtkTreeSelection *selection, gpointer data)
 {
     Scene* scene = (Scene*)data;
     gboolean modif = FALSE;
@@ -1055,7 +1055,7 @@ static gboolean selectionChanged(GtkTreeSelection *selection, gpointer data)
     return FALSE;
 }
 
-static gboolean clickDroitGroupe(GtkWidget *window, GdkEventButton* event, gpointer data)
+ gboolean clickDroitGroupe(GtkWidget *window, GdkEventButton* event, gpointer data)
 {
      Scene* scene = (Scene*)data;
 
@@ -1084,7 +1084,7 @@ static gboolean clickDroitGroupe(GtkWidget *window, GdkEventButton* event, gpoin
      return FALSE;
 }
 
-static gboolean nouvelle_transformation( GtkWidget *menuItem, gpointer data )
+ gboolean nouvelle_transformation( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -1096,7 +1096,7 @@ static gboolean nouvelle_transformation( GtkWidget *menuItem, gpointer data )
 	return TRUE;
 }
 
-static gboolean nouveau_groupe(GtkWidget *menuItem, gpointer data )
+ gboolean nouveau_groupe(GtkWidget *menuItem, gpointer data )
 {
      Scene* scene = (Scene*)data;
 
@@ -1186,7 +1186,7 @@ static gboolean nouveau_groupe(GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
-static gboolean ajout_Groupe( GtkButton* button, gpointer data )
+ gboolean ajout_Groupe( GtkButton* button, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -1238,7 +1238,7 @@ static gboolean ajout_Groupe( GtkButton* button, gpointer data )
     return TRUE;
 }
 
-static gboolean supprimer_Groupe(GtkWidget *menuItem, gpointer data )
+ gboolean supprimer_Groupe(GtkWidget *menuItem, gpointer data )
 {
      Scene* scene = (Scene*)data;
 
@@ -1295,7 +1295,7 @@ static gboolean supprimer_Groupe(GtkWidget *menuItem, gpointer data )
     return TRUE;
 }
 
-static gboolean suppression_Groupe( GtkButton* button, gpointer data )
+ gboolean suppression_Groupe( GtkButton* button, gpointer data )
 {
     Scene* scene = (Scene*)data;
 
@@ -1314,7 +1314,36 @@ static gboolean suppression_Groupe( GtkButton* button, gpointer data )
 
             gtk_tree_store_remove( scene->store, objet->iter);
             gtk_tree_store_append (scene->store, objet->iter, pere->iter);
-            gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->eType, -1); // TODO OULAH OULAH
+
+            if( objet->eType == CUBE )
+            {
+                 gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
+            }
+            else if( objet->eType == RECTANGLE )
+            {
+                 gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Rectangle", -1);
+            }
+            else if( objet->eType == SPHERE )
+            {
+                 gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Sphere", -1);
+            }
+            else if( objet->eType == QUADRILATERAL )
+            {
+                 gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Quadrilatère", -1);
+            }
+            else if( objet->eType == TRIANGLE )
+            {
+                 gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Triangle", -1);
+            }
+            else if( objet->eType == PYRAMID )
+            {
+                 gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Pyramide", -1);
+            }
+            else if( objet->eType == SEGMENT )
+            {
+                 gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Segment", -1);
+            }
+
             //gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->typeObjet, -1); // TODO OULAH OULAH
         }
 
@@ -1360,7 +1389,7 @@ static gboolean suppression_Groupe( GtkButton* button, gpointer data )
     return TRUE;
 }
 
-static gboolean changementCurseur( GtkButton* bouton, gpointer data )
+ gboolean changementCurseur( GtkButton* bouton, gpointer data )
 {
     Scene* scene = (Scene*)data;
 

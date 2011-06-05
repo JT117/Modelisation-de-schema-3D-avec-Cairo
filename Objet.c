@@ -467,13 +467,13 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier )
 {
     if( objet->eType == CUBE )
     {
-        fprintf( fichier, "%s\n%d %f %f %f %f\n", "Cube"/*objet->eType*/, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
-                                              objet->type.cube->Center.tdCoordGroup[3],  abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
+        fprintf( fichier, "%d\n%d %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
+                                              objet->type.cube->Center.tdCoordGroup[3],  (float)abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
         fprintf( fichier, "%f %f %f %f\n", objet->type.cube->tColor[0]*255, objet->type.cube->tColor[1]*255, objet->type.cube->tColor[2]*255, objet->type.cube->tColor[3] );
     }
     else if( objet->eType == RECTANGLE )
     {
-        fprintf( fichier, "%s\n%d %f %f %f %f %f\n", "Rectangle"/*objet->eType*/, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
+        fprintf( fichier, "%d\n%d %f %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
           /*TODO calculer largeur hauteur*/                                    objet->type.rectangle->Center.tdCoordGroup[3], 250.0, 250.0 );
         fprintf( fichier, "%f %f %f %f\n", objet->type.rectangle->tColor[0]*255, objet->type.rectangle->tColor[1]*255, objet->type.rectangle->tColor[2]*255, objet->type.rectangle->tColor[3] );
         fprintf( fichier , "%d\n", objet->aTransfo->len );
@@ -508,12 +508,10 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
     float r, g, b, a, dWidth, x, y, z = 0;
     tCoord tdCenter;
 
-    char* typeObjet = (char*)malloc( 35 * sizeof( char ) );
-    //int typeObjet;
-    fscanf( fichier, "%e", typeObjet );
-    //fscanf( fichier, "%d", typeObjet );
+    int typeObjet = -1;
+    fscanf( fichier, "%d", &typeObjet );
 
-    if( strcmp(typeObjet,"Cube") == 0 )
+    if( typeObjet == CUBE )
     {
         fscanf( fichier, "%d %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth  );
         fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
@@ -528,9 +526,9 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
 
         Modification_modification_effectuer( scene );
     }
-    else if( strcmp(typeObjet,"Rectangle") == 0 )
+    else if( typeObjet == RECTANGLE )
     {
-        float dHeight;
+        float dHeight = 0;
         fscanf( fichier, "%d %f %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth, &dHeight  );
         fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
 
@@ -568,7 +566,7 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
             if( strcmp( temp, "Rotation") == 0 )
             {
                 transfo->eTransfoType = ROTATION;
-                //Objet_rotation(objet, transfo->x, transfo->y ); TODO : réparer ça
+                /* TODO Rotataion */
             }
             else if( strcmp( temp, "Translation") == 0  )
             {

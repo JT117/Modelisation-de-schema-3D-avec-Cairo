@@ -26,7 +26,7 @@ void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb, double dX, double
     if( groupe->id == 0)
     {
         GtkWidget* label = gtk_label_new("Groupe 0");
-        groupe->nom = gtk_label_get_text( GTK_LABEL( label ) );
+        groupe->nom = (char*)gtk_label_get_text( GTK_LABEL( label ) );
     }
 }
 
@@ -264,8 +264,8 @@ void Groupe_restaure( FILE* fichier, Scene* scene )
     groupe->tFils = g_array_new( FALSE, FALSE, sizeof( Groupe* ) );
     groupe->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter) );
 
-    fscanf( fichier, "%d %s %d %f %f %f\n", &idGroupe, nom, &idGroupePere, &groupe->tCenterGroup.tdCoordGroup[0],
-                                                 &groupe->tCenterGroup.tdCoordGroup[0], &groupe->tCenterGroup.tdCoordGroup[0] );
+    fscanf( fichier, "%d %s %d %f %f %f\n", &idGroupe, nom, &idGroupePere, (float*)&groupe->tCenterGroup.tdCoordGroup[0],
+                                                 (float*)&groupe->tCenterGroup.tdCoordGroup[0], (float*)&groupe->tCenterGroup.tdCoordGroup[0] );
 
     groupe->id = idGroupe;
     groupe->nom = nom;

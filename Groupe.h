@@ -8,6 +8,7 @@
 
 #include "MatrixTools.h"
 #include "Modification.h"
+#include "Camera.h"
 
 struct Objet;
 struct Scene;
@@ -75,4 +76,9 @@ Groupe* Groupe_trouver_ById(struct Scene* scene, int id );
 void Groupe_transfoCenter(Groupe* pGroup, tdMatrix tdTransfo);
 
 void Groupe_transfo(Groupe* pGroup, tdMatrix tdTransfo);
+
+void Groupe_updateCoordWorld(Groupe* pGroup);
+
+void Groupe_drawMark(Groupe* pGroup,cairo_t* cr, InfoCamera* pCam);
+
 #endif //GROUPE_H

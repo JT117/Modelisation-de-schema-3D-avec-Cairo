@@ -119,6 +119,8 @@ void Scene_reconstruire( Scene* scene, GtkWidget* window );
 
 void Scene_ajouter_triangle( Scene* scene, Triangle* pTri, int idGroupe );
 
+void Scene_deleteClassifiedElements(GArray* tToDelete);
+
 void Scene_ajouter_quadrilateral(Scene* scene, Quadrilateral* pQuadri, int idGroupe );
 
 

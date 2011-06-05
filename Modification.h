@@ -5,6 +5,8 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+struct Scene;
+
 /** Structure gérant les fonctions annuler/refaire, détectant les modifications effectuer, et permettant de naviguer dans l'historique de modification */
 typedef struct Modification Modification;
 struct Modification
@@ -20,6 +22,15 @@ struct Modification
 };
 
 
+void Modification_modification_effectuer( struct Scene* scene );
+
+void Modification_initialiser( Modification* modif );
+
+void Modification_annuler( struct Scene* scene );
+
+void Modification_refaire( struct Scene* scene );
+
+void Modification_detruire_temporaire( Modification* modif );
 #endif  //MODIFICATION_H
 
 

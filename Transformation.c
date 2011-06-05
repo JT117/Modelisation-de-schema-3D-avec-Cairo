@@ -12,7 +12,7 @@ void TransfoTools_getMatrixTranslation(tdMatrix pMatModif, double dX, double dY,
 		for(j=0; j<4;j++)
 		{
 			if(i==j)
-				pMatModif = 1;
+				pMatModif[i][j] = 1;
 		}
 	}
 

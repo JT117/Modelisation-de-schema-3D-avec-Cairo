@@ -72,7 +72,7 @@ GArray* Pyramid_facesOrder(Pyramid* pPyramid, InfoCamera* pCam)
 	int iLoopInsert = 0;
 	int iPoint1, iPoint2; //stockage les index des points du Pyramid pour calcul du centre de gravité
 	double dDistance, dDistanceArray=0.0 ;
-	int iFacesNb; /* Nombre de faces */
+	int iFacesNb = 0; /* Nombre de faces */
 	Point sMedian;
 
 	/*Allocation de GArray */
@@ -214,7 +214,7 @@ void Pyramid_drawPyramid( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	tCoord2D* pPointProj3 = NULL;
 	tCoord2D* pPointProj4 = NULL;
 	Pyramid* pPyramid = pObj->type.pyramid;
-	int iFacesNb; /* Va contenir le nombre de faces*/
+	int iFacesNb = 0; /* Va contenir le nombre de faces*/
 
 	Pyramid_updateCoordWolrd(pObj);
 

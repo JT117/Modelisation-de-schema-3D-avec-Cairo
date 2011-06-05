@@ -3,6 +3,8 @@
 
 #include <gtk/gtk.h>
 #include "Scene.h"
+#include <cairo-svg.h>
+#include<cairo-pdf.h>
 
 typedef struct ExportWindow
 {

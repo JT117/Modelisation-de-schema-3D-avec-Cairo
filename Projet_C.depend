@@ -10,7 +10,7 @@
 	"Point.h"
 	"Objet.h"
 
-1307205650 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.h
+1307276258 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Cube.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
@@ -2243,7 +2243,7 @@
 	"Scene.h"
 	"Color.h"
 
-1307274551 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
+1307277061 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<math.h>
@@ -2259,17 +2259,18 @@
 	"Enum.h"
 	"Camera.h"
 
-1307274396 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
+1307276998 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	"Cube.h"
 	"Segment.h"
 	"Sphere.h"
 	"Triangle.h"
 	"Quadrilateral.h"
+	"Modification.h"
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
 
-1307273851 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
+1307281047 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 	"Groupe.h"
 	"Rectangle.h"
@@ -2282,7 +2283,7 @@
 	<stdio.h>
 	"FenPrincipale.h"
 
-1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
+1307277015 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
 	"Scene.h"
 	"Selection.h"
 
@@ -2297,7 +2298,7 @@
 	"Config.h"
 	"Objet.h"
 
-1306659856 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
+1307277431 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Config.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
@@ -2310,12 +2311,12 @@
 	"Clavier.h"
 	"Rectangle.h"
 
-1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.h
+1307277420 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	<string.h>
 
-1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
+1307280526 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Modification.c
 	"Modification.h"
 	"Config.h"
 
@@ -2323,7 +2324,7 @@
 	"Clavier.h"
 	"Scene.h"
 
-1304761900 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.h
+1307277371 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.h
 	<gtk/gtk.h>
 
 1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
@@ -2334,13 +2335,14 @@
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307274837 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.h
+1307277584 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
 	"Modification.h"
+	"Camera.h"
 
-1307211042 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
+1307275756 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
 	"Groupe.h"
 	"Scene.h"
 	"Objet.h"
@@ -2395,7 +2397,7 @@
 1302804820 /usr/include/gtk-2.0/gtk/gtkcomboboxtext.h
 	<gtk/gtkcombobox.h>
 
-1307205650 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Rectangle.h
+1307276292 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Rectangle.h
 	<cairo.h>
 	<gtk/gtk.h>
 	"Point.h"
@@ -2681,7 +2683,7 @@
 	"Point.h"
 	"Objet.h"
 
-1307205625 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Sphere.h
+1307276135 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Sphere.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
@@ -2693,7 +2695,7 @@
 1306150087 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.cpp
 	"FenPrincipale.h"
 
-1307205625 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.h
+1307278011 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.h
 	"FenetreAjout.h"
 	"Cube.h"
 	"Objet.h"
@@ -2707,12 +2709,14 @@
 	"FenTrans.h"
 	"FenText.h"
 
-1307274491 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
+1307280309 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
 	"FenPrincipale.h"
 
-1307205625 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
+1307279027 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
 	<gtk/gtk.h>
 	"Scene.h"
+	<cairo-svg.h>
+	<cairo-pdf.h>
 
 1307274220 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
 	"ExportWindow.h"
@@ -2745,11 +2749,11 @@
 	"FenetreAjout.h"
 	"Config.h"
 
-1307205625 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Transformation.c
+1307278302 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Transformation.c
 	<math.h>
 	"Transformation.h"
 
-1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Triangle.h
+1307276594 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Triangle.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
@@ -2759,7 +2763,7 @@
 	"Camera.h"
 	"Selection.h"
 
-1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Quadrilateral.h
+1307276374 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Quadrilateral.h
 	<cairo.h>
 	<gtk/gtk.h>
 	"Point.h"
@@ -2770,7 +2774,7 @@
 	"Color.h"
 	"Groupe.h"
 
-1307265468 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Pyramid.h
+1307276566 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Pyramid.h
 	<stdlib.h>
 	<gtk/gtk.h>
 	"MatrixTools.h"
@@ -2780,7 +2784,7 @@
 	"Camera.h"
 	"Selection.h"
 
-1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Pyramid.c
+1307276879 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Pyramid.c
 	<gtk/gtk.h>
 	<math.h>
 	"Pyramid.h"
@@ -2794,11 +2798,17 @@
 	"Quadrilateral.h"
 	"Objet.h"
 
-1307265468 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Triangle.c
+1307277764 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Triangle.c
 	<gtk/gtk.h>
 	<math.h>
 	"Triangle.h"
 	"ProjectionTools.h"
 	"Point.h"
 	"Objet.h"
+
+1302281297 /usr/include/cairo/cairo-svg.h
+	"cairo.h"
+
+1302281297 /usr/include/cairo/cairo-pdf.h
+	"cairo.h"
 

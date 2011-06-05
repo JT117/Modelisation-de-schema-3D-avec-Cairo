@@ -88,8 +88,6 @@ void Scene_detruire( Scene* scene )
  **/
 void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe )
 {
-    int i =0;
-
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
     Objet_est_un_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
@@ -290,7 +288,7 @@ GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 	return gtOrderedElements;
 }
 
-Scene_deleteClassifiedElements(GArray* tToDelete)
+void Scene_deleteClassifiedElements(GArray* tToDelete)
 {
 	int i;
 	for( i = 0; i < tToDelete->len; i++ )

@@ -84,4 +84,6 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam);
  */
 void Cube_transfo(Cube* pCube, tdMatrix tdTransfoMat);
 
+void Cube_transfoCenter(Cube* pCube, tdMatrix tdTransfoMat);
+
 #endif //CUBE_H

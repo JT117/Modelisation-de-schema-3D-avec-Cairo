@@ -58,5 +58,9 @@ void Sphere_modSize(Sphere* pRectangle, double dRatio);
  */
 gboolean Sphere_Contient_Point( Sphere* pSphere, double x, double y, InfoCamera* pCam);
 
+void Sphere_transfo(Sphere* pSphere, tdMatrix tdTransfoMat);
+
+void Sphere_transfoCenter(Sphere* pSphere, tdMatrix tdTransfoMat);
+
 
 #endif //Sphere_H

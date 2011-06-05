@@ -48,18 +48,20 @@ void Modification_modification_effectuer( Scene* scene )
         {
             int i = 0;
             fprintf( fichier, "DEBUT\n");
+            fprintf( fichier, "%d\n", scene->nbGroupe-1 );
+
+            for( i = 1; i < scene->nbGroupe; i++ )
+            {
+                Groupe* groupe = (Groupe*)g_array_index( scene->tGroupe, Groupe*, i );
+                Groupe_sauvegarde( groupe, fichier );
+            }
+
+            fprintf( fichier, "%d\n", scene->nbObjet );
 
             for( i = 0; i < scene->nbObjet; i++ )
             {
                 Objet* objet = (Objet*)g_array_index( scene->tObjet, Objet*, i );
-                fprintf( fichier, "%s\n%d\n", objet->eType, 0 ); // A changer quand l'implementation du groupe sera faite TODO
-
-                if( objet->eType == CUBE )
-                {
-                    fprintf( fichier, "%f %f %f\n", objet->type.cube->tPoint[0].x, objet->type.cube->tPoint[0].y, objet->type.cube->tPoint[0].z );
-                    fprintf( fichier, "%f\n", objet->type.cube->tPoint[1].x - objet->type.cube->tPoint[0].x );
-                    fprintf( fichier, "%f %f %f %f\n", 0.150, 0.150, 0.150, 0.150 );
-                }
+                Objet_sauvegarde( objet, fichier );
             }
             fprintf( fichier, "FIN");
             fclose( fichier );
@@ -98,34 +100,65 @@ void Modification_annuler( Scene* scene )
 
         if( fichier != NULL )
         {
-            char deb[5] = "     ";
+           char deb[5] = "    ";
             fscanf( fichier, "%s", deb );
 
             if( strcmp( deb, "DEBUT" ) == 0 )
             {
-                char typeObjet[20];
-                fscanf( fichier, "%s", typeObjet );
+                int i = 0;
+                int nbGroupe = 0;
+                int nbObjet = 0;
+                fscanf( fichier, "%d", &nbGroupe );
 
-                while( strcmp( typeObjet, "FIN") != 0 )
+                for( i = 0; i < nbGroupe; i++ )
                 {
-                    int groupe = 0;
-                    float x,y,z = 0;
-                    float taille = 0;
-                    float r,g,b,a = 0;
+                    Groupe_restaure( fichier, scene );
+                }
 
-                    fscanf( fichier, "%s", typeObjet );
-                    fscanf( fichier, "%f %f %f", &x, &y, &z );
-                    fscanf( fichier, "%f", &taille );
-                    fscanf( fichier, "%f %f %f %f", &r, &g, &b, &a );
+                fscanf( fichier, "%d", &nbObjet );
 
-                    Cube* cube = (Cube*)malloc( 1 * sizeof( Cube ) );
-                    //initialiser_Cube( cube, x, y, z, taille );
-                    Scene_ajouter_cube( scene, cube, 0 );
+                for( i = 0; i < nbObjet; i++ )
+                {
+                    Objet_restaure( fichier, scene );
+                }
 
-                    fscanf( fichier, "%s", typeObjet );
+                for( i = 0; i < nbGroupe; i++ ) //Application des tranfos des groupes
+                {
+                    int j = 0;
+                    Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+                    for( j = 0; j < groupe->aTransfo->len; j++ )
+                    {
+                        Transfo* transfo = g_array_index( groupe->aTransfo, Transfo*, j );
+                        if( transfo->eTransfoType == ROTATION_RECU )
+                        {
+                           tdMatrix tdTransfoMat;
+                            if( transfo->x > 0 )
+                            {
+                                Transformation_getMatrixRotation( tdTransfoMat, transfo->x, AXEY );
+                            }
+                            if( transfo->y > 0 )
+                            {
+                                Transformation_getMatrixRotation( tdTransfoMat, transfo->y, AXEX );
+                            }
+                                    /* On applique la transfo pour tous les groupes fils */
+                            for( j=0;j<groupe->tFils->len;++j)
+                            {
+                                    Groupe* pSon = g_array_index(groupe->tFils,Groupe*,j);   // pSon est un pointeur sur un groupe fils
+                                    Groupe_transfo( pSon, tdTransfoMat);   // appel recursif de Groupe_transfo jusqu'à la fin de l'arbre
+                            }
+                            /* et pour les objets du groupe */
+                            for( j=0;j<groupe->tObjet->len;++j)
+                            {
+                                    Objet* pObj = g_array_index(groupe->tObjet,Objet*,j);
+                                    Objet_transfoCenter(pObj, tdTransfoMat);   // on fait tourner le centre du repre objet
+                                    Objet_transfo( pObj , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+                            }
+                        } /*TODO meme chose avec les translations*/
+                    }
                 }
             }
-            fclose( fichier );
+
         }
         if( scene->modification->actuel < 1 )
         {
@@ -182,7 +215,7 @@ void Modification_refaire( Scene* scene )
 
                 while( strcmp( typeObjet, "FIN") != 0 )
                 {
-                    int groupe = 0;
+
                     float x,y,z = 0;
                     float taille = 0;
                     float r,g,b,a = 0;

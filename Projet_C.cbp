@@ -49,7 +49,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Color.h" />
-		<Unit filename="Config.h" />
 		<Unit filename="Cube.c">
 			<Option compilerVar="CC" />
 		</Unit>
