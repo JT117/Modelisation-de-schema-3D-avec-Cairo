@@ -52,5 +52,12 @@ struct FenetreAjout
 
 void initialiser_FenetreAjout( FenetreAjout* fao, Scene* scene );
 
+/**
+ * Contient tout le code nécessaire à la créatin et à l'ajout d'un segment dans la scène.
+ *
+ * @param pFao Pointeur sur la fenêtre de création
+ */
+void FenetreAjout_addSegment(FenetreAjout* pFao );
+
 
 #endif //FENETRE_AJOUT_H

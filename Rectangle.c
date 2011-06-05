@@ -20,15 +20,6 @@ Rectangle* Rectangle_createRectangle(tCoord tdCorner1,tCoord tdCorner2, tCoord t
 			Point_initGroup( &((pNewRect->tPoint)[2]), tdCorner2[0], tdCorner2[1], tdCorner2[2]);
 			Point_initGroup( &((pNewRect->tPoint)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
 
-			/* On met aussi à jour les coordonnées dans le repere du monde (necessaire pour la projection) */
-			/*
-			Point_init( &((pNewRect->tPoint)[0]), tdCorner1[0], tdCorner1[1], tdCorner1[2]);
-			Point_init( &((pNewRect->tPoint)[1]), tdCorner2[0], tdCorner1[1], tdCorner2[2]);
-			Point_init( &((pNewRect->tPoint)[2]), tdCorner2[0], tdCorner2[1], tdCorner2[2]);
-			Point_init( &((pNewRect->tPoint)[3]), tdCorner1[0], tdCorner2[1], tdCorner1[2]);
-			*/
-
-
 			/* Init du centre du repere de la figure (centre de gravité du rectangle) dans le repere parent */
 			Point_initGroup( &(pNewRect->Center), tdCenter[0],tdCenter[1] , tdCenter[2]);
 

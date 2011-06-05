@@ -9,6 +9,8 @@
 #include "Camera.h"
 #include "Color.h"
 
+struct Objet;
+
 typedef struct Segment
 {
 	/**
@@ -26,14 +28,20 @@ typedef struct Segment
 
 
 /**
- * Crée un Segment à partir de 2 matrices de coordonnées.
+ * Crée un Segment à partir de 2 vecteurs de coordonnées.
  *
- * @param tdCoord1 Position première extremité
+ * @param tdCoord1 Position première extremité (coordonnées dans le repère de l'objet)
  * @param tdCoord2 Position seconde extrémité
  *
  * @return un structure Segment fraichement allouée
  */
-Segment* Segment_createSegment(tCoord tdCoord1,tCoord tdCoord2);
+Segment* Segment_createSegment(tCoord tCenter,tCoord tdCoord1,tCoord tdCoord2);
+
+
+/**
+ * Mise à jour des coordonnées du segment dans le repère du monde
+ */
+void Segment_updateCoordWolrd(struct Objet* pObj);
 
 
 /**
@@ -48,17 +56,7 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam);
  */
 void Segment_destroySegment(Segment* pSeg);
 
-/**
- * Rotation de l'objet en fonction des angles passés en paramètre, la rotation se fait par rapport au repere de l'objet.
- *
- * @param  pSegment L'objet Segment à considérer
- * @param dAngleX Angle de rotation suivant l'axe X
- * @param dAngleY Angle de rotation suivant l'axe Y
- * @param dAngleZ Angle de rotation suivant l'axe Z
- */
-void Segment_rotate(Segment* pSeg, double dAngleX, double dAngleY, double dAngleZ);
-
-gboolean Segment_Contient_Point(Segment* pRect, double x, double y );
+gboolean Segment_Contient_Point(Segment* pSeg, double x, double y );
 
 void Segment_setColor(Segment* pSeg,double dR, double dG, double dB);
 
