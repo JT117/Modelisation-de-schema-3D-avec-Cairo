@@ -48,17 +48,7 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam);
  */
 void Segment_destroySegment(Segment* pSeg);
 
-/**
- * Rotation de l'objet en fonction des angles passés en paramètre, la rotation se fait par rapport au repere de l'objet.
- *
- * @param  pSegment L'objet Segment à considérer
- * @param dAngleX Angle de rotation suivant l'axe X
- * @param dAngleY Angle de rotation suivant l'axe Y
- * @param dAngleZ Angle de rotation suivant l'axe Z
- */
-void Segment_rotate(Segment* pSeg, double dAngleX, double dAngleY, double dAngleZ);
-
-gboolean Segment_Contient_Point(Segment* pRect, double x, double y );
+gboolean Segment_Contient_Point(Segment* pSeg, double x, double y );
 
 void Segment_setColor(Segment* pSeg,double dR, double dG, double dB);
 

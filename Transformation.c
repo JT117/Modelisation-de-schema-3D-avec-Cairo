@@ -3,7 +3,7 @@
 #include "Transformation.h"
 
 
-void TransfoTools_getMatrixTranslation(tdMatrix pMatModif, double dX, double dY, double dZ)
+void Transformation_getMatrixTranslation(tdMatrix pMatModif, double dX, double dY, double dZ)
 {
 	int i = 0, j=0;
 

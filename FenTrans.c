@@ -95,16 +95,32 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 
     if( ft->unGroupeEstSelectionner &&  gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )
     {
-        tdMatrix tdTransfoMat;
+    	/* Calcul de l'angle de transformation en radian */
+		dX = (dX*M_PI)/180;
+		dY = (dY*M_PI)/180;
+		dZ = (dZ*M_PI)/180;
+
+        tdMatrix tdTransfoMat,tdNewTransfo;
+        Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
         if( dX > 0 )
         {
-            Transformation_getMatrixRotation( tdTransfoMat, dX, AXEY );
+        	Transformation_getMatrixRotation(tdNewTransfo, dX, AXEX);
+			Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
         }
+
         if( dY > 0 )
         {
-            Transformation_getMatrixRotation( tdTransfoMat, dY, AXEX );
+            Transformation_getMatrixRotation( tdTransfoMat, dY, AXEY );
+            Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
         }
-                /* On applique la transfo pour tous les groupes fils */
+
+        if( dZ > 0 )
+		{
+			Transformation_getMatrixRotation( tdTransfoMat, dZ, AXEZ );
+			Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+		}
+
+         /* On applique la transfo pour tous les groupes fils */
         for( j=0;j<ft->groupeSelectionne->tFils->len;++j)
         {
                 Groupe* pSon = g_array_index(ft->groupeSelectionne->tFils,Groupe*,j);   // pSon est un pointeur sur un groupe fils
