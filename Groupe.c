@@ -229,9 +229,18 @@ void Groupe_sauvegarde( Groupe* groupe, FILE* fichier )
 {
     if( fichier != NULL )
     {
-        fprintf( fichier, "%d %s %d %f %f %f\n", groupe->id, groupe->nom, groupe->pere->id, groupe->tCenterGroup.tdCoordGroup[0],
+        if( groupe->id == 0 )
+        {
+            fprintf( fichier, "%d %s %d %f %f %f\n", groupe->id, "Groupe", 0, groupe->tCenterGroup.tdCoordGroup[0],
                                                  groupe->tCenterGroup.tdCoordGroup[0], groupe->tCenterGroup.tdCoordGroup[0] );
-        fprintf( fichier , "%d\n", groupe->aTransfo->len );
+        }
+        else
+        {
+            fprintf( fichier, "%d %s %d %f %f %f\n", groupe->id, groupe->nom, groupe->pere->id, groupe->tCenterGroup.tdCoordGroup[0],
+                                                 groupe->tCenterGroup.tdCoordGroup[0], groupe->tCenterGroup.tdCoordGroup[0] );
+        }
+
+        fprintf( fichier , "%d\n", (int)groupe->aTransfo->len );
 
         int i = 0;
         for( i = 0; i < groupe->aTransfo->len; i++ )
@@ -263,6 +272,7 @@ void Groupe_restaure( FILE* fichier, Scene* scene )
     groupe->nbFils = 0;
     groupe->tFils = g_array_new( FALSE, FALSE, sizeof( Groupe* ) );
     groupe->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter) );
+    groupe->aTransfo = g_array_new(FALSE,FALSE,sizeof(Transfo*));
 
     fscanf( fichier, "%d %s %d %f %f %f\n", &idGroupe, nom, &idGroupePere, (float*)&groupe->tCenterGroup.tdCoordGroup[0],
                                                  (float*)&groupe->tCenterGroup.tdCoordGroup[0], (float*)&groupe->tCenterGroup.tdCoordGroup[0] );
@@ -270,14 +280,22 @@ void Groupe_restaure( FILE* fichier, Scene* scene )
     groupe->id = idGroupe;
     groupe->nom = nom;
 
-    Groupe* pere = Groupe_trouver_ById( scene, idGroupePere );
-    Groupe_ajouter_Fils( pere, groupe );
+    if( groupe->id != 0 )
+    {
+        Groupe* pere = Groupe_trouver_ById( scene, idGroupePere );
+        Groupe_ajouter_Fils( pere, groupe );
 
-    gtk_tree_store_append (scene->store, groupe->iter, pere->iter);
-    gtk_tree_store_set (scene->store, groupe->iter, GROUPE, groupe->nom, -1);
+        gtk_tree_store_append (scene->store, groupe->iter, pere->iter);
+        gtk_tree_store_set (scene->store, groupe->iter, GROUPE, groupe->nom, -1);
 
-    g_array_append_val( scene->tGroupe, groupe );
-    scene->nbGroupe++;
+        g_array_append_val( scene->tGroupe, groupe );
+        scene->nbGroupe++;
+    }
+    else
+    {
+        Groupe_detruire( groupe );
+        groupe = g_array_index( scene->tGroupe, Groupe*, 0);
+    }
 
     int nb,i =0;
     fscanf( fichier , "%d", &nb );

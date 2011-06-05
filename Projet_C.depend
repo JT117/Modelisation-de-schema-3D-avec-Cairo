@@ -2270,7 +2270,7 @@
 	<gtk/gtk.h>
 	<string.h>
 
-1307284163 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
+1307291331 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 	"Groupe.h"
 	"Rectangle.h"
@@ -2283,7 +2283,7 @@
 	<stdio.h>
 	"FenPrincipale.h"
 
-1307282212 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
+1307301528 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Scene.c
 	"Scene.h"
 	"Selection.h"
 
@@ -2342,7 +2342,7 @@
 	"Modification.h"
 	"Camera.h"
 
-1307283491 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
+1307301606 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
 	"Groupe.h"
 	"Scene.h"
 	"Objet.h"
@@ -2710,7 +2710,7 @@
 	"FenTrans.h"
 	"FenText.h"
 
-1307282832 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
+1307301431 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
 	"FenPrincipale.h"
 
 1307282225 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
@@ -2723,7 +2723,7 @@
 1307282203 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
 	"ExportWindow.h"
 
-1307282458 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.c
+1307288382 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.c
 	"FenTrans.h"
 
 1307282203 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.h
@@ -2738,7 +2738,7 @@
 1307282203 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.c
 	"FenText.h"
 
-1307282203 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Transformation.h
+1307287706 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Transformation.h
 	"MatrixTools.h"
 	"Groupe.h"
 

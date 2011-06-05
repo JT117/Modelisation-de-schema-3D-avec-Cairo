@@ -754,6 +754,7 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
 
                     for( j = 0; j < groupe->aTransfo->len; j++ )
                     {
+                        int k = 0;
                         Transfo* transfo = g_array_index( groupe->aTransfo, Transfo*, j );
                         if( transfo->eTransfoType == ROTATION_RECU )
                         {
@@ -778,15 +779,15 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
                             }
 
                                     /* On applique la transfo pour tous les groupes fils */
-                            for( j=0;j<groupe->tFils->len;++j)
+                            for( k=0;k<groupe->tFils->len;++k)
                             {
-                                    Groupe* pSon = g_array_index(groupe->tFils,Groupe*,j);   // pSon est un pointeur sur un groupe fils
+                                    Groupe* pSon = g_array_index(groupe->tFils,Groupe*,k);   // pSon est un pointeur sur un groupe fils
                                     Groupe_transfo( pSon, tdTransfoMat);   // appel recursif de Groupe_transfo jusqu'à la fin de l'arbre
                             }
                             /* et pour les objets du groupe */
-                            for( j=0;j<groupe->tObjet->len;++j)
+                            for( k=0;k<groupe->tObjet->len;++k)
                             {
-                                    Objet* pObj = g_array_index(groupe->tObjet,Objet*,j);
+                                    Objet* pObj = g_array_index(groupe->tObjet,Objet*,k);
                                     Objet_transfoCenter(pObj, tdTransfoMat);   // on fait tourner le centre du repre objet
                                     Objet_transfo( pObj , tdTransfoMat);    // ainsi qu l'intégralité de ses points
                             }
@@ -857,9 +858,9 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
             {
                 int i = 0;
                 fprintf( fichier, "DEBUT\n");
-                fprintf( fichier, "%d\n", scene->nbGroupe-1 );
+                fprintf( fichier, "%d\n", scene->nbGroupe );
 
-                for( i = 1; i < scene->nbGroupe; i++ )
+                for( i = 0; i < scene->nbGroupe; i++ )
                 {
                     Groupe* groupe = (Groupe*)g_array_index( scene->tGroupe, Groupe*, i );
                     Groupe_sauvegarde( groupe, fichier );

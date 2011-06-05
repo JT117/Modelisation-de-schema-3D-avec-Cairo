@@ -193,11 +193,54 @@ void FenTrans_validation( GtkButton* button, gpointer data )
     }
     else if( ft->unGroupeEstSelectionner && gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2) ) )
     {
-        /* TODO translation d'un groupe et de ses fils*/
+        tdMatrix tdTransfoMat,tdNewTransfo;
+        Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
+
+        Transformation_getMatrixTranslation(tdNewTransfo, dX, dY, dZ );
+        Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+
+         /* On applique la transfo pour tous les groupes fils */
+        for( j=0;j<ft->groupeSelectionne->tFils->len;++j)
+        {
+                Groupe* pSon = g_array_index(ft->groupeSelectionne->tFils,Groupe*,j);   // pSon est un pointeur sur un groupe fils
+                Groupe_transfo( pSon, tdTransfoMat);   // appel recursif de Groupe_transfo jusqu'à la fin de l'arbre
+        }
+        /* et pour les objets du groupe */
+        for( j=0;j<ft->groupeSelectionne->tObjet->len;++j)
+        {
+                Objet* pObj = g_array_index(ft->groupeSelectionne->tObjet,Objet*,j);
+                Objet_transfoCenter(pObj, tdTransfoMat);   // on fait tourner le centre du repre objet
+                Objet_transfo( pObj , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+        }
+
+        Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+        transfo->eTransfoType = ROTATION_RECU;
+        transfo->x = dX;
+        transfo->y = dY;
+
+        g_array_append_val( ft->groupeSelectionne->aTransfo, transfo );
     }
     else if( ft->unGroupeEstSelectionner && gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio4) ) )
     {
-        /* TODO translation d'un groupe uniquement*/
+        tdMatrix tdTransfoMat,tdNewTransfo;
+        Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de translation */
+
+        Transformation_getMatrixTranslation(tdNewTransfo, dX, dY, dZ );
+        Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+
+        for( j=0;j<ft->groupeSelectionne->tObjet->len;++j)
+        {
+            Objet* pObj = g_array_index(ft->groupeSelectionne->tObjet,Objet*,j);
+            Objet_transfoCenter(pObj, tdTransfoMat);   // on fait tourner le centre du repre objet
+            Objet_transfo( pObj , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+
+            Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+            transfo->eTransfoType = ROTATION;
+            transfo->x = dX;
+            transfo->y = dY;
+
+            g_array_append_val( pObj->aTransfo, transfo );
+        }
     }
     else if(  gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio3) ) )
     {
@@ -264,9 +307,14 @@ void FenTrans_validation( GtkButton* button, gpointer data )
     {
         Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, 0 );
 
+        tdMatrix tdTransfoMat,tdNewTransfo;
+        Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
 
+        Transformation_getMatrixTranslation(tdNewTransfo, dX, dY, dZ );
+        Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+        Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+        Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
 
-        /*TODO translation d'objet */
     }
 
     gtk_widget_queue_draw( ft->scene->zoneDeDessin );
