@@ -39,6 +39,13 @@ void FenTrans_init( FenTrans* ft, Scene* scene )
         ft->radio3 = gtk_radio_button_new_with_label_from_widget( GTK_RADIO_BUTTON( ft->radio1 ), "Homothétie" );
         gtk_container_add( GTK_CONTAINER( hbox ), ft->radio3 );
     }
+    else
+    {
+        ft->radio4 = gtk_radio_button_new_with_label_from_widget( GTK_RADIO_BUTTON( ft->radio1 ), "Translation sur objet fils" );
+        gtk_container_add( GTK_CONTAINER( hbox ), ft->radio4 );
+        ft->radio5 = gtk_radio_button_new_with_label_from_widget( GTK_RADIO_BUTTON( ft->radio1 ), "Rotation sur objet fils" );
+        gtk_container_add( GTK_CONTAINER( hbox ), ft->radio5 );
+    }
 
     GtkWidget* barreParam = gtk_hbutton_box_new( );
     gtk_button_box_set_layout( GTK_BUTTON_BOX( barreParam ), GTK_BUTTONBOX_END );
@@ -87,13 +94,13 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 {
     FenTrans* ft = (FenTrans*)data;
 
-    int i,j=0;
+    int j=0;
     double dX = 0; double dY = 0; double dZ = 0;
     dX = atof( gtk_entry_get_text( GTK_ENTRY( ft->entry1 ) ) );
 	dY = atof( gtk_entry_get_text( GTK_ENTRY( ft->entry2 ) ) );
 	dZ = atof( gtk_entry_get_text( GTK_ENTRY( ft->entry3 ) ) );
 
-    if( ft->unGroupeEstSelectionner &&  gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )
+    if( ft->unGroupeEstSelectionner &&  gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) ) //S'applique a un groupe et ses sous groupes
     {
         tdMatrix tdTransfoMat;
         if( dX > 0 )
@@ -125,37 +132,97 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 
         g_array_append_val( ft->groupeSelectionne->aTransfo, transfo );
     }
-    else if( ft->unGroupeEstSelectionner && gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2) ) )
+    else if(ft->unGroupeEstSelectionner && gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio5) )) //S'applique uniquement aux objet du groupe
     {
-        /* TODO translation d'un groupe */
-    }
-    else if(  gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio3) ) )
-    {
-        /*Todo homothetie sur objet */
-    }
-    else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )
-    {
-        int i = 0;
-        /*
-        for( i = 0; i < ft->scene->selection->nbSelection; i++ )
+        tdMatrix tdTransfoMat;
+        if( dX > 0 )
         {
-            Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, i );
-            Objet_rotation( objet, dX, dY );
+            Transformation_getMatrixRotation( tdTransfoMat, dX, AXEY );
+        }
+        if( dY > 0 )
+        {
+            Transformation_getMatrixRotation( tdTransfoMat, dY, AXEX );
+        }
+
+        /* et pour les objets du groupe */
+        for( j=0;j<ft->groupeSelectionne->tObjet->len;++j)
+        {
+            Objet* pObj = g_array_index(ft->groupeSelectionne->tObjet,Objet*,j);
+            Objet_transfoCenter(pObj, tdTransfoMat);   // on fait tourner le centre du repre objet
+            Objet_transfo( pObj , tdTransfoMat);    // ainsi qu l'intégralité de ses points
 
             Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
             transfo->eTransfoType = ROTATION;
             transfo->x = dX;
             transfo->y = dY;
 
-            g_array_append_val( objet->aTransfo, transfo );
-
+            g_array_append_val( pObj->aTransfo, transfo );
         }
-        */
+
+    }
+    else if( ft->unGroupeEstSelectionner && gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2) ) )
+    {
+        /* TODO translation d'un groupe et de ses fils*/
+    }
+    else if( ft->unGroupeEstSelectionner && gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio4) ) )
+    {
+        /* TODO translation d'un groupe uniquement*/
+    }
+    else if(  gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio3) ) )
+    {
+        Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, 0 );
+        tdMatrix tdTransfoMat;
+        if( dX > 0 )
+        {
+            Transformation_getMatrixHomothety( tdTransfoMat, dX);
+        }
+        else if( dY > 0 )
+        {
+            Transformation_getMatrixHomothety( tdTransfoMat, dY );
+        }
+
+        Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+        Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+
+        Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+        transfo->eTransfoType = TRANSLATION;
+        transfo->x = dX;
+        transfo->y = dY;
+
+        g_array_append_val( objet->aTransfo, transfo );
+    }
+    else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )   // Rotation d'un objet
+    {
+        Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, 0 );
+        tdMatrix tdTransfoMat;
+        if( dX > 0 )
+        {
+            Transformation_getMatrixRotation( tdTransfoMat, dX/200, AXEY );
+        }
+        if( dY > 0 )
+        {
+            Transformation_getMatrixRotation( tdTransfoMat, dY/200, AXEX );
+        }
+
+        Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+        Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+
+        Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+        transfo->eTransfoType = ROTATION;
+        transfo->x = dX;
+        transfo->y = dY;
+
+        g_array_append_val( objet->aTransfo, transfo );
     }
     else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio2 ) ) )
     {
+        Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, 0 );
+
+
+
         /*TODO translation d'objet */
     }
+
     gtk_widget_queue_draw( ft->scene->zoneDeDessin );
     gtk_widget_destroy( ft->fenetre );
 }

@@ -42,6 +42,7 @@ void Objet_est_un_Triangle( Objet* objet, Triangle* pTri )
    //strcpy( objet->typeObjet, "Triangle" );
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    objet->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
 }
 
 void Objet_est_un_Quadrilateral( Objet* objet, Quadrilateral* pQuadri )
@@ -50,6 +51,7 @@ void Objet_est_un_Quadrilateral( Objet* objet, Quadrilateral* pQuadri )
     objet->type.quadrilateral = pQuadri;
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    objet->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
 }
 
 void Objet_est_une_Pyramide( Objet* objet, Pyramid* pPyr )
@@ -59,6 +61,7 @@ void Objet_est_une_Pyramide( Objet* objet, Pyramid* pPyr )
     //strcpy( objet->typeObjet, "Pyramide" );
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    objet->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
 }
 
 void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
@@ -70,7 +73,6 @@ void Objet_est_un_Rectangle( Objet* pObj, Rectangle* pRect )
     /* Allocation des tableaux dynamiques contenant les transformations à appliquer sur l'objet */
     Matrix_initIdentityMatrix(pObj->tTransfoMatrix);
     pObj->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
-
     pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
 }
 
@@ -80,6 +82,8 @@ void Objet_est_un_Segment( Objet* pObj, Segment* pSeg )
 	pObj->type.segment = pSeg; /* sauvegarde pointeur sur objet */
 	pObj->doitEtreDeselectionner = TRUE;
 	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    pObj->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
+
 }
 
 void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
@@ -88,6 +92,8 @@ void Objet_est_une_Sphere( Objet* pObj, Sphere* pSph )
 	pObj->type.sphere = pSph; /* sauvegarde pointeur sur objet */
 	pObj->doitEtreDeselectionner = TRUE;
 	pObj->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    pObj->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
+
 }
 
 /** Fonction qui dessine l'objet
@@ -416,15 +422,24 @@ void Objet_get_Color( Objet* objet, Color tColor )
     }
     else if( objet->eType == RECTANGLE )
     {
-        /* TODO pareil que ci dessus*/
+        tColor[0] = objet->type.rectangle->tColor[0];
+        tColor[1] = objet->type.rectangle->tColor[1];
+        tColor[2] = objet->type.rectangle->tColor[2];
+        tColor[3] = objet->type.rectangle->tColor[3];
     }
     else if( objet->eType == SEGMENT )
     {
-        /* TODO pareil que ci dessus*/
+        tColor[0] = objet->type.segment->tColor[0];
+        tColor[1] = objet->type.segment->tColor[1];
+        tColor[2] = objet->type.segment->tColor[2];
+        tColor[3] = objet->type.segment->tColor[3];
     }
     else if( objet->eType == SPHERE )
     {
-        /* TODO pareil que ci dessus*/
+        tColor[0] = objet->type.sphere->tColor[0];
+        tColor[1] = objet->type.sphere->tColor[1];
+        tColor[2] = objet->type.sphere->tColor[2];
+        tColor[3] = objet->type.sphere->tColor[3];
     }
 }
 
@@ -436,15 +451,15 @@ void Objet_set_Color( Objet* objet, double r, double g, double b, double a )
     }
     else if( objet->eType == RECTANGLE )
     {
-        /* TODO pareil que ci dessus*/
+         Color_setColor( objet->type.rectangle->tColor,(r/255),(g/255),(b/255),a);
     }
     else if( objet->eType == SEGMENT )
     {
-        /* TODO pareil que ci dessus*/
+         Color_setColor( objet->type.segment->tColor,(r/255),(g/255),(b/255),a);
     }
     else if( objet->eType == SPHERE )
     {
-        /* TODO pareil que ci dessus*/
+         Color_setColor( objet->type.sphere->tColor,(r/255),(g/255),(b/255),a);
     }
 }
 

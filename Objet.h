@@ -125,5 +125,7 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier );
 
 void Objet_restaure( FILE* fichier, struct Scene* scene);
 
+void Objet_transfo(Objet* objet, tdMatrix tdTransfo);
+
 
 #endif  // OBJET_H
