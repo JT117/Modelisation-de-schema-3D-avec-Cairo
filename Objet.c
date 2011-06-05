@@ -344,6 +344,10 @@ void Objet_updateCoordWorld(Objet* objet)
 	{
 		Pyramid_updateCoordWolrd(objet);
 	}
+	else if( objet->eType == SEGMENT )
+	{
+		Segment_updateCoordWolrd(objet);
+	}
 }
 
 void Objet_transfo(Objet* objet, tdMatrix tdTransfo)

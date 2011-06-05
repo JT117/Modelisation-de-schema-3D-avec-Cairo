@@ -2,6 +2,7 @@
 #define EXPORTWINDOW_H
 
 #include <gtk/gtk.h>
+#include <cairo.h>
 #include "Scene.h"
 
 typedef struct ExportWindow

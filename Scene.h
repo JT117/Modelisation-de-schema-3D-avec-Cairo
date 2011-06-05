@@ -96,6 +96,8 @@ void Scene_ajouter_segment( Scene* scene, Segment* pSeg, int idGroupe );
 
 void Scene_ajouter_sphere(Scene* scene, Sphere* sphere, int idGroupe );
 
+
+
 /** Fonction qui eneleve un objet de la scene */
 void Scene_enlever_objet( Scene* scene, Objet* objet );
 

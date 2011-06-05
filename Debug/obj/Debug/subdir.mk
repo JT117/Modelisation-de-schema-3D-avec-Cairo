@@ -21,6 +21,8 @@ O_SRCS += \
 ../obj/Debug/Objet.o \
 ../obj/Debug/Point.o \
 ../obj/Debug/ProjectionTools.o \
+../obj/Debug/Pyramid.o \
+../obj/Debug/Quadrilateral.o \
 ../obj/Debug/Rectangle.o \
 ../obj/Debug/Scene.o \
 ../obj/Debug/Segment.o \
@@ -28,6 +30,7 @@ O_SRCS += \
 ../obj/Debug/Sphere.o \
 ../obj/Debug/TransfoTools.o \
 ../obj/Debug/Transformation.o \
+../obj/Debug/Triangle.o \
 ../obj/Debug/main.o 
 
 

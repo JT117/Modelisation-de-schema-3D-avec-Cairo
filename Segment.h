@@ -9,6 +9,8 @@
 #include "Camera.h"
 #include "Color.h"
 
+struct Objet;
+
 typedef struct Segment
 {
 	/**
@@ -26,14 +28,20 @@ typedef struct Segment
 
 
 /**
- * Crée un Segment à partir de 2 matrices de coordonnées.
+ * Crée un Segment à partir de 2 vecteurs de coordonnées.
  *
- * @param tdCoord1 Position première extremité
+ * @param tdCoord1 Position première extremité (coordonnées dans le repère de l'objet)
  * @param tdCoord2 Position seconde extrémité
  *
  * @return un structure Segment fraichement allouée
  */
-Segment* Segment_createSegment(tCoord tdCoord1,tCoord tdCoord2);
+Segment* Segment_createSegment(tCoord tCenter,tCoord tdCoord1,tCoord tdCoord2);
+
+
+/**
+ * Mise à jour des coordonnées du segment dans le repère du monde
+ */
+void Segment_updateCoordWolrd(struct Objet* pObj);
 
 
 /**

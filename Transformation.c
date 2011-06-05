@@ -12,7 +12,7 @@ void Transformation_getMatrixTranslation(tdMatrix pMatModif, double dX, double d
 		for(j=0; j<4;j++)
 		{
 			if(i==j)
-				pMatModif = 1;
+				pMatModif[i][j] = 1;
 		}
 	}
 

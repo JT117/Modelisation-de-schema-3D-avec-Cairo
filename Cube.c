@@ -31,12 +31,6 @@ Cube* Cube_createCube(tCoord tCenter, double dHeight,double dWidth, double dDept
 		/* Init du centre du repere de la figure (centre de gravité du cube */
 		Point_initGroup( &(pNewCube->Center), tCenter[0], tCenter[1], tCenter[2]);
 
-		/*Couleur par défaut, pas de transparence*/
-		pNewCube->tColor[0]=0.4;
-		pNewCube->tColor[1]=0.4;
-		pNewCube->tColor[2]=0.8;
-
-		pNewCube->tColor[3]=0.8;
 		pNewCube->estSelectionne = FALSE;
 	}
 	else
