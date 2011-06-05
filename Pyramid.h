@@ -83,4 +83,6 @@ GArray* Pyramid_facesOrder(Pyramid* pPyramid, InfoCamera* pCam);
  */
 void Pyramid_transfo(Pyramid* pPyramid, tdMatrix tdTransfoMat);
 
+void Pyramid_transfoCenter(Pyramid* pPyramid, tdMatrix tdTransfoMat);
+
 #endif //Pyramid_H

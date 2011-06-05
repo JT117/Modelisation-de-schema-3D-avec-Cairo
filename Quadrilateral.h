@@ -91,4 +91,6 @@ gboolean Quadrilateral_Contient_Point(Quadrilateral* pQuadri, double x, double y
  */
 void Quadrilateral_transfo(Quadrilateral* pQuadri, tdMatrix tdTransfoMat);
 
+void Quadrilateral_transfoCenter(Quadrilateral* pQuadri, tdMatrix tdTransfoMat);
+
 #endif

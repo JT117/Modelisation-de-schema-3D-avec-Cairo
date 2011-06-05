@@ -65,12 +65,10 @@ void Triangle_updateCoordWolrd(Objet* pObj)
 
 void Triangle_drawTriangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 {
-	GArray* gtTabFacesOrder=NULL; /* Tableau indiquant dans quel ordre il faut dessiner les faces du Triangle */
 	/* Coordonnées de points une fois projettés */
 	tCoord2D* pPointProj0 = NULL;
 	tCoord2D* pPointProj1 = NULL;
 	tCoord2D* pPointProj2 = NULL;
-	tCoord2D* pPointProj3 = NULL;
 
 	Triangle* pTriangle = pObj->type.triangle;
 	Triangle_updateCoordWolrd(pObj);

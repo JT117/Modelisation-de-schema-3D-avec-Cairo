@@ -93,4 +93,6 @@ gboolean Rectangle_Contient_Point(Rectangle* pRect, double x, double y, InfoCame
  */
 void Rectangle_transfo(Rectangle* pRec, tdMatrix tdTransfoMat);
 
+void Rectangle_transfoCenter(Rectangle* pRec, tdMatrix tdTransfoMat);
+
 #endif

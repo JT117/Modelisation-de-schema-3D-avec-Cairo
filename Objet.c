@@ -33,6 +33,7 @@ void Objet_est_un_Cube( Objet* objet, Cube* cube )
 
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    objet->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
 }
 
 void Objet_est_un_Triangle( Objet* objet, Triangle* pTri )
@@ -487,30 +488,16 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier )
 {
     if( objet->eType == CUBE )
     {
-        fprintf( fichier, "%s\n%d %f %f %f %f\n", "Cube"/*objet->eType*/, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
-                                              objet->type.cube->Center.tdCoordGroup[3],  abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
+        fprintf( fichier, "%d\n%d %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
+                                              objet->type.cube->Center.tdCoordGroup[3],  (float)abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
         fprintf( fichier, "%f %f %f %f\n", objet->type.cube->tColor[0]*255, objet->type.cube->tColor[1]*255, objet->type.cube->tColor[2]*255, objet->type.cube->tColor[3] );
+
     }
     else if( objet->eType == RECTANGLE )
     {
-        fprintf( fichier, "%s\n%d %f %f %f %f %f\n", "Rectangle"/*objet->eType*/, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
+        fprintf( fichier, "%d\n%d %f %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
           /*TODO calculer largeur hauteur*/                                    objet->type.rectangle->Center.tdCoordGroup[3], 250.0, 250.0 );
         fprintf( fichier, "%f %f %f %f\n", objet->type.rectangle->tColor[0]*255, objet->type.rectangle->tColor[1]*255, objet->type.rectangle->tColor[2]*255, objet->type.rectangle->tColor[3] );
-        fprintf( fichier , "%d\n", objet->aTransfo->len );
-
-        int i = 0;
-        for( i = 0; i < objet->aTransfo->len; i++ )
-        {
-            Transfo* transfo = g_array_index( objet->aTransfo, Transfo*, i );
-            if( transfo->eTransfoType == ROTATION )
-            {
-                fprintf( fichier, "Rotation %f %f %f\n", transfo->x, transfo->y, transfo->z );
-            }
-            else if( transfo->eTransfoType == TRANSLATION )
-            {
-                fprintf( fichier, "Translation %f %f %f\n", transfo->x, transfo->y, transfo->z );
-            }
-        }
     }
     else if( objet->eType == SEGMENT )
     {
@@ -520,6 +507,26 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier )
     {
         /* TODO pareil que ci dessus*/
     }
+
+    fprintf( fichier , "%d\n", (int)objet->aTransfo->len );
+
+    int i = 0;
+    for( i = 0; i < objet->aTransfo->len; i++ )
+    {
+        Transfo* transfo = g_array_index( objet->aTransfo, Transfo*, i );
+        if( transfo->eTransfoType == ROTATION )
+        {
+            fprintf( fichier, "Rotation %f %f %f\n", transfo->x, transfo->y, transfo->z );
+        }
+        else if( transfo->eTransfoType == TRANSLATION )
+        {
+            fprintf( fichier, "Translation %f %f %f\n", transfo->x, transfo->y, transfo->z );
+        }
+        else if( transfo->eTransfoType == HOMOTHETIE )
+        {
+            fprintf( fichier, "Homothetie %f %f %f\n", transfo->x, transfo->y, transfo->z );
+        }
+    }
 }
 
 void Objet_restaure( FILE* fichier, struct Scene* scene )
@@ -528,15 +535,13 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
     float r, g, b, a, dWidth, x, y, z = 0;
     tCoord tdCenter;
 
-    char* typeObjet = (char*)malloc( 35 * sizeof( char ) );
-    //int typeObjet;
-    fscanf( fichier, "%e", typeObjet );
-    //fscanf( fichier, "%d", typeObjet );
+    int typeObjet = -1;
+    fscanf( fichier, "%d\n", &typeObjet );
 
-    if( strcmp(typeObjet,"Cube") == 0 )
+    if( typeObjet == CUBE )
     {
-        fscanf( fichier, "%d %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth  );
-        fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
+        fscanf( fichier, "%d %f %f %f %f\n", &idGroupe, &x, &y, &z, &dWidth  );
+        fscanf( fichier, "%f %f %f %f\n", &r, &g, &b , &a );
 
         Point_initCoord( tdCenter, x, y, z);
         Cube* pNewCube = Cube_createCube(tdCenter, dWidth, dWidth, dWidth);
@@ -548,9 +553,9 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
 
         Modification_modification_effectuer( scene );
     }
-    else if( strcmp(typeObjet,"Rectangle") == 0 )
+    else if( typeObjet == RECTANGLE )
     {
-        float dHeight;
+        float dHeight = 0;
         fscanf( fichier, "%d %f %f %f %f %f", &idGroupe, &x, &y, &z, &dWidth, &dHeight  );
         fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
 
@@ -569,37 +574,85 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
         Color_setColor(pNewRect->tColor,(r/255),(g/255),(b/255),a);
 
         Scene_ajouter_rectangle( scene, pNewRect, groupe->id );
-        Objet* objet = g_array_index( scene->tObjet, Objet*, scene->nbObjet-1 );
+        Modification_modification_effectuer( scene );
+    }
 
-        int nb,i =0;
-        fscanf( fichier , "%d", &nb );
+    Objet* objet = g_array_index( scene->tObjet, Objet*, scene->nbObjet-1 );
 
-        for( i = 0; i < nb; i++ )
+    int nb = 0; int i =0;
+
+    fscanf( fichier , "%d\n", &nb );
+
+    for( i = 0; i < nb; i++ )
+    {
+        float a,b,c;
+        char* temp = (char*)malloc( 20 * sizeof( char ) );
+        Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+        fscanf( fichier, "%s %f %f %f", temp, &a, &b, &c );
+
+        transfo->x = a;
+        transfo->y = b;
+        transfo->z = c;
+
+        if( strcmp( temp, "Rotation") == 0 )
         {
-            float a,b,c;
-            char* temp = (char*)malloc( 20 * sizeof( char ) );
-            Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
-            fscanf( fichier, "%s %f %f %f", temp, &a, &b, &c );
+            transfo->eTransfoType = ROTATION;
+            tdMatrix tdTransfoMat,tdNewTransfo;
+            Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
 
-            transfo->x = a;
-            transfo->y = b;
-            transfo->z = c;
-
-            if( strcmp( temp, "Rotation") == 0 )
+            if( transfo->x > 0 )
             {
-                transfo->eTransfoType = ROTATION;
-                //Objet_rotation(objet, transfo->x, transfo->y ); TODO : réparer ça
-            }
-            else if( strcmp( temp, "Translation") == 0  )
-            {
-                transfo->eTransfoType = TRANSLATION;
-                /*TODO TRANSLATION */
+                Transformation_getMatrixRotation(tdNewTransfo, transfo->x, AXEX);
+                Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
             }
 
-            g_array_append_val( objet->aTransfo, transfo );
-            free(temp);
+            if( transfo->y > 0 )
+            {
+                Transformation_getMatrixRotation( tdTransfoMat, transfo->y, AXEY );
+                Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+            }
+
+            if( transfo->z > 0 )
+            {
+                Transformation_getMatrixRotation( tdTransfoMat, transfo->z, AXEZ );
+                Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+            }
+
+            Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+            Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+
+        }
+        else if( strcmp( temp, "Translation") == 0  )
+        {
+            transfo->eTransfoType = TRANSLATION;
+            tdMatrix tdTransfoMat,tdNewTransfo;
+            Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
+
+            Transformation_getMatrixTranslation(tdNewTransfo, transfo->x, transfo->y, transfo->z );
+            Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+            Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+            Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+        }
+        else if(  strcmp( temp, "Homothetie") == 0  )
+        {
+            transfo->eTransfoType = HOMOTHETIE;
+            tdMatrix tdTransfoMat;
+            if( transfo->x > 0 )
+            {
+                Transformation_getMatrixHomothety( tdTransfoMat, transfo->x);
+            }
+            else if( transfo->y > 0 )
+            {
+                Transformation_getMatrixHomothety( tdTransfoMat, transfo->y );
+            }
+
+            Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+            Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
         }
 
+        g_array_append_val( objet->aTransfo, transfo );
+        free(temp);
         Modification_modification_effectuer( scene );
     }
 }
+

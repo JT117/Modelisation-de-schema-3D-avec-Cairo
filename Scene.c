@@ -50,6 +50,14 @@ void Scene_reconstruire( Scene* scene, GtkWidget* window )
     scene->tObjet = g_array_new( FALSE, TRUE, sizeof( Objet* ) );
     scene->nbObjet = 0;
 
+    Groupe* groupeDeBase = (Groupe*)malloc( 1 * sizeof( Groupe ) );
+
+    Groupe_initialiser( groupeDeBase, NULL, GROUPE0, 0.0,0.0,0.0 );
+
+    scene->tGroupe = g_array_new( FALSE, FALSE, sizeof( Groupe* ) ); //coucou =)
+    g_array_append_val( scene->tGroupe, groupeDeBase );
+    scene->nbGroupe = 1;
+
     scene->zoneDeDessin = window;
 
     scene->selection = (Selection*)malloc( 1 * sizeof(Selection) );
@@ -75,6 +83,12 @@ void Scene_detruire( Scene* scene )
     }
     g_array_free( scene->tObjet, TRUE );
 
+    for( i = 0; i < scene->nbGroupe; i++ )
+    {
+        Groupe_detruire(g_array_index( scene->tGroupe, Groupe*, i ) );
+    }
+    g_array_free( scene->tGroupe, TRUE );
+
     Selection_detruire( scene->selection );
 
     gtk_tree_selection_unselect_all( scene->treeSelection );
@@ -88,8 +102,6 @@ void Scene_detruire( Scene* scene )
  **/
 void Scene_ajouter_cube( Scene* scene, Cube* cCube, int idGroupe )
 {
-    int i =0;
-
     Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
     Objet_est_un_Cube( objet, cCube );
     g_array_append_val( scene->tObjet, objet );
@@ -290,7 +302,7 @@ GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 	return gtOrderedElements;
 }
 
-Scene_deleteClassifiedElements(GArray* tToDelete)
+void Scene_deleteClassifiedElements(GArray* tToDelete)
 {
 	int i;
 	for( i = 0; i < tToDelete->len; i++ )

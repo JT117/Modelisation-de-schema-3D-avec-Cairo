@@ -6,6 +6,7 @@
 #include "Sphere.h"
 #include "Triangle.h"
 #include "Quadrilateral.h"
+#include "Modification.h"
 
 #include <stdlib.h>
 #include <gtk/gtk.h>
@@ -135,6 +136,8 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier );
 void Objet_restaure( FILE* fichier, struct Scene* scene);
 
 void Objet_transfo(Objet* objet, tdMatrix tdTransfo);
+
+void Objet_est_un_Quadrilateral( Objet* objet, Quadrilateral* pQuadri );
 
 
 #endif  // OBJET_H

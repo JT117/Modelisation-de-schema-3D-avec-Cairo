@@ -5,7 +5,7 @@
 #include "Groupe.h"
 
 
-typedef enum{TRANSLATION, ROTATION, ROTATION_RECU, TRANSLATION_RECU} transfoType;
+typedef enum{TRANSLATION, ROTATION, ROTATION_RECU, TRANSLATION_RECU, HOMOTHETIE} transfoType;
 
 typedef enum axe
 {

@@ -80,4 +80,6 @@ GArray* Triangle_facesOrder(Triangle* pTriangle, InfoCamera* pCam);
  */
 void Triangle_transfo(Triangle* pTriangle, tdMatrix tdTransfoMat);
 
+void Triangle_transfoCenter(Triangle* pTriangle, tdMatrix tdTransfoMat);
+
 #endif //TRIANGLE_H

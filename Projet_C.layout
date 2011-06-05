@@ -7,41 +7,41 @@
 	<File name="Camera.h" open="0" top="0" tabpos="0">
 		<Cursor position="298" topLine="0" />
 	</File>
-	<File name="Config.h" open="0" top="0" tabpos="0">
-		<Cursor position="136" topLine="0" />
-	</File>
 	<File name="Cube.c" open="0" top="0" tabpos="3">
 		<Cursor position="7608" topLine="206" />
 	</File>
 	<File name="Cube.h" open="1" top="0" tabpos="8">
-		<Cursor position="112" topLine="3" />
+		<Cursor position="112" topLine="0" />
 	</File>
 	<File name="FenPrincipale.c" open="1" top="0" tabpos="3">
-		<Cursor position="21718" topLine="441" />
+		<Cursor position="35518" topLine="733" />
 	</File>
-	<File name="FenPrincipale.h" open="1" top="1" tabpos="2">
-		<Cursor position="1771" topLine="0" />
+	<File name="FenPrincipale.h" open="1" top="0" tabpos="2">
+		<Cursor position="63" topLine="0" />
 	</File>
 	<File name="FenTrans.c" open="1" top="0" tabpos="13">
-		<Cursor position="0" topLine="80" />
+		<Cursor position="5040" topLine="75" />
 	</File>
 	<File name="FenetrePropriete.c" open="0" top="0" tabpos="0">
 		<Cursor position="52" topLine="0" />
 	</File>
 	<File name="Groupe.c" open="1" top="0" tabpos="12">
-		<Cursor position="3184" topLine="72" />
+		<Cursor position="3184" topLine="70" />
 	</File>
 	<File name="Groupe.h" open="1" top="0" tabpos="10">
-		<Cursor position="138" topLine="12" />
+		<Cursor position="138" topLine="0" />
 	</File>
 	<File name="MatrixTools.h" open="0" top="0" tabpos="0">
 		<Cursor position="691" topLine="0" />
 	</File>
-	<File name="Objet.c" open="1" top="0" tabpos="7">
-		<Cursor position="9489" topLine="0" />
+	<File name="Modification.c" open="1" top="0" tabpos="14">
+		<Cursor position="5699" topLine="108" />
+	</File>
+	<File name="Objet.c" open="1" top="1" tabpos="7">
+		<Cursor position="17708" topLine="520" />
 	</File>
 	<File name="Objet.h" open="1" top="0" tabpos="6">
-		<Cursor position="168" topLine="45" />
+		<Cursor position="168" topLine="0" />
 	</File>
 	<File name="Point.c" open="0" top="0" tabpos="7">
 		<Cursor position="454" topLine="7" />
@@ -56,7 +56,7 @@
 		<Cursor position="261" topLine="10" />
 	</File>
 	<File name="Scene.c" open="1" top="0" tabpos="4">
-		<Cursor position="945" topLine="1" />
+		<Cursor position="945" topLine="0" />
 	</File>
 	<File name="Scene.h" open="1" top="0" tabpos="5">
 		<Cursor position="1309" topLine="0" />
