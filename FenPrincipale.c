@@ -757,15 +757,26 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
                         Transfo* transfo = g_array_index( groupe->aTransfo, Transfo*, j );
                         if( transfo->eTransfoType == ROTATION_RECU )
                         {
-                           tdMatrix tdTransfoMat;
+                            tdMatrix tdTransfoMat,tdNewTransfo;
+                            Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
                             if( transfo->x > 0 )
                             {
-                                Transformation_getMatrixRotation( tdTransfoMat, transfo->x, AXEY );
+                                Transformation_getMatrixRotation(tdNewTransfo, transfo->x, AXEX);
+                                Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
                             }
+
                             if( transfo->y > 0 )
                             {
-                                Transformation_getMatrixRotation( tdTransfoMat, transfo->y, AXEX );
+                                Transformation_getMatrixRotation( tdTransfoMat, transfo->y, AXEY );
+                                Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
                             }
+
+                            if( transfo->z > 0 )
+                            {
+                                Transformation_getMatrixRotation( tdTransfoMat, transfo->z, AXEZ );
+                                Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
+                            }
+
                                     /* On applique la transfo pour tous les groupes fils */
                             for( j=0;j<groupe->tFils->len;++j)
                             {
@@ -1088,11 +1099,29 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
 {
     Scene* scene = (Scene*)data;
 
+    int i = 0;
+    gboolean doitOuvrir = FALSE;
     if( scene->selection->nbSelection > 0 )
+    {
+        doitOuvrir =TRUE;
+    }
+
+    for( i = 0; i < scene->nbGroupe; i++ )
+    {
+        Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
+
+        if( gtk_tree_selection_iter_is_selected( scene->treeSelection, groupe->iter ) )
+        {
+           doitOuvrir = TRUE;
+        }
+    }
+
+    if( doitOuvrir )
     {
         FenTrans* ft = (FenTrans*)malloc( 1 * sizeof( FenTrans ) );
         FenTrans_init( ft, scene );
     }
+
 	return TRUE;
 }
 
