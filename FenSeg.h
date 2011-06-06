@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Modification.h"
 #include "Segment.h"
+#include "Point.h"
 
 #include <gtk/gtk.h>
 
@@ -12,6 +13,9 @@ struct createSegment;
 typedef struct FenSeg FenSeg;
 struct FenSeg
 {
+	Point* pP1; /* Addresse du premier point du segment */
+	Point* pP2; /* Addresse du second point du segment */
+
 	struct createSegment* pCreateSeg;
 	GtkWidget* fenetre;
 	Scene* scene;

@@ -81,8 +81,8 @@ void FenSeg_newSegment( GtkButton* button, gpointer data)
 	Point *pP1,*pP2;
 	double dR,dG,dB,dA;
 
-	pP1 = fseg->pCreateSeg->pPoint1;
-	pP2 = fseg->pCreateSeg->pPoint2;
+	pP1 = fseg->pP1;
+	pP2 = fseg->pP2;
 
 	/* Récupération des codes couleurs */
 	dR = atof( gtk_entry_get_text( GTK_ENTRY( fseg->entryR ) ) );
