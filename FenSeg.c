@@ -111,6 +111,7 @@ void FenSeg_newSegment( GtkButton* button, gpointer data)
 
 	Scene_ajouter_segment( fseg->scene, pNewSeg, GROUPE0 );
 
+	gtk_widget_queue_draw( scene->zoneDeDessin );
 	Modification_modification_effectuer( scene );
 	g_signal_emit_by_name( G_OBJECT(fseg->boutonAnnuler), "clicked" );
 }

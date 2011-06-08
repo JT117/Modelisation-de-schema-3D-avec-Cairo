@@ -37,7 +37,7 @@ void ExportWindow_init( ExportWindow* ew, Scene* scene )
             {
                 surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, scene->dWidth, scene->dHeight);
                 cr = cairo_create (surface);
-                Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
+                Scene_clear_scene(scene , cr, 1, 1, 1); /* Nettoyage de la scene */
                 Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
                 cairo_surface_write_to_png(surface, filename ); /* Projection sur une surfae PNG*/
                 cairo_surface_destroy(surface);
@@ -48,7 +48,7 @@ void ExportWindow_init( ExportWindow* ew, Scene* scene )
             {
                 surface  = cairo_pdf_surface_create( filename, scene->dWidth, scene->dHeight);
                 cr = cairo_create(surface);
-                Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
+                Scene_clear_scene(scene , cr, 1, 1, 1); /* Nettoyage de la scene */
                 Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
                 cairo_surface_destroy(surface);
                 g_free (filename);
@@ -58,7 +58,7 @@ void ExportWindow_init( ExportWindow* ew, Scene* scene )
             {
                 surface = cairo_svg_surface_create( filename, scene->dWidth, scene->dHeight );
                 cr = cairo_create(surface);
-                Scene_clear_scene(scene , cr); /* Nettoyage de la scene */
+                Scene_clear_scene(scene , cr, 1, 1, 1); /* Nettoyage de la scene */
                 Scene_dessiner_scene( scene, cr ); /*Dessin de tous les objets*/
                 cairo_surface_destroy(surface);
                 g_free (filename);

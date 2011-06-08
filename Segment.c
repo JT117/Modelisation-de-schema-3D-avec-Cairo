@@ -64,6 +64,9 @@ void Segment_drawSegment(Segment* pSeg, cairo_t* cr, InfoCamera* pCam)
 	}
 	cairo_set_line_width(cr, 0.8);
 	cairo_stroke(cr); /* dessin contour, perte du path */
+
+	/* suppresion dashed line */
+	cairo_set_dash(cr,&dDashLength,0,0);
 }
 
 void Segment_updateCoordWolrd(Objet* pObj)

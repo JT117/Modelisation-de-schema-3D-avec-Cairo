@@ -359,9 +359,9 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr )
  * @param scene, un pointeur sur une scene initialisée
  * @param cr, un contexte cairo créer sur la zoneDeDessin
  **/
-void Scene_clear_scene( Scene* scene, cairo_t* cr )
+void Scene_clear_scene( Scene* scene, cairo_t* cr, double dR, double dG, double dB )
 {
-     cairo_set_source_rgb( cr, 0.190, 0.190, 0.190 );
+     cairo_set_source_rgb( cr, dR, dG, dB );
      cairo_paint( cr );
 }
 

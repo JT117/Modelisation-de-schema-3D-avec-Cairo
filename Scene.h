@@ -108,7 +108,7 @@ void Scene_dessiner_scene( Scene* scene, cairo_t* cr );
 void Scene_creation_objet( Scene* scene, double x, double y );
 
 /** Fontion qui nettoie une scene */
-void Scene_clear_scene( Scene* scene, cairo_t* cr );
+void Scene_clear_scene( Scene* scene, cairo_t* cr, double dR, double dG, double dB );
 
 /** Fonction qui "detruit" de façon specifique une scene */
 void Scene_detruire( Scene* scene );

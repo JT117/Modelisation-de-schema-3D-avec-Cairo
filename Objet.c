@@ -254,6 +254,10 @@ gboolean Objet_contient_point( Objet* objet, double x, double y, InfoCamera* pCa
 	{
     	return Pyramid_Contient_Point( objet->type.pyramid, x, y,pCam);
 	}
+    else if( objet->eType == SEGMENT )
+    {
+    	return FALSE;
+    }
     return TRUE;
 }
 

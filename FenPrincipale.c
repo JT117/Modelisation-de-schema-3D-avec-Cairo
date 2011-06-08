@@ -215,7 +215,7 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
 
     cairo_t* cr = gdk_cairo_create( widget->window );               //Creation du contexte pour pouvoir dessiner
 
-    Scene_clear_scene( scene , cr );                                 //Nettoyage de la scene
+    Scene_clear_scene( scene , cr, 0.190, 0.190, 0.190 );                                 //Nettoyage de la scene
 
     Scene_dessiner_scene( scene, cr );                               //On dessine tous les objets
 
