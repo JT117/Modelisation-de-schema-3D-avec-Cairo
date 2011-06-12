@@ -159,7 +159,7 @@ void Segment_setArrowed(Segment* pSeg)
 	pSeg->bArrowed =TRUE;
 }
 
-void Segment_setDashed(Segment* pSeg,double dR, double dG, double dB)
+void Segment_setDashed(Segment* pSeg)
 {
 	pSeg->bDashed = TRUE;
 }

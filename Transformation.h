@@ -40,4 +40,6 @@ void Transformation_getMatrixRotation(tdMatrix pMatModif, double dAngle, enum ax
 void Transformation_getMatrixHomothety(tdMatrix pMatModif, double dRatio);
 
 
+void Transformation_getMatrixTranslation(tdMatrix pMatModif, double dX, double dY, double dZ);
+
 #endif

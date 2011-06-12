@@ -746,10 +746,10 @@ void FenetreAjout_addSegment(FenetreAjout* pFao )
 	pNewSeg = Segment_createSegment(tCenter,tCoord1,tCoord2);
 	Color_setColor(pNewSeg->tColor,(dR/255),(dG/255),(dB/255),dA);
 
-	if(gtk_toggle_button_get_active(pFao->wArrowed))
+	if(gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( pFao->wArrowed ) ) )
 		Segment_setArrowed(pNewSeg);
 
-	if(gtk_toggle_button_get_active(pFao->wDashed))
+	if(gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( pFao->wDashed ) ) )
 		Segment_setDashed(pNewSeg);
 
 

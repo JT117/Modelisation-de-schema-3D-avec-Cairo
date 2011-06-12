@@ -90,6 +90,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Modification.h" />
+		<Unit filename="MouseInterface.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="MouseInterface.h" />
 		<Unit filename="Objet.c">
 			<Option compilerVar="CC" />
 		</Unit>
