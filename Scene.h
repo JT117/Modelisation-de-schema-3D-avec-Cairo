@@ -24,6 +24,7 @@ struct Selection;
 typedef struct Scene Scene;
 struct Scene
 {
+    Groupe* groupeDeBase;
     /** Pointeur sur le module des modifications */
     Modification* modification;
     /** Pointeur sur le module de selection */

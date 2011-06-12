@@ -32,6 +32,7 @@ void Groupe_initialiser( Groupe* groupe, Groupe* pere, int nb, double dX, double
 
 void Groupe_detruire( Groupe* groupe )
 {
+    g_array_free( groupe->aTransfo, FALSE );
     g_array_free( groupe->tObjet, FALSE );
     g_array_free( groupe->tFils, FALSE );
     free( groupe->iter );

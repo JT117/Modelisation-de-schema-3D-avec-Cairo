@@ -346,6 +346,7 @@ static gboolean FenetreAjout_change_affichage( GtkComboBox* comboBox, gpointer d
 		 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point1 ), GTK_BUTTONBOX_START );
 		 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point2 ), GTK_BUTTONBOX_START );
 		 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point3 ), GTK_BUTTONBOX_START );
+		 gtk_button_box_set_layout( GTK_BUTTON_BOX( fao->hbox_point4 ), GTK_BUTTONBOX_START );
 
 		 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), wLabelP1 );
 		 gtk_container_add( GTK_CONTAINER( fao->hbox_point1 ), (fao->xCoord)[0] );
@@ -624,7 +625,7 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
     }
     else if( strcmp( fao->dernierLayout, "Triangle" ) == 0 )
     {
-    	if( dWidth > 0  )
+    	if( 1 )
 		{
 			Triangle* pNewTri =NULL;
 			/* Declaration de chaque coord */

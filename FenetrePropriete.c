@@ -177,6 +177,7 @@ void FenetrePropriete_validation( GtkButton* button, gpointer data )
     }
 
     gtk_widget_queue_draw( fp->scene->zoneDeDessin );
+    Selection_deselectionner_tout( fp->scene );
     gtk_widget_destroy( fp->fenetre );
 
 }
