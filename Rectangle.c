@@ -83,7 +83,7 @@ void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 {
 	int i;
 	Rectangle* pRec = NULL;
-	/* Coordonnées de points une fois projettés */
+	/* Coordonnées de points une fois projetés */
 	tCoord2D* pPointProj0 = NULL;
 	tCoord2D* pPointProj1 = NULL;
 	tCoord2D* pPointProj2 = NULL;
@@ -92,7 +92,7 @@ void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	Rectangle_updateCoordWolrd(pObj); /* Changement de repere -> on passe dans le repere objet */
 
 	pRec = pObj->type.rectangle;
-	/* Grace à nos 4 points ayant leurs coordonnées exprimées dans le repere du monde on projette ! */
+	/* Grace à nos 4 points ayant leurs coordonnées exprimées dans le repere du monde on projete ! */
 	pPointProj0 = ProjectionTools_getPictureCoord(&(pRec->tPoint[0]),pCam);
 	pPointProj1 = ProjectionTools_getPictureCoord(&(pRec->tPoint[1]),pCam);
 	pPointProj2 = ProjectionTools_getPictureCoord(&(pRec->tPoint[2]),pCam);
@@ -104,7 +104,7 @@ void Rectangle_drawRectangle( Objet* pObj,cairo_t* cr,InfoCamera* pCam)
 	Point_initCoord2D(pRec->tPoint[2].tCoordProjection,(*pPointProj2)[0], (*pPointProj2)[1]);
 	Point_initCoord2D(pRec->tPoint[3].tCoordProjection,(*pPointProj3)[0], (*pPointProj3)[1]);
 
-	/* Construction du path */
+	/* Construction du path à partit de tous les points projetés*/
 	cairo_move_to( cr, (*pPointProj0)[0], (*pPointProj0)[1]);
 	cairo_line_to( cr, (*pPointProj1)[0], (*pPointProj1)[1]);
 	cairo_line_to( cr, (*pPointProj2)[0], (*pPointProj2)[1]);
