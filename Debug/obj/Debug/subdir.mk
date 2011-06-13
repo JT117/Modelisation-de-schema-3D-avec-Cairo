@@ -10,6 +10,7 @@ O_SRCS += \
 ../obj/Debug/Cube.o \
 ../obj/Debug/ExportWindow.o \
 ../obj/Debug/FenPrincipale.o \
+../obj/Debug/FenSeg.o \
 ../obj/Debug/FenText.o \
 ../obj/Debug/FenTrans.o \
 ../obj/Debug/FenetreAjout.o \
@@ -18,6 +19,7 @@ O_SRCS += \
 ../obj/Debug/Groupe.o \
 ../obj/Debug/MatrixTools.o \
 ../obj/Debug/Modification.o \
+../obj/Debug/MouseInterface.o \
 ../obj/Debug/Objet.o \
 ../obj/Debug/Point.o \
 ../obj/Debug/ProjectionTools.o \
