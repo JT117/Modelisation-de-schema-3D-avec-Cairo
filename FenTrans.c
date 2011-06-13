@@ -318,4 +318,5 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 
     gtk_widget_queue_draw( ft->scene->zoneDeDessin );
     gtk_widget_destroy( ft->fenetre );
+    Selection_deselectionner_tout( ft->scene );
 }

@@ -188,16 +188,8 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     free( scene->clavier );
     free( scene->creation );
     free( scene->modification );
-
-    int i =0;
-    for( i =0; i < scene->nbGroupe; i++)
-    {
-        Groupe* groupe = g_array_index( scene->tGroupe, Groupe*, i );
-        Groupe_detruire( groupe );
-        free( groupe );
-    }
-    g_array_free( scene->tGroupe, FALSE );
     free( scene->camera );
+    free( scene->groupeDeBase );
     free( scene );
 
     return EXIT_SUCCESS;
@@ -398,7 +390,7 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
             Selection_selectionner_click_drag( scene );
             scene->selection->selection_en_cours = TRUE;
 
-            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "rectangle.png") ) ), 12, 12 );
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "rectangle.png", NULL ), 12, 12 );
             gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 
             gtk_widget_queue_draw( widget );
@@ -407,7 +399,7 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
         {
             scene->selection->selection_en_cours = FALSE;
 
-            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "normal.png") ) ), 4, 4 );
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "normal.png", NULL ), 4, 4 );
             gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 
             gtk_widget_queue_draw( widget );
@@ -505,12 +497,12 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
             scene->creation->x = event->x;
         	scene->creation->y = event->y;
 
-            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main_fermer.png") ) ), 4, 4 );
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "main_fermer.png", NULL ), 4, 4 );
             gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
         }
         else if( event->type == GDK_BUTTON_RELEASE && event->button == 1 )
         {
-            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
+            scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "main.png", NULL), 4, 4 );
             gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 
             gboolean groupeMangeTrans = FALSE;
@@ -721,7 +713,6 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
  gboolean main_ouvrir( GtkWidget *menuItem, gpointer data )
 {
     Scene* scene = (Scene*)data;
-    Scene_reset( scene, scene->zoneDeDessin );
 
     GtkWidget* opener = gtk_file_chooser_dialog_new ("Ouvrir un fichier de sauvegarde ...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
@@ -731,6 +722,8 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
 
     if (gtk_dialog_run (GTK_DIALOG (opener)) == GTK_RESPONSE_ACCEPT)
     {
+         Scene_reset( scene, scene->zoneDeDessin );
+
         char *filename;
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (opener));
 
@@ -1440,31 +1433,31 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
     if( strcmp( gtk_button_get_label( bouton ), "Main" ) == 0 )
     {
         scene->souris = MAIN;
-        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "main.png") ) ), 4, 4 );
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "main.png", NULL), 4, 4 );
         gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
     }
     else if( strcmp( gtk_button_get_label( bouton ), "Zoom" ) == 0 )
     {
         scene->souris = LOUPE;
-        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "loupe.png") ) ), 4, 4 );
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "loupe.png", NULL), 4, 4 );
         gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
     }
     else if( strcmp( gtk_button_get_label( bouton ), "Normal" ) == 0 )
     {
         scene->souris = NORMAL;
-        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "normal.png") ) ), 4, 4 );
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "normal.png", NULL ), 4, 4 );
         gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
     }
     else if( strcmp( gtk_button_get_label( bouton ), "MainWorld" ) == 0 )
 	{
 		scene->souris = MAINWORLD;
-        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "rotation.png") ) ), 4, 4 );
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "rotation.png", NULL), 4, 4 );
         gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 	}
     else if( strcmp( gtk_button_get_label( bouton ), "Texte" ) == 0 )
 	{
 		scene->souris = TEXT;
-        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "texte.png") ) ), 4, 4 );
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "texte.png", NULL), 4, 4 );
         gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 	}
     else if( strcmp( gtk_button_get_label( bouton ), "Segment" ) == 0 )

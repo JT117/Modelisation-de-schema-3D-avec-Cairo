@@ -4,7 +4,7 @@
 void FenSeg_init( FenSeg* fseg, Scene* scene)
 {
     fseg->fenetre = gtk_window_new( GTK_WINDOW_TOPLEVEL );
-    gtk_window_set_modal(fseg->fenetre,TRUE);
+    gtk_window_set_modal( GTK_WINDOW( fseg->fenetre ),TRUE);
     fseg->scene = scene;
     gtk_window_set_position( GTK_WINDOW( fseg->fenetre ), GTK_WIN_POS_CENTER );
 	gtk_window_set_title( GTK_WINDOW( fseg->fenetre ), "Type de segment" );
@@ -103,10 +103,10 @@ void FenSeg_newSegment( GtkButton* button, gpointer data)
 
 	Color_setColor(pNewSeg->tColor,(dR/255),(dG/255),(dB/255),dA);
 
-	if(gtk_toggle_button_get_active(fseg->wArrowed))
+	if(gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( fseg->wArrowed ) ) )
 		Segment_setArrowed(pNewSeg);
 
-	if(gtk_toggle_button_get_active(fseg->wDashed))
+	if(gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(fseg->wDashed) ) )
 		Segment_setDashed(pNewSeg);
 
 	Scene_ajouter_segment( fseg->scene, pNewSeg, GROUPE0 );

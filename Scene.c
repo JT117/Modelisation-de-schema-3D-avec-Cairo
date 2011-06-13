@@ -23,12 +23,12 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window, GtkWidget* mainWi
     scene->modification = (Modification*)malloc( 1 * sizeof( Modification ) );
     Modification_initialiser( scene->modification );
 
-    Groupe* groupeDeBase = (Groupe*)malloc( 1 * sizeof( Groupe ) );
+    scene->groupeDeBase = (Groupe*)malloc( 1 * sizeof( Groupe ) );
 
-    Groupe_initialiser( groupeDeBase, NULL, GROUPE0, 0.0,0.0,0.0 );
+    Groupe_initialiser( scene->groupeDeBase, NULL, GROUPE0, 0.0,0.0,0.0 );
 
     scene->tGroupe = g_array_new( FALSE, FALSE, sizeof( Groupe* ) ); //coucou =)
-    g_array_append_val( scene->tGroupe, groupeDeBase );
+    g_array_append_val( scene->tGroupe, scene->groupeDeBase );
     scene->nbGroupe = 1;
 
     scene->tailleCreation = 50.0;
@@ -42,7 +42,7 @@ void Scene_initialiser_scene( Scene* scene, GtkWidget* window, GtkWidget* mainWi
     scene->entryNom = NULL;
     scene->souris = NORMAL;
 
-    scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "normal.png") ) ), 4, 4 );
+    scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gdk_pixbuf_new_from_file( "normal.png", NULL), 4, 4 );
 }
 
 void Scene_reconstruire( Scene* scene, GtkWidget* window )
@@ -77,6 +77,9 @@ void Scene_detruire( Scene* scene )
 {
     int i = 0;
 
+    gtk_tree_selection_unselect_all( scene->treeSelection );
+    gtk_tree_store_clear( scene->store  );
+
     for( i = 0; i < scene->nbObjet; i++ )
     {
         Objet_detruire( g_array_index( scene->tObjet, Objet*, i ) );
@@ -90,10 +93,6 @@ void Scene_detruire( Scene* scene )
     g_array_free( scene->tGroupe, TRUE );
 
     Selection_detruire( scene->selection );
-
-    gtk_tree_selection_unselect_all( scene->treeSelection );
-    gtk_tree_store_clear( scene->store  );
-    //Clavier_detruire( scene->clavier );
 }
 
 /** Fonction qui ajoute un objet de type Cube à la scene
@@ -143,7 +142,7 @@ void Scene_ajouter_rectangle( Scene* scene, Rectangle* rect, int idGroupe )
     Groupe_ajouter_Objet( groupe, objet );
 
     gtk_tree_store_append (scene->store, objet->iter, groupe->iter );
-    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Pavé droit", -1);
+    gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Rectangle", -1);
 }
 
 void Scene_ajouter_triangle( Scene* scene, Triangle* pTri, int idGroupe )
@@ -205,8 +204,12 @@ GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 	int i = 0;
 	int iLoopInsert = 0;
 	double dDistance= 0.0, dDistancePrev=0.0;
-	GArray* tObj = pScene->tObjet;
-	GArray* tGroup = pScene->tGroupe;
+	GArray* tObj = NULL;
+	tObj = pScene->tObjet;
+
+	GArray* tGroup = NULL;
+	tGroup = pScene->tGroupe;
+
 	ClassifyObj* pToInsert;
 	ClassifyObj* pPrevious;
 
@@ -247,7 +250,7 @@ GArray* Scene_drawOrder( Scene* pScene, InfoCamera* pCam)
 		pPrevious = g_array_index(gtOrderedElements,ClassifyObj*,iLoopInsert);
 		dDistancePrev = pPrevious->dDistance;
 		/* Insertion de l'index de la face là où il faut*/
-		while(dDistancePrev != 0 && dDistancePrev>dDistance)
+		while( ( dDistancePrev != 0.0 ) && ( dDistancePrev > dDistance ) )
 		{
 			iLoopInsert++;
 			pPrevious = (ClassifyObj*)g_array_index(gtOrderedElements,ClassifyObj*,iLoopInsert);

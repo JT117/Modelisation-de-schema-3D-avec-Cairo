@@ -31,5 +31,6 @@ typedef struct createSegment
  */
 void MouseInterface_segment(Scene* scene,  GdkEventButton* pEvent);
 
+gboolean MouseInterface_newSegment(createSegment*  pCreateSeg, Scene* scene);
 
 #endif

@@ -10,6 +10,8 @@
 #include "Groupe.h"
 #include "FenTrans.h"
 #include "FenText.h"
+#include "Segment.h"
+#include "MouseInterface.h"
 
  gboolean realize_callback( GtkWidget *widget, GdkEventExpose *event, gpointer data );
  gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event,gpointer data);
@@ -35,6 +37,7 @@
 
 
 /**
+
  * Appelle la fonction de création de la fenêtre d'ajout de texte.
  */
  gboolean newText(gpointer data);

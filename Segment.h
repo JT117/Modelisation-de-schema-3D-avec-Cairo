@@ -60,4 +60,12 @@ gboolean Segment_Contient_Point(Segment* pSeg, double x, double y );
 
 void Segment_setColor(Segment* pSeg,double dR, double dG, double dB);
 
+void Segment_setArrowed(Segment* pSeg);
+
+void Segment_setDashed(Segment* pSeg);
+
+void Segment_transfo(Segment* pSeg, tdMatrix tdTransfoMat);
+
+void Segment_transfoCenter(Segment* pSeg, tdMatrix tdTransfoMat);
+
 #endif
