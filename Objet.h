@@ -26,7 +26,7 @@ struct Objet
 {
     char* texte;
     char* font;
-    int x, y;
+    float x, y;
 
     /** Un string contenant le type d'objet */
     //char* typeObjet;

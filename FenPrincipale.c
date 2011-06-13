@@ -93,6 +93,8 @@ int FenPrincipale_initialiser (int argc, char* argv[] )
     gtk_button_set_image( GTK_BUTTON( boutonMainWorld ), imageRotation );
 
     GtkWidget* boutonSegment = gtk_button_new_with_label("Segment");
+    GtkWidget* imageSegment = gtk_image_new_from_file( "segment.png" );
+    gtk_button_set_image( GTK_BUTTON( boutonSegment ), imageSegment );
 
     GtkWidget* boutonText = gtk_button_new_with_label("Texte");
     GtkWidget* imageText = gtk_image_new_from_file( "texte.png" );
@@ -1380,8 +1382,6 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
             {
                  gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Segment", -1);
             }
-
-            //gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->typeObjet, -1); // TODO OULAH OULAH
         }
 
         for( i = 0; i < groupe->nbFils; i++ )
@@ -1391,6 +1391,46 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
             gtk_tree_store_remove( scene->store, fils->iter);
             gtk_tree_store_append (scene->store, fils->iter, pere->iter);
             gtk_tree_store_set (scene->store, fils->iter, GROUPE, fils->nom, -1);
+
+        /*    int j = 0;
+
+            for( j = 0; j < fils->nbObjet; j ++ )
+            {
+                Objet* objet = g_array_index( fils->tObjet, Objet*, j );
+                Groupe_ajouter_Objet( pere, objet );
+
+                gtk_tree_store_remove( scene->store, objet->iter);
+                gtk_tree_store_append (scene->store, objet->iter, pere->iter);
+
+                if( objet->eType == CUBE )
+                {
+                     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Cube", -1);
+                }
+                else if( objet->eType == RECTANGLE )
+                {
+                     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Rectangle", -1);
+                }
+                else if( objet->eType == SPHERE )
+                {
+                     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Sphere", -1);
+                }
+                else if( objet->eType == QUADRILATERAL )
+                {
+                     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Quadrilatère", -1);
+                }
+                else if( objet->eType == TRIANGLE )
+                {
+                     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Triangle", -1);
+                }
+                else if( objet->eType == PYRAMID )
+                {
+                     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Pyramide", -1);
+                }
+                else if( objet->eType == SEGMENT )
+                {
+                     gtk_tree_store_set (scene->store, objet->iter, GROUPE, "Segment", -1);
+                }
+            }*/
         }
 
         for( i = 0; i < scene->nbGroupe; i++ )
@@ -1463,8 +1503,8 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
     else if( strcmp( gtk_button_get_label( bouton ), "Segment" ) == 0 )
 	{
 		scene->souris = CURSORSEGMENT;
-        /*scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "texte.png") ) ), 4, 4 );
-        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );*/
+        scene->curseur = gdk_cursor_new_from_pixbuf( gdk_display_get_default(), gtk_image_get_pixbuf( GTK_IMAGE( gtk_image_new_from_file( "segment.png") ) ), 0, 21 );
+        gdk_window_set_cursor( gtk_widget_get_window( scene->zoneDeDessin ), scene->curseur );
 	}
 	return TRUE;
 }

@@ -493,23 +493,61 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier )
     if( objet->eType == CUBE )
     {
         fprintf( fichier, "%d\n%d %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.cube->Center.tdCoordGroup[0], objet->type.cube->Center.tdCoordGroup[1],
-                                              objet->type.cube->Center.tdCoordGroup[3],  (float)abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
+                                              objet->type.cube->Center.tdCoordGroup[2],  (float)abs( objet->type.cube->tPoint[0].tdCoordGroup[0] - objet->type.cube->tPoint[1].tdCoordGroup[0]) );
         fprintf( fichier, "%f %f %f %f\n", objet->type.cube->tColor[0]*255, objet->type.cube->tColor[1]*255, objet->type.cube->tColor[2]*255, objet->type.cube->tColor[3] );
 
     }
     else if( objet->eType == RECTANGLE )
     {
         fprintf( fichier, "%d\n%d %f %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.rectangle->Center.tdCoordGroup[0], objet->type.rectangle->Center.tdCoordGroup[1],
-          /*TODO calculer largeur hauteur*/                                    objet->type.rectangle->Center.tdCoordGroup[3], 250.0, 250.0 );
+                                                     objet->type.rectangle->Center.tdCoordGroup[2], (float)abs( objet->type.rectangle->tPoint[0].tdCoordGroup[0] - objet->type.rectangle->tPoint[1].tdCoordGroup[0]) , (float)abs( objet->type.rectangle->tPoint[0].tdCoordGroup[1] - objet->type.rectangle->tPoint[2].tdCoordGroup[1]) );
         fprintf( fichier, "%f %f %f %f\n", objet->type.rectangle->tColor[0]*255, objet->type.rectangle->tColor[1]*255, objet->type.rectangle->tColor[2]*255, objet->type.rectangle->tColor[3] );
     }
     else if( objet->eType == SEGMENT )
     {
-        /* TODO pareil que ci dessus*/
+         fprintf( fichier, "%d\n%d %f %f %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.segment->tPoint[0].tdCoordGroup[0], objet->type.segment->tPoint[0].tdCoordGroup[1],
+                                                  objet->type.segment->tPoint[0].tdCoordGroup[2], objet->type.segment->tPoint[1].tdCoordGroup[0], objet->type.segment->tPoint[1].tdCoordGroup[1],
+                                                  objet->type.segment->tPoint[1].tdCoordGroup[2]   );
+         fprintf( fichier, "%f %f %f %f\n", objet->type.segment->tColor[0]*255, objet->type.segment->tColor[1]*255, objet->type.segment->tColor[2]*255, objet->type.segment->tColor[3] );
+
+         if( objet->type.segment->bDashed == TRUE )
+         {
+             fprintf( fichier, "%d ", 1 );
+         }
+         else
+         {
+             fprintf( fichier, "%d ", 0 );
+         }
+
+         if( objet->type.segment->bArrowed == TRUE )
+         {
+             fprintf( fichier, "%d\n", 1 );
+         }
+         else
+         {
+             fprintf( fichier, "%d\n", 0 );
+         }
+
     }
     else if( objet->eType == SPHERE )
     {
-        /* TODO pareil que ci dessus*/
+        fprintf( fichier, "%d\n%d %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.sphere->Center.tdCoordGroup[0], objet->type.sphere->Center.tdCoordGroup[1],
+                                                     objet->type.sphere->Center.tdCoordGroup[2], objet->type.sphere->dRadius );
+        fprintf( fichier, "%f %f %f %f\n", objet->type.rectangle->tColor[0]*255, objet->type.sphere->tColor[1]*255, objet->type.sphere->tColor[2]*255, objet->type.sphere->tColor[3] );
+
+    }
+    else if( objet->eType == QUADRILATERAL )
+    {
+         fprintf( fichier, "%d\n%d %f %f %f %f %f %f %f %f %f %f %f %f\n", objet->eType, objet->numeroGroupe, objet->type.quadrilateral->tPoint[0].tdCoordGroup[0], objet->type.quadrilateral->tPoint[0].tdCoordGroup[1],
+                                                  objet->type.quadrilateral->tPoint[0].tdCoordGroup[2], objet->type.quadrilateral->tPoint[1].tdCoordGroup[0], objet->type.quadrilateral->tPoint[1].tdCoordGroup[1],
+                                                  objet->type.quadrilateral->tPoint[1].tdCoordGroup[2], objet->type.quadrilateral->tPoint[2].tdCoordGroup[0], objet->type.quadrilateral->tPoint[2].tdCoordGroup[1],
+                                                  objet->type.quadrilateral->tPoint[2].tdCoordGroup[2], objet->type.quadrilateral->tPoint[3].tdCoordGroup[0], objet->type.quadrilateral->tPoint[3].tdCoordGroup[1],
+                                                  objet->type.quadrilateral->tPoint[3].tdCoordGroup[2]   );
+         fprintf( fichier, "%f %f %f %f\n", objet->type.quadrilateral->tColor[0]*255, objet->type.quadrilateral->tColor[1]*255, objet->type.quadrilateral->tColor[2]*255, objet->type.quadrilateral->tColor[3] );
+    }
+    else if( objet->eType == TEXTE )
+    {
+        fprintf( fichier, "%s %s %f %f\n", objet->texte, objet->font, objet->x, objet->y );
     }
 
     fprintf( fichier , "%d\n", (int)objet->aTransfo->len );
@@ -536,7 +574,7 @@ void Objet_sauvegarde( Objet* objet, FILE* fichier )
 void Objet_restaure( FILE* fichier, struct Scene* scene )
 {
     int idGroupe = 0;
-    float r, g, b, a, dWidth, x, y, z = 0;
+    float r=0; float g=0; float b=0; float a=0; float dWidth=0; float x=0; float y=0; float z = 0;
     tCoord tdCenter;
 
     int typeObjet = -1;
@@ -579,6 +617,84 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
 
         Scene_ajouter_rectangle( scene, pNewRect, groupe->id );
         Modification_modification_effectuer( scene );
+    }
+    else if( typeObjet == SEGMENT )
+    {
+        float x2 =0, y2 = 0, z2 = 0;
+        int dash = 0, arrow = 0;
+        Segment* pNewSeg = NULL;
+        tCoord tCoord1,tCoord2, tCenter;
+
+        fscanf( fichier, "%d %f %f %f %f %f %f", &idGroupe, &x, &y, &z, &x2, &y2, &z2  );
+        fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
+        fscanf( fichier , "%d %d", &dash, &arrow );
+
+        /* Initialisation des coordonnées dans son propre repère*/
+        Point_initCoord(tCoord1, x, y, z );
+        Point_initCoord(tCoord2, x2, y2, z2 );
+        Point_initCoord(tCenter, abs( x - x2)/2, abs( y - y2)/2, abs( z - z2)/2 ); /* A calibrer avec Ludo */
+        pNewSeg = Segment_createSegment(tCenter,tCoord1,tCoord2);
+
+        Color_setColor(pNewSeg->tColor,(r/255),(g/255),(b/255),a);
+
+        if( dash )
+        {
+            Segment_setDashed( pNewSeg );
+        }
+        if( arrow )
+        {
+            Segment_setArrowed(pNewSeg);
+        }
+
+        Scene_ajouter_segment( scene, pNewSeg, GROUPE0 );
+
+    }
+    else if( typeObjet == SPHERE )
+    {
+        float dRadius = 0;
+        tCoord tdCenter;
+
+        fscanf( fichier, "%d %f %f %f %f", &idGroupe, &x, &y, &z, &dRadius  );
+        fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
+
+        Sphere* pNewSph =NULL;
+
+        Groupe* groupe = Groupe_trouver_ById( scene, idGroupe ) ;
+
+        Point_initCoord( tdCenter, x-groupe->tCenterGroup.tdCoordWorld[0], y-groupe->tCenterGroup.tdCoordWorld[1], z-groupe->tCenterGroup.tdCoordWorld[2]); /* Récupération des coordonées du centre (par rapport au groupe)*/
+        pNewSph = Sphere_createSphere( tdCenter, dRadius );
+        Color_setColor(pNewSph->tColor,(r/255),(g/255),(b/255),a);
+
+        Scene_ajouter_sphere( scene, pNewSph, groupe->id );
+    }
+    else if( typeObjet == QUADRILATERAL )
+    {
+        float x2 =0, y2 = 0, z2 = 0, x3=0, y3=0, z3=0, x4=0, y4=0, z4=0;
+        tCoord tCoord1,tCoord2, tCenter;
+
+        fscanf( fichier, "%d %f %f %f %f %f %f %f %f %f %f %f %f", &idGroupe, &x, &y, &z, &x2, &y2, &z2, &x3, &y3, &z3, &x4, &y4, &z4  );
+        fscanf( fichier, "%f %f %f %f", &r, &g, &b , &a );
+    }
+    else if( typeObjet == TEXTE )
+    {
+        Objet* objet = (Objet*)malloc( 1 * sizeof( Objet ) );
+        objet->eType = TEXTE;
+        objet->doitEtreDeselectionner = TRUE;
+        objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+        objet->texte = (char*)malloc( 60 * sizeof( char ) );
+        objet->font = (char*)malloc( 60 * sizeof( char ) );
+
+        fscanf( fichier, "%s %s %f %f", objet->texte, objet->font, &(objet->x), &(objet->y) );
+
+        g_array_append_val( scene->tObjet, objet );
+        scene->nbObjet++;
+
+        Groupe* groupe = Groupe_trouver_ById( scene, 0 );
+
+        Groupe_ajouter_Objet( groupe, objet );
+
+        gtk_tree_store_append ( scene->store, objet->iter, groupe->iter );
+        gtk_tree_store_set (scene->store, objet->iter, GROUPE, objet->texte, -1);
     }
 
     Objet* objet = g_array_index( scene->tObjet, Objet*, scene->nbObjet-1 );

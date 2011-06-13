@@ -2259,7 +2259,7 @@
 	"Enum.h"
 	"Camera.h"
 
-1307699390 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
+1307981587 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.h
 	"Cube.h"
 	"Segment.h"
 	"Sphere.h"
@@ -2270,7 +2270,7 @@
 	<gtk/gtk.h>
 	<string.h>
 
-1307699390 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
+1307982047 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Objet.c
 	"Objet.h"
 	"Groupe.h"
 	"Rectangle.h"
@@ -2327,7 +2327,7 @@
 1307282212 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Clavier.h
 	<gtk/gtk.h>
 
-1307282203 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
+1307893720 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenetrePropriete.c
 	"FenetrePropriete.h"
 	"Selection.h"
 
@@ -2342,7 +2342,7 @@
 	"Modification.h"
 	"Camera.h"
 
-1307888016 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
+1307978438 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Groupe.c
 	"Groupe.h"
 	"Scene.h"
 	"Objet.h"
@@ -2713,7 +2713,7 @@
 	"Segment.h"
 	"MouseInterface.h"
 
-1307889420 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
+1307981081 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenPrincipale.c
 	"FenPrincipale.h"
 
 1307282225 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.h
@@ -2726,7 +2726,7 @@
 1307699390 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/ExportWindow.c
 	"ExportWindow.h"
 
-1307699390 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.c
+1307982850 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.c
 	"FenTrans.h"
 
 1307282203 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenTrans.h
@@ -2738,7 +2738,7 @@
 	<gtk/gtk.h>
 	"Scene.h"
 
-1307282203 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.c
+1307981666 source:/home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/FenText.c
 	"FenText.h"
 
 1307879369 /home/julien/Documents/Modelisation-de-schema-3D-avec-Cairo/Transformation.h

@@ -258,7 +258,7 @@ void FenTrans_validation( GtkButton* button, gpointer data )
         Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
 
         Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
-        transfo->eTransfoType = TRANSLATION;
+        transfo->eTransfoType = HOMOTHETIE;
         transfo->x = dX;
         transfo->y = dY;
 
@@ -313,6 +313,13 @@ void FenTrans_validation( GtkButton* button, gpointer data )
         Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
         Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
         Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
+
+        Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
+        transfo->eTransfoType = TRANSLATION;
+        transfo->x = dX;
+        transfo->y = dY;
+
+        g_array_append_val( objet->aTransfo, transfo );
 
     }
 
