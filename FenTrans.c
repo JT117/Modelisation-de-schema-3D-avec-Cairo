@@ -108,21 +108,21 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 
         tdMatrix tdTransfoMat,tdNewTransfo;
         Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
-        if( dX > 0 )
+        if( dX != 0 )
         {
         	Transformation_getMatrixRotation(tdNewTransfo, dX, AXEX);
 			Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
         }
 
-        if( dY > 0 )
+        if( dY != 0 )
         {
-            Transformation_getMatrixRotation( tdTransfoMat, dY, AXEY );
+            Transformation_getMatrixRotation( tdNewTransfo, dY, AXEY );
             Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
         }
 
-        if( dZ > 0 )
+        if( dZ != 0 )
 		{
-			Transformation_getMatrixRotation( tdTransfoMat, dZ, AXEZ );
+			Transformation_getMatrixRotation( tdNewTransfo, dZ, AXEZ );
 			Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 		}
 

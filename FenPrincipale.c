@@ -765,25 +765,26 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
                     {
                         int k = 0;
                         Transfo* transfo = g_array_index( groupe->aTransfo, Transfo*, j );
+
                         if( transfo->eTransfoType == ROTATION_RECU )
                         {
                             tdMatrix tdTransfoMat,tdNewTransfo;
                             Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
-                            if( transfo->x > 0 )
+                            if( transfo->x != 0 )
                             {
                                 Transformation_getMatrixRotation(tdNewTransfo, transfo->x, AXEX);
                                 Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
                             }
 
-                            if( transfo->y > 0 )
+                            if( transfo->y != 0 )
                             {
-                                Transformation_getMatrixRotation( tdTransfoMat, transfo->y, AXEY );
+                                Transformation_getMatrixRotation( tdNewTransfo, transfo->y, AXEY );
                                 Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
                             }
 
-                            if( transfo->z > 0 )
+                            if( transfo->z != 0 )
                             {
-                                Transformation_getMatrixRotation( tdTransfoMat, transfo->z, AXEZ );
+                                Transformation_getMatrixRotation( tdNewTransfo, transfo->z, AXEZ );
                                 Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
                             }
 

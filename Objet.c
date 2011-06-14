@@ -719,7 +719,7 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
             transfo->eTransfoType = ROTATION;
             tdMatrix tdTransfoMat,tdNewTransfo;
 
-            tdMatrix tdTransfoMat,tdNewTransfo;
+
             Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
 
             if( transfo->x != 0 )
