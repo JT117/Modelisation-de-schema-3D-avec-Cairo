@@ -376,7 +376,7 @@ static gboolean FenetreAjout_change_affichage( GtkComboBox* comboBox, gpointer d
 		 gtk_container_add( GTK_CONTAINER( fao->layout ), fao->barreBouton );
 		 gtk_container_add( GTK_CONTAINER( fao->fenetre ), fao->layout );
 
-		 fao->dernierLayout = strcpy( fao->dernierLayout, "Quadrilatère" );
+		 fao->dernierLayout = strcpy( fao->dernierLayout, "Quadrilatere" );
 
 		 gtk_widget_draw( fao->fenetre, NULL );
 		 gtk_widget_show_all(fao->fenetre);
@@ -475,7 +475,7 @@ void FenetreAjout_enlever_layout( FenetreAjout* fao )
 		 gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreBouton );
 		 gtk_container_remove( GTK_CONTAINER( fao->fenetre ), fao->layout );
 	}
-    else if( strcmp( fao->dernierLayout, "Quadrilatère" ) == 0 )
+    else if( strcmp( fao->dernierLayout, "Quadrilatere" ) == 0 )
 	{
     	gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barreSelection );
 		 gtk_container_remove( GTK_CONTAINER( fao->layout ), fao->barrePosition );
@@ -515,7 +515,12 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
 	dR = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryR ) ) );
 	dG = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryG ) ) );
 	dB = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryB ) ) );
-	dA = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryA ) ) );
+	char test[5];
+
+	strcpy(test,gtk_entry_get_text( GTK_ENTRY( fao->entryA ) ));
+
+	//dA = atof( gtk_entry_get_text( GTK_ENTRY( fao->entryA ) ) );
+	dA = (double)atof( test);
 
     //Coordonnées de création de l'objet
 	dX = atof( gtk_entry_get_text( GTK_ENTRY( fao->entry1) ) );
