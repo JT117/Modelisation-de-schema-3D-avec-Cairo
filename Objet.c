@@ -718,29 +718,30 @@ void Objet_restaure( FILE* fichier, struct Scene* scene )
         {
             transfo->eTransfoType = ROTATION;
             tdMatrix tdTransfoMat,tdNewTransfo;
+
+            tdMatrix tdTransfoMat,tdNewTransfo;
             Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
 
-            if( transfo->x > 0 )
+            if( transfo->x != 0 )
             {
                 Transformation_getMatrixRotation(tdNewTransfo, transfo->x, AXEX);
                 Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
             }
 
-            if( transfo->y > 0 )
+            if( transfo->y != 0)
             {
-                Transformation_getMatrixRotation( tdTransfoMat, transfo->y, AXEY );
+                Transformation_getMatrixRotation( tdNewTransfo, transfo->y, AXEY );
                 Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
             }
 
-            if( transfo->z > 0 )
+            if( transfo->z != 0)
             {
-                Transformation_getMatrixRotation( tdTransfoMat, transfo->z, AXEZ );
+                Transformation_getMatrixRotation( tdNewTransfo,transfo->z, AXEZ );
                 Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
             }
 
-            Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+            //Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
             Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
-
         }
         else if( strcmp( temp, "Translation") == 0  )
         {
