@@ -663,6 +663,11 @@ static gboolean nouvel_ajout( GtkButton* button, gpointer data )
     	if( dWidth > 0  )
 		{
 			Quadrilateral* pNewQuadri =NULL;
+
+			double x1 = atof( gtk_entry_get_text( GTK_ENTRY( fao->xCoord[0])));
+			/*xCoord[1]
+			xCoord[2]
+			xCoord[3]*/
 			/* Declaration de chaque coord */
 			tCoord2D tCoord1,tCoord2,tCoord3,tCoord4;
 			Point_initCoord2D(tCoord1,-100,-100);

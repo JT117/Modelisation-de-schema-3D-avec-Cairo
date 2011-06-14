@@ -264,7 +264,7 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 
         g_array_append_val( objet->aTransfo, transfo );
     }
-    else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )   // Rotation d'un objet
+    else if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ft->radio1) ) )   // Rotation d'un objet sur lui même
     {
         Objet* objet = g_array_index( ft->scene->selection->tSelection, Objet*, 0 );
        	/* Calcul de l'angle de transformation en radian */
@@ -274,31 +274,32 @@ void FenTrans_validation( GtkButton* button, gpointer data )
 
         tdMatrix tdTransfoMat,tdNewTransfo;
         Matrix_initIdentityMatrix(tdTransfoMat); /* Initialisation de la matrice de rotation */
-        if( dX > 0 )
+        if( dX != 0 )
         {
         	Transformation_getMatrixRotation(tdNewTransfo, dX, AXEX);
 			Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
         }
 
-        if( dY > 0 )
+        if( dY != 0)
         {
-            Transformation_getMatrixRotation( tdTransfoMat, dY, AXEY );
+            Transformation_getMatrixRotation( tdNewTransfo, dY, AXEY );
             Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
         }
 
-        if( dZ > 0 )
+        if( dZ != 0)
 		{
-			Transformation_getMatrixRotation( tdTransfoMat, dZ, AXEZ );
+			Transformation_getMatrixRotation( tdNewTransfo, dZ, AXEZ );
 			Matrix_multiMatrices(tdTransfoMat, tdNewTransfo);  /* Résutlat contenu dans tdTransfoMat */
 		}
 
-        Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
+        //Objet_transfoCenter(objet, tdTransfoMat);   // on fait tourner le centre du repre objet
         Objet_transfo( objet , tdTransfoMat);    // ainsi qu l'intégralité de ses points
 
         Transfo* transfo = (Transfo*)malloc( 1 * sizeof( Transfo ) );
         transfo->eTransfoType = ROTATION;
         transfo->x = dX;
         transfo->y = dY;
+        transfo->z = dZ;
 
         g_array_append_val( objet->aTransfo, transfo );
     }

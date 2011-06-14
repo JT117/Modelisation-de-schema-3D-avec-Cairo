@@ -112,7 +112,7 @@ GArray* Cube_facesOrder(Cube* pCube, InfoCamera* pCam)
 		iLoopInsert=0;
 		dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
 		/* Insertion de l'index de la face là où il faut*/
-		while(dDistanceArray!= 0 && dDistanceArray>dDistance)
+		while(dDistanceArray != 0 && dDistanceArray>dDistance)
 		{
 			iLoopInsert++;
 			dDistanceArray = g_array_index(gtDistances,double,iLoopInsert);
