@@ -69,6 +69,7 @@ void FenText_validation( GtkButton* button, gpointer data )
     objet->eType = TEXTE;
     objet->doitEtreDeselectionner = TRUE;
     objet->iter = (GtkTreeIter*)malloc( 1 * sizeof( GtkTreeIter ) );
+    objet->aTransfo = g_array_new( FALSE, FALSE, sizeof( Transfo* ) );
     objet->texte = (char*)malloc( 60 * sizeof( char ) );
     objet->x = ft->scene->creation->x;
     objet->y = ft->scene->creation->y;
